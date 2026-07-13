@@ -1,3 +1,7 @@
 spring:
   application:
     name: 4iren-front-server
+
+logging:
+  level:
+    root: error
