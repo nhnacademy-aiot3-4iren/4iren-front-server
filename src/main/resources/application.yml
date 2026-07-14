@@ -5,3 +5,10 @@ spring:
 logging:
   level:
     root: error
+
+server:
+  port: 8090    # recommendation-api(8081)랑 겹치지 않는 포트로
+
+api:
+  #  gateway-url: http://localhost:8081
+  recommendation-url: http://localhost:8081

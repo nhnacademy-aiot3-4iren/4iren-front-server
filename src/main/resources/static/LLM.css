@@ -1,0 +1,287 @@
+:root {
+    --bg-color: #f5f5f5;
+    --text-main: #333333;
+    --text-muted: #888888;
+    --text-blue: #5b6987;
+    --border-color: #eaeaea;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: var(--font-family);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* 화면에 맞게 꽉 채우도록 max-width 제거 + 세로도 100% 사용 */
+.wrapper {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-container {
+    background-color: #ffffff;
+    border-radius: 20px;
+    display: flex;
+    flex: 1;              /* 고정 height(600px) 대신 남는 공간을 모두 차지 */
+    min-height: 0;         /* flex 자식 스크롤이 제대로 동작하도록 */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 240px;
+    background-color: #ffffff;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+    z-index: 2;
+}
+
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #d1d5db;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.profile-role {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.nav-item:hover {
+    background-color: #f9f9f9;
+}
+
+.nav-icon {
+    width: 18px;
+    height: 18px;
+    stroke: #555;
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Main Chat Area Styles */
+.main-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: #ffffff;
+    background-image:
+            radial-gradient(ellipse at bottom left, rgba(60, 117, 248, 0.7) 0%, transparent 60%),
+            radial-gradient(ellipse at bottom right, rgba(228, 230, 255, 0.7) 0%, transparent 60%);
+}
+
+.chat-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.sparkle-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 15px;
+}
+
+.chat-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+/* 메시지 + 추천 질문을 모두 담는 스크롤 영역 */
+.chat-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 30px 40px 20px 40px;
+    overflow-y: auto;
+    gap: 10px;
+}
+
+.suggestions-title {
+    font-size: 0.75rem;
+    color: var(--text-blue);
+    margin-bottom: 5px;
+    font-weight: 500;
+    margin-right: 10px;
+    align-self: flex-end;
+}
+
+.suggestion-bubble {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    max-width: 320px;
+    line-height: 1.4;
+    backdrop-filter: blur(5px);
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+/* 실제 대화 메시지 버블 */
+.message-row {
+    display: flex;
+    width: 100%;
+}
+
+.message-row.user {
+    justify-content: flex-end;
+}
+
+.message-row.bot {
+    justify-content: flex-start;
+}
+
+.chat-bubble {
+    padding: 10px 16px;
+    border-radius: 16px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    max-width: 65%;
+    word-break: break-word;
+}
+
+.user-bubble {
+    background-color: #5b6987;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.bot-bubble {
+    background-color: #ffffff;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+}
+
+.chat-input-wrapper {
+    padding: 0 40px 40px 40px;
+}
+
+.chat-input-container {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.chat-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    background: transparent;
+}
+
+.chat-input::placeholder {
+    color: #a0a0a0;
+}
+
+.chat-input:disabled {
+    opacity: 0.5;
+}
+
+.send-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.send-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.send-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #8a9bb8;
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}

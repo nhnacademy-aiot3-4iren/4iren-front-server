@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Bot UI</title>
+    <link rel="stylesheet" href="/LLM.css">
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="profile-section">
+                <div class="avatar">
+                    <img src="data:image/png;base64,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" alt="User 1">
+                </div>
+                <div class="profile-name">  User1</div>
+                <div class="profile-role">  user</div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Home
+                </li>
+                <li class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    History
+                </li>
+                <li class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                    Report
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Chat Content -->
+        <main class="main-chat">
+
+            <div class="chat-header">
+                <svg class="sparkle-icon" viewBox="0 0 24 24" fill="#3a2f3a">
+                    <path d="M12 2l1.5 5.5L19 9l-5.5 1.5L12 16l-1.5-5.5L5 9l5.5-1.5L12 2z"></path>
+                    <path d="M19 16l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"></path>
+                </svg>
+                <h2 class="chat-title">Ask our AI anything</h2>
+            </div>
+
+            <!-- id 부여: 메시지와 추천 질문이 모두 여기 쌓입니다 -->
+            <div class="chat-content" id="chatContent">
+                <div class="suggestions-title">Suggestions on what to ask Our AI</div>
+                <div class="suggestion-bubble" data-question="오늘 날씨 어떄?">
+                    오늘 날씨 어떄?
+                </div>
+                <div class="suggestion-bubble" data-question="공기질은 괜찮아?">
+                    공기질은 괜찮아?
+                </div>
+                <div class="suggestion-bubble" data-question="오늘 우산 챙겨야 할까?">
+                    오늘 우산 챙겨야 할까?
+                </div>
+            </div>
+
+            <div class="chat-input-wrapper">
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Ask me anything about your projects">
+                    <button id="sendBtn" class="send-btn" type="button">
+                        <svg class="send-icon" viewBox="0 0 24 24">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<script>
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatContent = document.getElementById('chatContent');
+
+    // 메시지를 화면에 추가하는 함수
+    function appendMessage(text, sender) {
+        const messageRow = document.createElement('div');
+        messageRow.className = `message-row ${sender}`;
+
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${sender}-bubble`;
+        bubble.textContent = text; // XSS 방지를 위해 textContent 사용
+
+        messageRow.appendChild(bubble);
+        chatContent.appendChild(messageRow);
+
+        // 스크롤을 항상 제일 아래로 유지
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    // 서버(LlmController)로 메시지 전송하는 함수
+    // 컨트롤러가 @GetMapping("/llm") + @ModelAttribute String message 이므로
+    // GET 방식으로 쿼리 파라미터에 message를 실어 보냅니다.
+    async function sendMessage(text) {
+        const message = (text ?? chatInput.value).trim();
+        if (!message) return;
+
+        // 1. 사용자 메시지를 화면에 표시하고 입력창 초기화
+        appendMessage(message, 'user');
+        chatInput.value = '';
+        chatInput.disabled = true;
+        sendBtn.disabled = true;
+
+        try {
+            // 2. GET /llm?message=... 형태로 요청 (쿼리 파라미터 인코딩 필수)
+            const url = `/llm?message=${encodeURIComponent(message)}`;
+            const response = await fetch(url, {
+                method: 'GET'
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+
+            // 3. 컨트롤러가 순수 문자열(String)을 반환하므로 JSON이 아닌 text로 읽습니다.
+            const reply = await response.text();
+
+            appendMessage(reply, 'bot');
+
+        } catch (error) {
+            console.error('Error:', error);
+            appendMessage('서버와 연결할 수 없습니다. 잠시 후 다시 시도해주세요.', 'bot');
+        } finally {
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
+            chatInput.focus();
+        }
+    }
+
+    // 전송 버튼 클릭 이벤트
+    sendBtn.addEventListener('click', () => sendMessage());
+
+    // 엔터키 입력 이벤트
+    chatInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // 추천 질문 버블 클릭 시 바로 전송
+    document.querySelectorAll('.suggestion-bubble').forEach(bubble => {
+        bubble.addEventListener('click', () => {
+            sendMessage(bubble.dataset.question);
+        });
+    });
+</script>
+
+</body>
+</html>
