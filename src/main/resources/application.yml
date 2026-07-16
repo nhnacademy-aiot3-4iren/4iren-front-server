@@ -1,6 +1,6 @@
 spring:
   application:
-    name: 4iren-front-server
+    name: 4iren-front
 
 logging:
   level:
