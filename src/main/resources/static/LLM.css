@@ -135,7 +135,7 @@ body {
     position: relative;
     background-color: #ffffff;
     background-image:
-            radial-gradient(ellipse at bottom left, rgba(60, 117, 248, 0.7) 0%, transparent 60%),
+            radial-gradient(ellipse at bottom left, rgb(255, 134, 82) 0%, transparent 60%),
             radial-gradient(ellipse at bottom right, rgba(228, 230, 255, 0.7) 0%, transparent 60%);
 }
 
@@ -168,6 +168,7 @@ body {
     padding: 30px 40px 20px 40px;
     overflow-y: auto;
     gap: 10px;
+    white-space: pre-wrap;
 }
 
 .suggestions-title {
@@ -215,6 +216,7 @@ body {
     line-height: 1.4;
     max-width: 65%;
     word-break: break-word;
+    white-space: pre-wrap;
 }
 
 .user-bubble {

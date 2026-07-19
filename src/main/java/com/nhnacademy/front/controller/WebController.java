@@ -12,4 +12,9 @@ public class WebController {
     public String getLlm() {
         return "LLM";
     }
+
+    @GetMapping("/home")
+    public String getHome() {
+        return "start";
+    }
 }
