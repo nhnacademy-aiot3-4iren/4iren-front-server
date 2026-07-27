@@ -27,7 +27,7 @@ public class RecommendationController {
     public String postLlmAnswer(
             @RequestParam String message
     ) {
-        LlmRequestDto request = new LlmRequestDto("123", message, LocalDateTime.now());
+        LlmRequestDto request = new LlmRequestDto("1", message, LocalDateTime.now());
         LlmAnswerDto answerDto=recommendationClient.getChatAnswer(request);
         String answer=answerDto.answer();
 
