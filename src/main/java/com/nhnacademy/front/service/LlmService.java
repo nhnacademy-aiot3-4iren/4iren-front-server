@@ -1,10 +1,12 @@
 package com.nhnacademy.front.service;
 
-import com.nhnacademy.front.client.RecommendationClient;
-import com.nhnacademy.front.dto.LlmDto;
+import com.nhnacademy.front.recommendation.client.RecommendationClient;
+import com.nhnacademy.front.recommendation.dto.LlmRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -14,10 +16,20 @@ public class LlmService {
     private final RecommendationClient recommendationClient;
 
     public String getApi(String message) {
-        String tmp = recommendationClient.getAnswer(message).getAnswer();
+        String tmp = recommendationClient.getChatAnswer(
+                new LlmRequestDto(
+                        "1",
+                        null,
+                        null,
+                        message,
+                        null,
+                        null,
+                        LocalDateTime.now()
+                )
+        ).answer();
         log.info("{}",tmp);
-        return  recommendationClient.getAnswer(message).getAnswer();
 
+        return  tmp;
     }
 
 }
