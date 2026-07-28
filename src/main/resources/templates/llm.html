@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 추천봇 테스트 (비동기)</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .chat-container { background-color: white; width: 80vw; max-width: 1000px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .chat-header { background-color: #2563eb; color: white; padding: 20px; text-align: center; font-size: 1.2rem; font-weight: bold; }
+        .chat-body { padding: 20px; height: 70vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .message-box { padding: 12px 16px; border-radius: 12px; max-width: 80%; line-height: 1.5; word-wrap: break-word; white-space: pre-wrap; }
+        .user-message { background-color: #eff6ff; color: #1e3a8a; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .ai-message { background-color: #f3f4f6; color: #1f2937; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-footer { padding: 20px; background-color: #f9fafb; border-top: 1px solid #e5e7eb; display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; outline: none; }
+        button { background-color: #2563eb; color: white; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .loading { color: #9ca3af; align-self: center; font-size: 0.9rem; display: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">🤖 실시간 AI 추천 봇</div>
+
+    <div class="chat-body" id="chatBody">
+        <div class="message-box ai-message">안녕하세요!</div>
+    </div>
+
+    <div class="loading" id="loadingText">AI가 생각하는 중입니다... ⏳</div>
+
+    <div class="chat-footer">
+        <input type="text" id="messageInput" placeholder="질문을 입력하세요..." onkeypress="handleEnter(event)">
+        <button onclick="sendMessage()">전송</button>
+    </div>
+</div>
+
+<script>
+    async function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const message = input.value.trim();
+        const chatBody = document.getElementById('chatBody');
+        const loadingText = document.getElementById('loadingText');
+
+        if (!message) return;
+
+        // 1. 내 질문 추가
+        chatBody.innerHTML += `<div class="message-box user-message">${message}</div>`;
+        input.value = '';
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        // 2. 로딩 표시 켜기
+        loadingText.style.display = 'block';
+
+        try {
+            // 3. 백엔드로 통신 (JSON 텍스트만 받아옴)
+            const formData = new URLSearchParams();
+            formData.append("message", message);
+
+            const response = await fetch('/llm/answer', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+
+            const answer = await response.text();
+
+            // 4. 받아온 답변 그리기
+            chatBody.innerHTML += `<div class="message-box ai-message">${answer}</div>`;
+
+        } catch (error) {
+            chatBody.innerHTML += `<div class="message-box ai-message" style="color:red;">통신 에러가 발생했습니다.</div>`;
+        } finally {
+            // 5. 로딩 표시 끄기
+            loadingText.style.display = 'none';
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    }
+
+    function handleEnter(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    }
+</script>
+
+</body>
+</html>
