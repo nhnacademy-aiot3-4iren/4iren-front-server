@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!--font-->
+    <link rel="stylesheet" href="/css/font.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+
+<!-- 좌측 상단 로고 -->
+<div class="brand-logo">
+    <img src="/photo/icon/logo.png" alt="Re I New Logo">
+</div>
+
+<!-- 왼쪽 캐릭터 -->
+<img src="/photo/login-phonegirl.png" alt="Floating Character" class="floating-charc">
+<div class="weather-widget">
+    <div class="weather-row">
+        <img src="/photo/alaram.png" alt="alaram widget" class="alaram">
+    </div>
+</div>
+
+<!-- 오른쪽 캐릭터 -->
+<img src="/photo/login-studygirl.png" alt="Study Character" class="study-charc">
+
+<!-- 로그인 카드 -->
+<div class="login-card">
+    <div class="card-header">
+        <p class="welcome-text">Welcome to <img src="/photo/icon/logo.png" alt="Re I New" class="inline-logo"> !</p>
+        <div class="signup-box">
+            <p class="no-account">No Account ?</p>
+            <a href="signup" class="signup-link">Sign up</a>
+            </div>
+    </div>
+
+    <div class="title-container">
+        <h1>Log in</h1>
+        <span class="subtitle">로그인</span>
+    </div>
+
+    <form action="#" method="POST">
+        <div class="input-group">
+            <label for="username">아이디 or e-mail 주소</label>
+            <input type="text" id="username" placeholder="아이디 또는 이메일 주소">
+        </div>
+
+        <div class="input-group">
+            <label for="password">비밀번호</label>
+            <div class="password-wrapper">
+                <input type="password" id="password" placeholder="비밀번호">
+                <img src="/photo/icon/pw-eye.png" alt="비밀번호 보기" class="eye-icon-c" id="eye-icon">
+            </div>
+        </div>
+
+        <div class="forgot-password">
+            <a href="forgotpw">Forgot Password</a>
+        </div>
+
+        <button type="submit" class="signin-btn">Sign in</button>
+    </form>
+
+    <div class="divider"><span>OR</span></div>
+
+    <div class="social-login">
+        <button type="button" class="google-btn">
+            <img src="https://www.google.com/favicon.ico" alt="Google" class="google-icon">
+            Sign in with Google
+        </button>
+        <button type="button" class="social-icon-btn facebook-btn" aria-label="Facebook 로그인">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.16 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.78 8.44-4.94 8.44-9.94z"/></svg>
+        </button>
+        <button type="button" class="social-icon-btn apple-btn" aria-label="Apple 로그인">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M16.365 1.43c0 1.14-.42 2.13-1.26 2.96-.86.87-1.9 1.37-3.02 1.28-.13-1.09.4-2.23 1.24-3.03.85-.82 2-1.4 3.04-1.21zM20.6 17.24c-.44 1.02-.66 1.48-1.24 2.38-.8 1.26-1.94 2.83-3.35 2.85-1.25.02-1.57-.81-3.27-.8-1.7.01-2.05.82-3.3.8-1.41-.02-2.49-1.44-3.29-2.7-2.27-3.55-2.5-7.72-1.1-9.93.99-1.57 2.56-2.48 4.03-2.48 1.5 0 2.44.83 3.68.83 1.2 0 1.93-.84 3.66-.84 1.31 0 2.7.71 3.69 1.94-3.25 1.78-2.72 6.4.49 7.95z"/></svg>
+        </button>
+    </div>
+</div>
+
+<script src="/js/eye.js"></script>
+</body>
+</html>

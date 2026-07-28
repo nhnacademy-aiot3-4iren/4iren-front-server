@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom - Flow Node Placement</title>
+
+    <link rel="stylesheet" href="/css/flow-diy.css">
+</head>
+<body>
+
+<div class="breadcrumb">My page - Classroom (User ver)</div>
+
+<div class="layout">
+
+    <!-- ============ 사이드바 ============ -->
+    <aside class="sidebar">
+
+        <!--왼쪽 위 로고-->
+        <div class="logo">
+            <img src="/photo/icon/logo.png" alt="Re I New Logo">
+        </div>
+
+        <!-- ===== Node 토글 ===== -->
+        <div class="toggle-btn open" id="node-toggle">
+            <img src="/photo/icon/node-icon.png" alt="" class="toggle-arrow">
+            <span>Node</span>
+        </div>
+
+        <div class="node-group" id="node-group">
+
+            <div class="group-label condition">
+                <span class="dot"></span> 조건 노드
+            </div>
+            <div class="node-item" data-category="condition" data-type="threshold" data-label="임계치 판단">
+                <span class="type-dot"></span> 임계치
+            </div>
+            <div class="node-item" data-category="condition" data-type="average" data-label="평균값 판단">
+                <span class="type-dot"></span> 평균값
+            </div>
+            <div class="node-item" data-category="condition" data-type="duration" data-label="지속시간 판단">
+                <span class="type-dot"></span> 지속시간
+            </div>
+            <div class="node-item" data-category="condition" data-type="slope" data-label="기울기 판단">
+                <span class="type-dot"></span> 기울기
+            </div>
+
+            <div class="group-label action">
+                <span class="dot"></span> 행동 노드
+            </div>
+            <div class="node-item" data-category="action" data-type="telegram" data-label="알람(텔레그램)">
+                <span class="type-dot"></span> 알림(Telegram)
+            </div>
+            <div class="node-item" data-category="action" data-type="logging" data-label="로깅(임시)">
+                <span class="type-dot"></span> 로깅(log)
+            </div>
+        </div>
+
+        <!--메뉴별 절개선-->
+        <div class="divider"></div>
+
+        <!-- ===== Connection 토글 ===== -->
+        <div class="toggle-btn open" id="connection-toggle">
+            <img src="/photo/icon/arrow-icon.png" alt="" class="toggle-arrow">
+            <img src="/photo/icon/connection-icon.png" alt="" class="toggle-icon">
+            <span>Connection</span>
+        </div>
+
+        <div class="connection-group" id="connection-group">
+            <div class="conn-item">
+                <span class="conn-dot true"></span> true
+            </div>
+            <div class="conn-item">
+                <span class="conn-dot false"></span> false
+            </div>
+            <div class="conn-item">
+                <span class="conn-dot null"></span> null
+            </div>
+        </div>
+
+        <!--메뉴별 절개선-->
+        <div class="divider"></div>
+
+        <div class="node-item static">
+            <img src="/photo/icon/setting-icon.png" alt="설정" class="setting-i">
+            <span>Settings</span>
+        </div>
+
+        <div class="save-box">
+            <button class="save-btn">저장</button>
+        </div>
+
+    </aside>
+
+    <!-- ============ 헤더  ============ -->
+    <div class="main">
+        <header class="header">
+            <div class="page-title">Classroom</div>
+            <div class="search">
+                <img src="/photo/icon/search-icon.png" alt="search" class="search-icon">
+                <span class="search-placeholder">Search here...</span>
+            </div>
+
+            <div class="header-right">
+                <div class="bell">
+                    <img src="/photo/icon/alaram-icon.png" alt="알림">
+                </div>
+
+                <div class="user-box">
+                    <span class="user-name">Jae na</span>
+                    <span class="user-role">User</span>
+                </div>
+                <img src="/photo/icon/chevron-down.png" alt="" class="user-chevron">
+            </div>
+        </header>
+
+        <!-- 배치 모드일 때 상단에 뜨는 안내 바 -->
+        <div class="placement-banner" id="placement-banner" style="display:none;">
+            <span id="placement-banner-text">배치할 노드 종류를 선택하세요</span>
+            <button id="placement-cancel" class="placement-cancel" style="display:none;">취소 (ESC)</button>
+        </div>
+
+        <div class="canvas-area" id="canvas-area">
+            <div class="canvas-hint" id="canvas-hint">
+                아직 배치된 노드가 없어요<br>
+                왼쪽에서 노드 타입을 <b>선택</b>한 후, 이 영역을 <b>클릭</b>해서 배치하세요
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 배치 중 마우스를 따라다니는 노드 -->
+<div class="ghost-node" id="ghost-node"></div>
+
+<script src="/js/flow-diy.js"></script>
+</body>
+</html>

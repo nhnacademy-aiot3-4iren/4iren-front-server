@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Bot UI</title>
-    <link rel="stylesheet" href="/LLM.css">
+
+    <link rel="stylesheet" href="/css/LLM.css">
 </head>
 <body>
 
@@ -147,7 +148,7 @@
 
         if (!messageToHappen) {
             console.warn("🚨 [경고] 최종 메시지가 비어있어 서버로 요청을 보내지 않습니다.");
-            return; // 여기서 멈춘다면 input 창의 값을 아예 못 읽고 있는 것입니다.
+            return;
         }
 
         // 화면 표시 및 초기화

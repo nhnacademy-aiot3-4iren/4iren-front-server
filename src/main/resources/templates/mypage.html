@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPage</title>
+
+  <!--font-->
+  <link rel="stylesheet" href="/css/font.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/forgotpw.css">
+</head>
+
+
+<body>
+<!-- 좌측 상단 로고 -->
+<div class="brand-logo">
+  <img src="/photo/icon/logo.png" alt="Re I New Logo">
+</div>
+
+<div class="layout">
+
+  <!-- ============ 사이드바 ============ -->
+  <aside class="sidebar">
+
+    <div class="sidebar-logo">
+      <img src="/photo/icon/logo.png" alt="Re I New Logo">
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active">
+        <img src="/icons/profile.svg" alt="">
+        <span>Profile</span>
+      </a>
+      <a href="#" class="nav-item">
+        <img src="/icons/team.svg" alt="">
+        <span>Team</span>
+      </a>
+      <a href="#" class="nav-item">
+        <img src="/icons/classroom.svg" alt="">
+        <span>Classroom</span>
+      </a>
+      <a href="#" class="nav-item">
+        <img src="/icons/subscribe.svg" alt="">
+        <span>Subscribe</span>
+      </a>
+      <a href="#" class="nav-item">
+        <img src="/icons/settings.svg" alt="">
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="#" class="nav-item">
+        <img src="/icons/signout.svg" alt="">
+        <span>Sign Out</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ============ 오른쪽 전체(헤더 + 컨텐츠) ============ -->
+  <div class="main-wrap">
+
+    <!-- ============ 헤더 ============ -->
+    <header class="header">
+
+      <h1 class="page-title">My Page</h1>
+
+      <div class="search-bar">
+        <img src="/icons/search.svg" alt="">
+        <input type="text" placeholder="Search here...">
+      </div>
+
+      <div class="header-right">
+        <button class="icon-btn">
+          <img src="/icons/bell.svg" alt="notification">
+          <span class="badge"></span>
+        </button>
+
+        <div class="user-info">
+          <div class="user-text">
+            <span class="user-name">Jae na</span>
+            <span class="user-role">User</span>
+          </div>
+          <img src="/icons/chevron-down.svg" alt="" class="user-arrow">
+        </div>
+      </div>
+
+    </header>
+
+    <!-- ============ 컨텐츠 ============ -->
+    <main class="content">
+
+      <!-- 프로필 카드 -->
+      <section class="profile-card">
+
+        <h2 class="card-title">Profile</h2>
+
+        <div class="profile-body">
+
+          <!-- 입력 폼 -->
+          <form class="profile-form">
+
+            <div class="form-group">
+              <label for="id">아이디</label>
+              <input type="text" id="id" placeholder="ID">
+            </div>
+
+            <div class="form-group">
+              <label for="username">사용자 이름</label>
+              <input type="text" id="username" placeholder="사용자 이름">
+            </div>
+
+            <div class="form-group">
+              <label for="email">e - mail</label>
+              <input type="email" id="email" placeholder="e - mail">
+            </div>
+
+            <div class="form-group">
+              <label for="password">비밀번호</label>
+              <div class="password-field">
+                <input type="password" id="password" placeholder="password">
+                <img src="/icons/eye.svg" alt="toggle password" class="eye-icon">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password-check">비밀번호 확인</label>
+              <div class="password-field">
+                <input type="password" id="password-check" placeholder="password">
+                <img src="/icons/eye.svg" alt="toggle password" class="eye-icon">
+              </div>
+            </div>
+
+          </form>
+
+          <!-- 프로필 사진 -->
+          <div class="profile-photo">
+            <img src="/" alt="profile photo">
+          </div>
+
+        </div>
+
+        <button type="submit" class="setting-btn">Setting</button>
+
+      </section>
+
+      <!-- 오른쪽 세로 배너 (틀만) -->
+      <aside class="side-banner">
+        <img src="/photo/side-banner.png" alt="brand banner">
+      </aside>
+
+    </main>
+
+  </div>
+
+</div>
+
+<script src="/js/eye.js"></script>
+</body>
+</html>

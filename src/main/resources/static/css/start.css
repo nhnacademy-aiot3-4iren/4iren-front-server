@@ -225,15 +225,14 @@ h3.section-title {
 }
 
 /* 하단 흰색 둥근 배경 박스 */
-.orange-card-white-bg {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    height: 320px;
-    background: #ffffff;
-    border-radius: 24px;
-    z-index: 1;
+.white-box {
+    background-color: white;
+    border-radius: 20px;
+
+    position: relative;   /* 알약들의 기준점 */
+    width: 100%;          /* 주황색 카드 안에서 가로를 꽉 채우거나 원하는 px 지정 (예: 300px) */
+    height: 350px;        /* 알약들이 놀 수 있는 세로 공간을 강제로 만들어줍니다 */
+    margin-top: 20%;     /* '공간 맞춤형 자가 학습' 글씨와 흰색 박스 사이의 간격 */
 }
 
 /* 일러스트레이션 알약 태그들 */
@@ -267,7 +266,7 @@ h3.section-title {
     border: 2px solid var(--primary-orange);
 }
 
-/* 이미지와 동일하게 각도 및 위치 미세 조정 */
+/*공간 맞춤형 자가학습 부분 칸 내부 타원*/
 .pill-1 { top: 40px; left: 80px; transform: rotate(-22deg); } /* 공간관리 사각지대 */
 .pill-2 { top: 130px; left: -10px; transform: rotate(-12deg); } /* 실내외 복잡한 비교 */
 .pill-3 { top: 210px; left: -30px; transform: rotate(-5deg); } /* 에너지 요금관리 */
@@ -275,7 +274,7 @@ h3.section-title {
 .pill-5 { top: 220px; left: 120px; transform: rotate(20deg); } /* 늦은 공기질 대처 */
 
 
-/* Video Section */
+/*비디오 */
 .play-icon {
     width: 60px;
     height: 60px;
@@ -426,4 +425,3 @@ footer {
     margin-left: 15px;
     cursor: pointer;
 }
-</style>
