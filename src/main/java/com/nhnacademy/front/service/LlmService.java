@@ -18,12 +18,9 @@ public class LlmService {
     public String getApi(String message) {
         String tmp = recommendationClient.getChatAnswer(
                 new LlmRequestDto(
-                        "1",
                         null,
                         null,
                         message,
-                        null,
-                        null,
                         LocalDateTime.now()
                 )
         ).answer();

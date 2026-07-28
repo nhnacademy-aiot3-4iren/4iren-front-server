@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record LlmAnswerDto(
-        String userId,
+        Long userId,
         Long roomId,
         String message,
         String answer,
