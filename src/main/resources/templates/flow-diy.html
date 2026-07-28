@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<div class="breadcrumb">My page - Classroom (User ver)</div>
+<div class="breadcrumb">Flow (Admin ver)</div>
 
 <div class="layout">
 
@@ -22,8 +22,9 @@
         </div>
 
         <!-- ===== Node 토글 ===== -->
-        <div class="toggle-btn open" id="node-toggle">
-            <img src="/photo/icon/node-icon.png" alt="" class="toggle-arrow">
+        <div class="toggle-btn" id="node-toggle" data-target="node-group">
+            <img src="/photo/icon/toggle-icon.png" alt="" class="toggle-icon">
+            <img src="/photo/icon/node-icon.png" alt="" class="node-icon">
             <span>Node</span>
         </div>
 
@@ -60,20 +61,20 @@
         <div class="divider"></div>
 
         <!-- ===== Connection 토글 ===== -->
-        <div class="toggle-btn open" id="connection-toggle">
-            <img src="/photo/icon/arrow-icon.png" alt="" class="toggle-arrow">
-            <img src="/photo/icon/connection-icon.png" alt="" class="toggle-icon">
+        <div class="toggle-btn" id="connection-toggle" data-target="connection-group">
+            <img src="/photo/icon/toggle-icon.png" alt="" class="toggle-icon">
+            <img src="/photo/icon/connection-icon.png" alt="" class="connection-icon">
             <span>Connection</span>
         </div>
 
         <div class="connection-group" id="connection-group">
-            <div class="conn-item">
+            <div class="conn-item connection-item" data-type="true">
                 <span class="conn-dot true"></span> true
             </div>
-            <div class="conn-item">
+            <div class="conn-item connection-item" data-type="false">
                 <span class="conn-dot false"></span> false
             </div>
-            <div class="conn-item">
+            <div class="conn-item connection-item" data-type="null">
                 <span class="conn-dot null"></span> null
             </div>
         </div>
@@ -81,6 +82,7 @@
         <!--메뉴별 절개선-->
         <div class="divider"></div>
 
+        <!--설정 메뉴-->
         <div class="node-item static">
             <img src="/photo/icon/setting-icon.png" alt="설정" class="setting-i">
             <span>Settings</span>
@@ -95,7 +97,8 @@
     <!-- ============ 헤더  ============ -->
     <div class="main">
         <header class="header">
-            <div class="page-title">Classroom</div>
+            <div class="page-title">Flow</div>
+
             <div class="search">
                 <img src="/photo/icon/search-icon.png" alt="search" class="search-icon">
                 <span class="search-placeholder">Search here...</span>
@@ -110,7 +113,7 @@
                     <span class="user-name">Jae na</span>
                     <span class="user-role">User</span>
                 </div>
-                <img src="/photo/icon/chevron-down.png" alt="" class="user-chevron">
+                <img src="/photo/icon/toggle-icon.png" alt="" class="user-toggle">
             </div>
         </header>
 
@@ -125,6 +128,8 @@
                 아직 배치된 노드가 없어요<br>
                 왼쪽에서 노드 타입을 <b>선택</b>한 후, 이 영역을 <b>클릭</b>해서 배치하세요
             </div>
+
+            <svg id="connection-svg"></svg>
         </div>
     </div>
 
@@ -132,6 +137,8 @@
 
 <!-- 배치 중 마우스를 따라다니는 노드 -->
 <div class="ghost-node" id="ghost-node"></div>
+
+<!--연결선은 따로 사각형-->
 
 <script src="/js/flow-diy.js"></script>
 </body>

@@ -33,64 +33,97 @@ body {
 }
 
 .logo {
-    margin-bottom: 32px;
+    margin-bottom: 30%;
+    margin-left: 24%;
 }
+
+/*.logo-label {*/
+/*    display: block;*/
+/*    font-size: 11px;*/
+/*    color: #B0B4BA;*/
+/*    margin-bottom: 30%;*/
+/*}*/
 
 .logo img {
-    height: 40px;
+    height: 55px;
 }
 
-/* ================= 토글 버튼 (Node, Connection 공통) ================= */
+/* ================= 토글 버튼 (Node, Connection 공통) =================
+   화살표(.toggle-arrow)만 실제 버튼처럼 클릭 대상이지만,
+   전체 행(.toggle-btn)에 클릭 이벤트를 걸어 화살표를 누르는 느낌으로 동작시킴 */
 
 .toggle-btn {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 12px 16px;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     user-select: none;
-    font-weight: 700;
-    font-size: 14px;
+    font-weight: 600;
+    font-size: 15px;
     color: #8A8D93;
     background: transparent;
+    transition: background 0.15s, color 0.15s;
 }
 
-/* 열려있을 때만 주황색 배경 + 흰 글씨 */
+/* 열려있을 때만 주황색 배경 + 흰 글씨 + 흰 아이콘 */
 .toggle-btn.open {
     background: #FF9800;
     color: #fff;
 }
 
-.toggle-btn .toggle-arrow,
-.toggle-btn .toggle-icon {
-    width: 16px;
-    height: 16px;
+.toggle-btn span {
+    right: 5px;
+}
+
+.toggle-icon {
+    width: 9px;
+    height: 6px;
     flex-shrink: 0;
+    transition: transform 0.15s, filter 0.15s;
+    transform: rotate(-90deg); /* 닫힘: > 모양 */
 }
 
-/* 기본(닫힘): 화살표 위쪽, 열리면 아래쪽으로 회전 */
-.toggle-arrow {
-    transition: transform 0.15s;
-    transform: rotate(-90deg);
-    color: #444;
+.toggle-btn.open .toggle-icon {
+    transform: rotate(0deg); /* 열림: v 모양 */
 }
 
-.toggle-btn.open .toggle-arrow {
-    transform: rotate(0deg);
+.node-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: filter 0.15s;
 }
 
+.connection-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: filter 0.15s;
+}
+
+/*connection icon transit 안바뀜*/
+
+.toggle-btn.open .toggle-icon,
+.toggle-btn.open .node-icon,
+.toggle-btn.open .connection-icon {
+    filter: brightness(0) invert(1);
+}
+
+/* 목록은 화살표 상태에 종속되어 열리고 닫힘 (닫히면 완전히 숨김) */
 .node-group,
 .connection-group {
     margin-top: 4px;
     padding-left: 8px;
 }
 
-/* 닫혔을 때는 목록 자체를 숨김 (JS에서 toggle-btn에 open 클래스 토글) */
-.node-group.collapsed,
-.connection-group.collapsed {
+.toggle-btn:not(.open) + .node-group,
+.toggle-btn:not(.open) + .connection-group {
     display: none;
 }
+
+
 
 /* ================= Connection 목록 ================= */
 .conn-item {
@@ -123,6 +156,8 @@ body {
     padding: 14px 12px 6px;
 }
 
+
+/* ================= Node 목록 ================= */
 .group-label .dot {
     width: 8px;
     height: 8px;
@@ -170,7 +205,7 @@ body {
 .node-item.static {
     cursor: default;
     color: #8A8D93;
-    padding-left: 16px;
+    padding-left: 35px;
 }
 .node-item.static:hover {
     background: transparent;
@@ -178,8 +213,8 @@ body {
 }
 
 .node-item.static img {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
 }
 
 .divider {
@@ -191,7 +226,7 @@ body {
 /* ================= 저장 버튼 ================= */
 .save-box {
     margin-top: auto;
-    padding-top: 25px;
+    padding-top: 24px;
 }
 
 .save-btn {
@@ -204,8 +239,8 @@ body {
     cursor: pointer;
     box-shadow: 0 10px 24px rgba(239, 137, 36, 0.30);
     transition: background-color 0.2s;
-    width: 180px;
-    height: 40px;
+    width: 100%;
+    height: 52px;
 }
 
 .save-btn:hover {
@@ -247,6 +282,7 @@ body {
     border-radius: 999px;
     padding: 10px 18px;
     color: #9AA0A6;
+    margin-left: 18%;
     font-size: 14px;
 }
 
@@ -374,6 +410,7 @@ body {
     white-space: nowrap;
     cursor: grab;
     box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    z-index: 10;  /* 캔버스에 배치된 노드는 커넥션보다 위에있어야함*/
 }
 
 .placed-node.condition { background: #3B82F6; }
@@ -401,7 +438,19 @@ body {
     opacity: 1;
 }
 
-/* ================= 사이드바에서 클릭한 노드 (드래그 프리뷰) ================= */
+
+/* ===== 캔버스 안에서 커넥션을 그리는 도화지 ===== */
+#connection-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ================= 사이드바에서 클릭한 노드 (미리보기) ================= */
 .ghost-node {
     position: fixed;
     top: 0;
@@ -421,3 +470,5 @@ body {
 
 .ghost-node.condition { background: #3B82F6; }
 .ghost-node.action { background: #FF9800; }
+
+
