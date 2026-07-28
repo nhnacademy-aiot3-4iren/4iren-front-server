@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name="4iren-gateway", path="/api/recommendation", contextId="recommendationClient")
 public interface RecommendationClient {
 
-    @GetMapping("/llm")
-    LlmAnswerDto getLlmAnswer(@RequestParam(name="message") String message);
-
     @PostMapping("/chat")
     LlmAnswerDto getChatAnswer(@RequestBody LlmRequestDto request);
 }

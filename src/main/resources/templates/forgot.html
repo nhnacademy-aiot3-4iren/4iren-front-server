@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+
+    <!--font-->
+    <link rel="stylesheet" href="/css/font.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/forgotpw.css">
+</head>
+
+
+<body>
+
+<!-- 좌측 상단 로고 -->
+<div class="brand-logo">
+    <img src="/photo/icon/logo.png" alt="Re I New Logo">
+</div>
+
+<!--물음표 이미지-->
+<img src="/photo/forgot-girl.png" alt="forgot-girl" class="forgot-girl">
+
+<!--입력 박스 (흰)-->
+<div class="forgot-box">
+
+    <div class="Main-text">
+        <h1>Forgot Your Password?</h1>
+    </div>
+    <!--비번 입력칸-->
+    <form action="#" method="POST">
+
+        <div class="enter-id">
+            <label for="id">ID를 입력해 주세요.</label>
+            <input type="text" id="id" placeholder="ID">
+        </div>
+
+        <!--사용자 이름 & e-mail 입력칸-->
+        <div class="ne-input">
+            <div class="name-email">
+                <label for="username">사용자 이름</label>
+                <input type="text" id="username" placeholder="사용자 이름">
+            </div>
+
+            <div class="name-email">
+                <label for="email">e-mail 주소</label>
+                <input type="text" id="email" placeholder="e-mail">
+            </div>
+        </div>
+
+        <button type="submit" class="verify-btn">Verify</button>
+
+    </form>
+</div>
+
+<script src="/js/eye.js"></script>
+</body>
+</html>

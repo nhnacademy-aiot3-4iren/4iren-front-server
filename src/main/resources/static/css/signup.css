@@ -1,0 +1,284 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins','Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+
+    /* 배경: 좌측 오렌지 -> 우측 화이트 그라데이션 */
+    background: linear-gradient(90deg, #FFCC99 0%, #FFDEBD 65%, #FFFFFF 100%);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ==========================================
+   1. 좌측 상단 로고
+========================================== */
+.brand-logo {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    width: 130px;
+    z-index: 20;
+}
+.brand-logo img {
+    width: 100%;
+    display: block;
+}
+
+/* ==========================================
+   phone girl
+========================================== */
+.floating-charc {
+    position: absolute;
+    left: -1%;
+    bottom: 8%;
+    width: 701px;
+    height: 640px;
+    z-index: 1;
+}
+
+.alaram {
+    position: absolute;
+    left: 4%;
+    bottom: 58%;
+}
+
+/* ==========================================
+   study girl
+========================================== */
+.study-charc {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 90vh;
+    max-height: 711px;
+    width: auto;
+    z-index: 1;
+}
+
+/* ==========================================
+   회원가입 박스 (have an account?)
+========================================== */
+.signup-box{
+    background-color: #FFFFFF;
+    width: 600px;
+    max-width: 90vw;
+    height: 700px;
+    max-height: 90vw;
+    border-radius: 32px;
+    padding: 48px 46px 40px;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
+
+    position: relative;
+    z-index: 10;
+}
+
+.sign-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 18px;
+    font-size: 14px;
+}
+
+.have-acc {
+    color: #999;
+}
+
+.signin-link {
+    color: #EF8924;
+    text-decoration: none;
+    font-weight: 500;
+}
+.signin-link:hover {
+    cursor: pointer;
+    color: #d67a20
+}
+
+/* ==========================================
+   메인글씨 sign up 회원가입
+========================================== */
+.title-container {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 34px;
+}
+.title-container h1 {
+    font-size: 55px;
+    font-weight: 500;
+    color: #111;
+    margin-right: 12px;
+}
+.title-container .subtitle {
+    font-size: 16px;
+    color: #777;
+}
+
+
+/* ==========================================
+   7. 입력폼
+========================================== */
+
+/*사용할 아이디 입력칸*/
+.enterid {
+    margin-bottom: 35px;
+}
+
+.enterid input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #DDD;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    transition: border 0.2s;
+}
+
+/*글자 스타일*/
+.enterid label {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+
+
+.input-group input:focus {
+    border-color: #4A90E2;
+}
+
+.input-group input::placeholder {
+    color: #BBB;
+}
+
+
+/*사용자 이름, 이메일 입력칸*/
+.ne-input {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.ne-input.name-email {
+    display: flex;
+    gap: 15px;
+}
+
+.name-email {
+    display: flex;
+    flex-direction: column;
+}
+
+.name-email:first-child input {
+    width: 215px;   /* 사용자 이름 칸 */
+}
+
+.name-email:last-child input {
+    width: 305px;
+}
+
+.name-email label {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 9px;
+}
+
+.name-email input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #DDD;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    transition: border 0.2s;
+}
+.name-email input:focus {
+    border-color: #4A90E2;
+}
+.name-email input::placeholder {
+    color: #BBB;
+}
+
+/*비밀번호 입력칸*/
+.password-wrapper {
+    position: relative;
+}
+
+.pw-box label {
+        display: block;
+        font-size: 13px;
+        font-weight: 400;
+        color: #333;
+        margin-bottom: 9px;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #DDD;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.password-wrapper input::placeholder {
+    color: #BBB;
+}
+
+.eye-icon-c {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 20px;
+    height: auto;
+    opacity: 0.55;
+    transition: opacity 0.2s;
+}
+.eye-icon-c:hover {
+    opacity: 1;
+}
+
+/* ==========================================
+   Sign up 버튼
+========================================== */
+.signup-btn {
+    width: 100%;
+    background-color: #EF8924;
+    color: #FFF;
+    border: none;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(239, 137, 36, 0.30);
+    transition: background-color 0.2s;
+    margin-top: 53px;
+}
+.signup-btn:hover {
+    background-color: #d67a20;
+}

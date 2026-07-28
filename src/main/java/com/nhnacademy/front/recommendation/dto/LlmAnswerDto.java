@@ -5,12 +5,15 @@ import java.time.LocalDateTime;
 
 @Builder
 public record LlmAnswerDto(
-       String message,
-       String answer,
-       LocalDateTime requestedAt,
-       LocalDateTime answeredAt
+        String userId,
+        Long roomId,
+        String message,
+        String answer,
+        LocalDateTime requestedAt,
+        LocalDateTime receivedAt,
+        LocalDateTime answeredAt
 ){
-    public LlmAnswerDto(String message, String answer, LocalDateTime requestedAt) {
-        this(message, answer, requestedAt, LocalDateTime.now());
-    }
+//    public LlmAnswerDto(String message, String answer, LocalDateTime requestedAt) {
+//        this(message, answer, requestedAt, LocalDateTime.now());
+//    }
 }

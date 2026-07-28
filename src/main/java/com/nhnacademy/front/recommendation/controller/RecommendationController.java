@@ -3,6 +3,7 @@ package com.nhnacademy.front.recommendation.controller;
 import com.nhnacademy.front.recommendation.client.RecommendationClient;
 import com.nhnacademy.front.recommendation.dto.LlmAnswerDto;
 import com.nhnacademy.front.recommendation.dto.LlmRequestDto;
+import com.nhnacademy.front.service.LlmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class RecommendationController {
 
-    private final RecommendationClient recommendationClient;
+    private final LlmService llmService;
 
     @GetMapping("/llm")
     public String getLlmPage() {
@@ -27,9 +28,7 @@ public class RecommendationController {
     public String postLlmAnswer(
             @RequestParam String message
     ) {
-        LlmRequestDto request = new LlmRequestDto("1", message, LocalDateTime.now());
-        LlmAnswerDto answerDto=recommendationClient.getChatAnswer(request);
-        String answer=answerDto.answer();
+        String answer=llmService.getApi(message);
 
         log.info("Received answer: {}", answer);
 

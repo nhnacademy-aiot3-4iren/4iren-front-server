@@ -160,15 +160,9 @@
         if(sendBtn) sendBtn.disabled = true;
 
         try {
-            const url = `/llm/answer`;
-            console.log("5. 서버로 fetch 요청 보냄:", url);
-            const response = await fetch(url, { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({ message: messageToHappen })
-            });
+            console.log("5. 서버로 fetch 요청 보냄:", `/llm?message=${encodeURIComponent(messageToHappen)}`);
+            const url = `/llm?message=${encodeURIComponent(messageToHappen)}`;
+            const response = await fetch(url, { method: 'GET' });
 
             if (!response.ok) throw new Error('Network response was not ok');
 
