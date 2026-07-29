@@ -4,7 +4,7 @@ spring:
 
 logging:
   level:
-    root: error
+    root: info
 
 
 eureka:
@@ -15,5 +15,3 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
-server:
-  port: 8888
