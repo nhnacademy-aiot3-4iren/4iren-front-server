@@ -6,6 +6,7 @@ logging:
   level:
     root: error
 
+
 eureka:
   client:
     service-url:
@@ -14,3 +15,5 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
+server:
+  port: 8889
