@@ -1,15 +1,11 @@
 package com.nhnacademy.front.recommendation.controller;
 
-import com.nhnacademy.front.recommendation.client.RecommendationClient;
-import com.nhnacademy.front.recommendation.dto.LlmAnswerDto;
-import com.nhnacademy.front.recommendation.dto.LlmRequestDto;
+import com.nhnacademy.front.recommendation.dto.AnswerDto;
 import com.nhnacademy.front.service.LlmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 @Slf4j
 @Controller
@@ -25,10 +21,10 @@ public class RecommendationController {
 
     @PostMapping("/llm/answer")
     @ResponseBody
-    public String postLlmAnswer(
+    public AnswerDto postLlmAnswer(
             @RequestParam String message
     ) {
-        String answer=llmService.getApi(message);
+        AnswerDto answer=llmService.getApi(message);
 
         log.info("Received answer: {}", answer);
 

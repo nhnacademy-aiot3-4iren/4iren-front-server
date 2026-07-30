@@ -1,7 +1,9 @@
 package com.nhnacademy.front.service;
 
 import com.nhnacademy.front.recommendation.client.RecommendationClient;
+import com.nhnacademy.front.recommendation.dto.AnswerDto;
 import com.nhnacademy.front.recommendation.dto.LlmRequestDto;
+import com.nhnacademy.front.recommendation.dto.LlmResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,18 +17,15 @@ public class LlmService {
 
     private final RecommendationClient recommendationClient;
 
-    public String getApi(String message) {
-        String tmp = recommendationClient.getChatAnswer(
+    public AnswerDto getApi(String message) {
+        AnswerDto tmp = recommendationClient.getChatAnswer(
                 new LlmRequestDto(
-                        "1",
                         null,
                         null,
                         message,
-                        null,
-                        null,
                         LocalDateTime.now()
                 )
-        ).answer();
+        ).getAnswer();
         log.info("{}",tmp);
 
         return  tmp;
