@@ -1,0 +1,33 @@
+<!-- ================================================================
+     !! sidebar.html
+     - 사용법: <div th:replace="~{sidebar :: sidebar}"></div>
+     - 현재 페이지에 맞는 nav-item에 서버/JS에서 class="nav-item active" 부여
+     ================================================================ -->
+<aside xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar" class="sidebar">
+    <div class="sidebar-logo">
+        <img src="/photo/icon/logo.png" alt="Re I New Logo">
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="#" class="nav-item" data-page="profile">
+            <img src="/photo/icon/profile-icon.png" alt="profile">
+            <span>Profile</span>
+        </a>
+        <a href="#" class="nav-item active" data-page="team">
+            <img src="/photo/icon/team-icon.png" alt="team">
+            <span>Team</span>
+        </a>
+        <a href="#" class="nav-item" data-page="classroom">
+            <img src="/photo/icon/classroom-icon.png" alt="classroom">
+            <span>Classroom</span>
+        </a>
+        <a href="#" class="nav-item" data-page="subscribe">
+            <img src="/photo/icon/subscribe-icon.png" alt="subscribe">
+            <span>Subscribe</span>
+        </a>
+        <a href="#" class="nav-item" data-page="settings">
+            <img src="/photo/icon/setting-icon.png" alt="setting">
+            <span>Settings</span>
+        </a>
+    </nav>
+</aside>

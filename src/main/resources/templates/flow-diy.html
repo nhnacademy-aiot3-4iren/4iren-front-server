@@ -6,11 +6,9 @@
     <title>Classroom - Flow Node Placement</title>
 
     <link rel="stylesheet" href="/css/flow-diy.css">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 <body>
-
-<div class="breadcrumb">Flow (Admin ver)</div>
-
 <div class="layout">
 
     <!-- ============ 사이드바 ============ -->
@@ -129,7 +127,22 @@
                 왼쪽에서 노드 타입을 <b>선택</b>한 후, 이 영역을 <b>클릭</b>해서 배치하세요
             </div>
 
-            <svg id="connection-svg"></svg>
+            <svg id="connection-svg">
+                <defs>
+                    <!-- true (초록 화살표) -->
+                    <marker id="arrow-true"  markerWidth="6" markerHeight="6" refX="5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0.5,0.5 L4.5,2.5 L0.5,4.5" fill="#33C09C" />
+                    </marker>
+                    <!-- false (주황 화살표) -->
+                    <marker id="arrow-false"  markerWidth="6" markerHeight="6" refX="5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0.5,0.5 L4.5,2.5 L0.5,4.5" fill="#EA5C2A" />
+                    </marker>
+                    <!-- null (노랑 화살표) -->
+                    <marker id="arrow-null"  markerWidth="6" markerHeight="6" refX="5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0.5,0.5 L4.5,2.5 L0.5,4.5" fill="#E7C21F" />
+                    </marker>
+                </defs>
+            </svg>
         </div>
     </div>
 
@@ -138,7 +151,7 @@
 <!-- 배치 중 마우스를 따라다니는 노드 -->
 <div class="ghost-node" id="ghost-node"></div>
 
-<!--연결선은 따로 사각형-->
+<div th:replace="~{/basic/footer :: footer}"></div>
 
 <script src="/js/flow-diy.js"></script>
 </body>

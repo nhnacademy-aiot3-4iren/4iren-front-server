@@ -142,6 +142,8 @@ body {
     flex-shrink: 0;
 }
 
+
+
 .conn-dot.true  { background: #33C09C; }
 .conn-dot.false { background: #EA5C2A; }
 .conn-dot.null  { background: #E7C21F; }
@@ -156,6 +158,12 @@ body {
     padding: 14px 12px 6px;
 }
 
+/* ================= 선택되어 대기 중인 커넥션 아이템 ================= */
+.conn-item.selecting {
+    background: #FF9800;
+    color: #fff;
+    border-radius: 8px; /* 노드랑 똑같이 둥글게 */
+}
 
 /* ================= Node 목록 ================= */
 .group-label .dot {
@@ -410,7 +418,8 @@ body {
     white-space: nowrap;
     cursor: grab;
     box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-    z-index: 10;  /* 캔버스에 배치된 노드는 커넥션보다 위에있어야함*/
+    z-index: 10; /* 캔버스에 배치된 노드는 커넥션보다 위에있어야함*/
+    user-select: none;
 }
 
 .placed-node.condition { background: #3B82F6; }
@@ -472,3 +481,43 @@ body {
 .ghost-node.action { background: #FF9800; }
 
 
+
+.node-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border: 2px solid #3B82F6;
+    border-radius: 50%;
+    opacity: 0%;
+    transition: opacity 0.2s, transform 0.1s;
+    cursor: crosshair; /*십자가 커서*/
+
+    /*점이 노드 모서리에 정확히 반반씩 걸치게*/
+    transform: translate(-50%, -50%);
+}
+
+/* 마우스를 노드 위에 올리거나, 커넥션 모드(.placing)일때 나타나는것*/
+.placed-node:hover .node-handle,
+.canvas-area.placing .placed-node .node-handle {
+    opacity: 1;
+}
+
+/*점 위에 마우스를 정확히 가져다 대면 점이 살짝 커지게*/
+.node-handle:hover {
+    transform: translate(-50%, -50%) scale(1.3);
+    background: #3B82F6;
+}
+
+/* 4방향 점들의 정확한 위치 */
+.node-handle.top { top: 0; left: 50%; }       /* 위쪽 정중앙 */
+.node-handle.bottom { top: 100%; left: 50%; } /* 아래쪽 정중앙 */
+.node-handle.left { top: 50%; left: 0; }      /* 왼쪽 정중앙 */
+.node-handle.right { top: 50%; left: 100%; }  /* 오른쪽 정중앙 */
+
+
+/*!! 캔버스에 배치된 노드 선택 상태*/
+.placed-node.selected {
+    outline: 3px solid #FF9800;
+    outline-offset: 2px;
+}

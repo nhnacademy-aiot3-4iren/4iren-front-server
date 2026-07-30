@@ -1,0 +1,39 @@
+.site-footer {
+    width: 100%;
+    max-height: 240px;
+    min-height: 100px;
+    flex-shrink: 0; /* sticky footer 구조에서 footer가 눌려 찌그러지지 않도록 */
+
+    box-sizing: border-box;
+    overflow: hidden;
+
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFFEF9 100%);
+    border-top: 1px solid #E4E4E4;
+}
+
+.footer-inner {
+    max-width: 1440px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 32px 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap; /* 화면이 좁아지면 브랜드명이 아래로 내려감 */
+}
+
+.footer-copyright {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #737791;
+}
+
+.footer-brand {
+    font-size: 16px;
+    font-weight: 700;
+    color: #737791;
+    white-space: nowrap;
+}

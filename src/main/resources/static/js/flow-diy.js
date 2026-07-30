@@ -1,296 +1,599 @@
-//      ====== flow js 흐름 ======
-//       *---- 사이드바 ----*
-//   사이드바 메뉴 열고 닫기 (Node, Connection)
-
-//       *---- Node ----*
-// 사이드바에서 조건/행동 노드를 클릭하면 노드를 배치하는 모드로 바뀜
-//  >  모드가 바뀜과 동시에 커서에 클릭한 노드가 불투명하게 따라다님 (고스트 노드) <미리보기>
-//  >  배치하는 캔버스를 다시. 클릭하면 클릭된 해당 좌표에 실제 노드를 생성시킴
-//  +  노드를 클릭 후, 다른 노드를 사이드바에서 클릭하거나 esc 키를 입력할 경우, 고스트 노드가 없어지면서 배치모드 종룟
-
-//       *---- Connection ----*
-// 사이드바에서 참,거짓, null 노드를 클릭하면 커넥션을 배치하는 모드로 바뀜 (마우스 커서를 + 십자가 모양으로 바뀌게)
-// 캔버스에 이미 배치가 된 "노드"를 클릭하면 그 노드가 선의 시작점이 됨
+// ================================================================
+// [ 전체 흐름 (Flow) 개요 ]
+// ================================================================
 //
+// 이 스크립트는 크게 3가지 모드(currentMode)로 동작한다.
+//
+//   1) IDLE            : 아무것도 안 하는 기본 상태
+//                         - 배치된 노드 클릭 → 선택(selected)
+//                         - 선택된 노드 드래그 → 이동 (연결된 선도 같이 따라옴)
+//                         - 빈 캔버스 클릭 → 선택 해제
+//                         - ESC → 선택된 노드 + 그 노드에 연결된 선까지 전부 삭제
+//
+//   2) PLACING_MODE     : 사이드바에서 노드 아이템을 클릭한 직후의 상태
+//                         - 마우스를 따라다니는 "고스트 노드" 미리보기 표시
+//                         - 캔버스 클릭 시 그 위치에 실제 노드(div) 생성
+//                         - 노드 생성과 동시에 상하좌우 4개의 connection handle도 같이 붙임
+//                         - 노드 하나 배치하면 자동으로 다시 IDLE로 복귀 (1개씩만 배치됨)
+//
+//   3) CONNECTING_MODE  : 사이드바에서 커넥션 타입(true/false/null)을 클릭한 직후의 상태
+//                         - 노드의 handle을 mousedown → 임시 점선(tempLine) 그리기 시작
+//                         - 마우스를 움직이면 임시선의 끝점이 마우스를 따라다님
+//                         - 다른 노드 위에서 mouseup → 연결 완료 (점선 → 실선 전환)
+//                         - 빈 공간에서 mouseup → 연결 취소
+//
+// [ 모드 전환 트리거 정리 ]
+//   - 사이드바 노드 아이템 클릭      → IDLE / CONNECTING_MODE → PLACING_MODE
+//   - 사이드바 커넥션 타입 클릭      → IDLE → CONNECTING_MODE
+//   - 배치 완료 / 연결 완료         → 자동으로 IDLE 복귀
+//   - 배너의 취소 버튼 또는 ESC 키   → 진행 중이던 배치/연결을 취소하고 IDLE 복귀
+//
+// [ 데이터 흐름 (화면 요소 ↔ 저장용 데이터) ]
+//   - placedNodes       : 실제 DOM 노드(.placed-node)와 1:1 매칭되는 저장용 배열
+//                         (백엔드 저장 시 이 배열을 그대로 전송)
+//   - placedConnections : 실제 DOM 선(<line>)과 1:1 매칭되는 저장용 배열
+//   - nodeId는 신규 생성 시 음수(nextNodeId)로 임시 발급됨
+//     → 서버에 저장될 때 실제 DB의 양수 ID로 치환되는 구조를 염두에 둔 설계
+//
+//!! [ 흐름표에 없던 / 놓치기 쉬운 동작들 ]
+//!!   - '행동(action) → 조건(condition)' 순서로 선을 그으면 내부적으로
+//!!     시작/도착 노드를 강제로 뒤집어서 저장함 (실제 로직 흐름상 조건이 먼저 와야 하므로)
+//!!   - 완성된 선(completed-line)은 더블클릭하면 바로 삭제됨
+//!!   - ESC 키 하나로 "그리는 중인 선 취소" + "배치/연결 모드 취소" + "선택 노드 삭제"
+//!!     세 가지 역할을 모두 처리하고 있음 (상황별로 조건 분기)
+//!!   - 노드 삭제 시 연결된 선도 함께 삭제되지 않으면 "끊어진 선"이 남으므로
+//!!     반드시 노드 삭제 로직 안에서 관련 line들도 같이 지워줘야 함
+//!!   - 동일 노드 간 중복 커넥션 생성 방지 로직 적용
+//!!   - 노드 0개 일 때 캔버스 안내 힌트 문구 자동 복원
+//================================================================
 
 
-
-
-
-// ---------- DOM 요소 참조 ----------
-// 사이드바 토글 버튼들은 클래스(.toggle-btn)로 한 번에 잡기
-const toggleButtons = document.querySelectorAll('.toggle-btn');
-
-const canvasArea = document.getElementById('canvas-area');
-const canvasHint = document.getElementById('canvas-hint');
-const ghostNode = document.getElementById('ghost-node');
-const placementBanner = document.getElementById('placement-banner');
-const placementBannerText = document.getElementById('placement-banner-text');
-const placementCancelBtn = document.getElementById('placement-cancel');
-
-const roomId = document.body.dataset.roomId;
-
-// 배치된 노드 개수 카운터 (임시)
-let placedNodeCount = 0;
-
-// 캔버스에 배치된 노드/연결선 데이터를 담는 배열
-// 저장 버튼을 누르면 이 배열 그대로 서버로 전송.
-let placedNodes = [];
-let placedConnections = []; // TODO: 연결선(Connection) UI 구현 전까지는 비어있음
-
-
-// ---------- 사이드바 Node / Connection 토글 (접기·펼치기) ----------
-// 클릭하면 .open 클래스만 토글하고, 실제 배경색/화살표 회전/목록 표시-숨김은
-// flow-diy.css 쪽에서 아래 규칙으로 자동 처리
-toggleButtons.forEach((btn) => {
+//< ---------------- 사이드바 토글 버튼 ----------------
+//< 사이드바 내 카테고리(조건/행동 등) 아코디언을 열고 닫는 단순 UI 토글
+const toggleBtns = document.querySelectorAll('.toggle-btn');
+toggleBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         btn.classList.toggle('open');
     });
 });
 
 
-// ---------- 배치 모드 상태 관리 ----------
-// selectedType: 사이드바에서 어떤 노드를 클릭해서 "배치 대기 중"인지 저장.
-// null이면 배치 모드가 아님
-let selectedType = null;
+//< ---------------- 전역 상태(State) 변수 ----------------
+//< 현재 에디터 모드: IDLE(대기) / PLACING_MODE(노드 배치중) / CONNECTING_MODE(선 연결중)
+let currentMode = 'IDLE';
 
-// 사이드바에서 노드 항목(조건/행동 노드)을 클릭했을 때 배치 모드
-function enterPlacementMode(item) {
-    // 전에 선택된 항목 해제
-    document.querySelectorAll('.node-item.selecting').forEach(el => el.classList.remove('selecting'));
+//< 배치할 노드에 대한 정보 (사이드바에서 클릭한 노드 종류를 임시로 기억)
+let selectedNodeCategory = null;
+let selectedNodeType = null;
+let selectedNodeLabel = '';
 
-    // 지금 클릭한 항목
-    item.classList.add('selecting');
+const nodeItems = document.querySelectorAll('.node-item:not(.static)');
+const ghostNode = document.getElementById('ghost-node');
+const placementCancelBtn = document.getElementById('placement-cancel');
+const canvasArea = document.getElementById('canvas-area');
+const placementBanner = document.getElementById('placement-banner');
+const placementBannerText = document.getElementById('placement-banner-text');
+const canvasHint = document.getElementById('canvas-hint');
+const saveBtn = document.querySelector('.save-btn');
 
-    // data-category / data-type / data-label 값을 그대로 선택 상태로 저장
-    selectedType = {
-        category: item.dataset.category,
-        type: item.dataset.type,
-        label: item.dataset.label
-    };
+//< 커넥션(선) 관련 상태
+let selectedConnectionType = null;         //< 'true' / 'false' / 'null' 중 하나
+const connectionItems = document.querySelectorAll('.connection-item');
+const connectionSvg = document.getElementById('connection-svg');
 
-    // 캔버스 커서를 십자선으로 바꾸고, 상단 안내 배너에 안내 문구바꾸기
-    canvasArea.classList.add('placing');
-    placementBannerText.textContent = `"${selectedType.label}" 노드를 배치할 위치를 캔버스에서 클릭하세요`;
-    placementCancelBtn.style.display = 'inline-block';
+let isDrawing = false;      //< 현재 선을 긋고 있는 중인지 여부
+let startNode = null;       //< 선의 시작 노드
+let tempLine = null;        //< 그리는 중인 임시 SVG line 엘리먼트
 
-    // 마우스를 따라다니는 미리보기노드
-    ghostNode.textContent = selectedType.label;
-    ghostNode.className = 'ghost-node ' + selectedType.category;
-    ghostNode.style.display = 'block';
+//< 백엔드로 저장할 노드/커넥션 데이터 (실제 화면 요소와는 별개의 "장부" 역할)
+let placedNodes = [];
+let placedConnections = [];
+let nextNodeId = -1;        //< 신규 노드 임시 ID (음수로 발급 → 저장 시 서버가 실제 ID로 치환)
+let selectedPlacedNode = null;
+
+//< ---------------- 노드 드래그 관련 변수 ----------------
+let isDraggingNode = false;
+let draggedNode = null;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+
+//< ================================================================
+//< [ 함수 ] updateConnectedLines
+//< 특정 노드(nodeId)와 연결된 모든 선을 찾아서, 두 노드 사이 가장 가까운
+//< handle끼리 다시 이어주는 함수. 노드를 드래그할 때마다 호출되어
+//< 선이 노드를 실시간으로 "따라다니게" 만드는 핵심 함수.
+//< ================================================================
+function updateConnectedLines(nodeId) {
+    //< 이 노드를 source 또는 target으로 가진 모든 <line> 요소를 찾음
+    const connectedLines = document.querySelectorAll(
+        `line[data-source-id="${nodeId}"], line[data-target-id="${nodeId}"]`
+    );
+    const canvasRect = canvasArea.getBoundingClientRect();
+
+    connectedLines.forEach(line => {
+        const sId = line.getAttribute('data-source-id');
+        const tId = line.getAttribute('data-target-id');
+        const sNode = document.querySelector(`.placed-node[data-node-id="${sId}"]`);
+        const tNode = document.querySelector(`.placed-node[data-node-id="${tId}"]`);
+
+        if (sNode && tNode) {
+            const sRect = sNode.getBoundingClientRect();
+            const tRect = tNode.getBoundingClientRect();
+
+            const sCenterX = sRect.left + sRect.width / 2;
+            const sCenterY = sRect.top + sRect.height / 2;
+            const tCenterX = tRect.left + tRect.width / 2;
+            const tCenterY = tRect.top + tRect.height / 2;
+
+            //< 시작 노드의 4개 handle(top/bottom/left/right) 중
+            //< 상대 노드 중심과 가장 가까운 handle을 시작점으로 선택
+            let bestSX = 0, bestSY = 0, minSDist = Infinity;
+            sNode.querySelectorAll('.node-handle').forEach(handle => {
+                const hRect = handle.getBoundingClientRect();
+                const hX = hRect.left + hRect.width / 2;
+                const hY = hRect.top + hRect.height / 2;
+                const dist = Math.sqrt(Math.pow(hX - tCenterX, 2) + Math.pow(hY - tCenterY, 2));
+                if (dist < minSDist) {
+                    minSDist = dist;
+                    bestSX = hX - canvasRect.left;
+                    bestSY = hY - canvasRect.top;
+                }
+            });
+
+            //< 도착 노드도 동일한 방식으로 가장 가까운 handle을 끝점으로 선택
+            let bestTX = 0, bestTY = 0, minTDist = Infinity;
+            tNode.querySelectorAll('.node-handle').forEach(handle => {
+                const hRect = handle.getBoundingClientRect();
+                const hX = hRect.left + hRect.width / 2;
+                const hY = hRect.top + hRect.height / 2;
+                const dist = Math.sqrt(Math.pow(hX - sCenterX, 2) + Math.pow(hY - sCenterY, 2));
+                if (dist < minTDist) {
+                    minTDist = dist;
+                    bestTX = hX - canvasRect.left;
+                    bestTY = hY - canvasRect.top;
+                }
+            });
+
+            line.setAttribute('x1', bestSX);
+            line.setAttribute('y1', bestSY);
+            line.setAttribute('x2', bestTX);
+            line.setAttribute('y2', bestTY);
+        }
+    });
 }
 
-// 배치 모드를 취소하고 원래 상태로 복귀 (ESC, 취소 버튼, 같은 항목 다시 클릭하기)
-function exitPlacementMode() {
-    document.querySelectorAll('.node-item.selecting').forEach(el => el.classList.remove('selecting'));
-    selectedType = null;
 
-    canvasArea.classList.remove('placing');
-    placementBannerText.textContent = '배치할 노드 종류를 선택하세요';
-    placementCancelBtn.style.display = 'none';
+//< ================================================================
+//< [ 블록 ] 노드 배치 (Placing) 로직
+//< 사이드바에서 노드를 고른 뒤 → 캔버스를 클릭하면 실제 노드가 생성되는 흐름
+//< ================================================================
 
-    ghostNode.style.display = 'none';
-}
-
-// 사이드바의 노드 항목들에 클릭 이벤트 추가하기
-document.querySelectorAll('.node-item:not(.static)').forEach(item => {
+//< 사이드바에서 노드 아이템 클릭 → "고스트 노드(미리보기)" 모드 진입
+nodeItems.forEach( item => {
     item.addEventListener('click', () => {
-        // 이미 선택한 항목 다시 클릭하면 배치 모드 취소됨
-        if (item.classList.contains('selecting')) {
-            exitPlacementMode();
-            return;
-        }
-        enterPlacementMode(item);
+        currentMode = 'PLACING_MODE';
+        selectedNodeCategory = item.dataset.category;
+        selectedNodeType = item.dataset.type;
+        selectedNodeLabel = item.dataset.label;
+
+        ghostNode.textContent = selectedNodeLabel;
+        ghostNode.className = `ghost-node ${selectedNodeCategory}`;
+        ghostNode.style.display = 'block';
+        placementBanner.style.display = 'flex';
+
+        //< 다른 사이드바 아이템에 남아있던 선택 표시(selecting) 초기화 후 현재 것만 표시
+        nodeItems.forEach(node => node.classList.remove('selecting'));
+        connectionItems.forEach(conn => conn.classList.remove('selecting'));
+        item.classList.add('selecting');
     });
 });
 
-// 상단 배너의 "취소(ESC)" 버튼
-placementCancelBtn.addEventListener('click', exitPlacementMode);
-
-// ESC 키로도 배치 모드 취소됨
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && selectedType) {
-        exitPlacementMode();
-    }
-});
-
-// 배치 모드 중에는 고스트 노드가 실제 마우스 커서를 따라다니게하기
+//< 고스트 노드가 마우스 커서를 따라다니게 처리
 document.addEventListener('mousemove', (e) => {
-    if (!selectedType) return;
-    ghostNode.style.left = e.clientX + 'px';
-    ghostNode.style.top = e.clientY + 'px';
+    if (currentMode === 'PLACING_MODE') {
+        ghostNode.style.left = e.clientX + 'px';
+        ghostNode.style.top = e.clientY + 'px';
+    }
 });
 
-
-// ---------- 캔버스 클릭 시 실제 노드 배치 ----------
+//< 캔버스 클릭 시: 현재 모드에 따라 "노드 선택 해제" 또는 "노드 생성"을 수행
 canvasArea.addEventListener('click', (e) => {
-    if (!selectedType) return;
-    // 이미 배치된 노드를 클릭한 경우(드래그/삭제 목적)는 새로 배치하지 않음
-    if (e.target.closest('.placed-node')) return;
 
-    // 캔버스 기준 좌표로 바꾸기
-    //write 이게 왜 필요하지? DB에 저장 하기 위해?
-    const rect = canvasArea.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    createPlacedNode(selectedType, x, y);
-    exitPlacementMode();
-});
-
-// 캔버스 위에 실제 노드 생성하고 placedNodes에 데이터 추가
-function createPlacedNode(nodeInfo, x, y) {
-    placedNodeCount++;
-
-    // 첫 노드가 배치되면 위 배너에 노드 없다는 문구 없애기
-    if (canvasHint) {
-        canvasHint.remove();
+    //< IDLE 모드에서 노드가 아닌 빈 공간을 클릭하면 선택된 노드 해제
+    if (currentMode === 'IDLE') {
+        if (!e.target.closest('.placed-node') && selectedPlacedNode) {
+            selectedPlacedNode.classList.remove('selected');
+            selectedPlacedNode = null;
+        }
     }
 
-    const node = document.createElement('div');
-    node.className = 'placed-node ' + nodeInfo.category; // condition / action 색상 구분
-    node.style.left = x + 'px';
-    node.style.top = y + 'px';
+    //< PLACING_MODE일 때 클릭한 위치에 실제 노드(div)를 생성
+    if (currentMode === 'PLACING_MODE') {
+        const newNode = document.createElement('div');
+        newNode.className = `placed-node ${selectedNodeCategory}`
+        newNode.textContent = selectedNodeLabel;
 
-    // 서버에 저장하기 전까지 임시로 쓸 프론트 전용 id
-    const tempId = 'temp-' + placedNodeCount;
-    node.dataset.id = tempId;
-    node.dataset.category = nodeInfo.category;
-    node.dataset.type = nodeInfo.type;
+        const canvasRect = canvasArea.getBoundingClientRect();
+        const x = e.clientX - canvasRect.left;
+        const y = e.clientY - canvasRect.top;
 
-    node.innerHTML = `
-        ${nodeInfo.label}
-        <div class="tooltip">${nodeInfo.category === 'condition' ? '조건 노드' : '행동 노드'} · ${nodeInfo.type}</div>
-    `;
+        newNode.style.left = x + 'px';
+        newNode.style.top = y + 'px';
+        newNode.dataset.category = selectedNodeCategory;
+        newNode.setAttribute('data-node-id', nextNodeId);
+        newNode.dataset.nodeId = nextNodeId;
 
-    canvasArea.appendChild(node);
-    makeNodeDraggable(node);
+        //< 백엔드 저장용 노드 데이터 등록 (임시 음수 ID 발급)
+        const nodeData = {
+            tempNodeId: nextNodeId,
+            nodeName: selectedNodeLabel,
+            nodeType: selectedNodeType.toUpperCase(),
+            cooldownSec: 60,
+            nodeConfig: { x: x, y: y }
+        };
+        placedNodes.push(nodeData);
+        nextNodeId--;
 
-    // 저장 시 서버로 보낼 데이터 추가
-    placedNodes.push({
-        tempId: tempId,
-        category: nodeInfo.category,
-        type: nodeInfo.type,
-        x: x,
-        y: y
-    });
-}
-
-
-// ---------- 배치된 노드 드래그 이동 + 더블클릭 삭제 ----------
-function makeNodeDraggable(node) {
-    // 마우스 드래그 위치 이동
-    node.addEventListener('mousedown', (e) => {
-        e.stopPropagation(); // 캔버스 클릭 이벤트(=새로운노드0) 번지는 것 방지
-
-        const startX = e.clientX;
-        const startY = e.clientY;
-        const startLeft = parseFloat(node.style.left);
-        const startTop = parseFloat(node.style.top);
-
-        function onMouseMove(e) {
-            node.style.left = (startLeft + (e.clientX - startX)) + 'px';
-            node.style.top = (startTop + (e.clientY - startY)) + 'px';
-        }
-
-        function onMouseUp() {
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-
-            // 드래그가 끝난 최종 좌표를 placedNodes 데이터
-            const target = placedNodes.find(n => n.tempId === node.dataset.id);
-            if (target) {
-                target.x = parseFloat(node.style.left);
-                target.y = parseFloat(node.style.top);
+        //< 노드 클릭 시 선택 처리 (IDLE 모드에서만 동작 → 배치/연결 중엔 무시)
+        newNode.addEventListener('click', (evt) => {
+            if (currentMode === 'IDLE') {
+                evt.stopPropagation();
+                if (selectedPlacedNode) {
+                    selectedPlacedNode.classList.remove('selected');
+                }
+                selectedPlacedNode = newNode;
+                newNode.classList.add('selected');
             }
-        }
-
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-    });
-
-    // 더블클릭하면 해당 노드 삭제
-    node.addEventListener('dblclick', (e) => {
-        e.stopPropagation();
-
-        placedNodes = placedNodes.filter(n => n.tempId !== node.dataset.id);
-
-        // TODO: 이 노드와 연결된 connection들도 같이 정리해줘야 함
-        // (연결선 UI가 아직 없어서 지금은 생략, 나중에 connection 구현 시 추가 필요)
-
-        node.remove();
-    });
-}
-
-
-
-// ---------- 플로우 저장 (백엔드 REST API 호출) ----------
-async function saveFlow() {
-    const flowNameInput = document.getElementById('flow-name-input');
-    const flowDescInput = document.getElementById('flow-desc-input');
-
-    // 아직 HTML에 이름/설명 입력 필드가 없다면 null이 반환되므로 방어 처리
-    const flowName = flowNameInput ? flowNameInput.value : '';
-    const description = flowDescInput ? flowDescInput.value : '';
-
-    // 필수값 검증 (백엔드 @NotBlank와 맞춰서 프론트에서도 최소한 체크)
-    if (!flowName || flowName.trim() === '') {
-        alert('플로우 이름을 입력해주세요.');
-        return;
-    }
-    if (placedNodes.length === 0) {
-        alert('노드를 하나 이상 배치해주세요.');
-        return;
-    }
-
-    // FlowCreateRequest 스펙에 맞춰 요청 body 구성
-    const requestBody = {
-        flowName: flowName,
-        description: description,
-        isActive: true,          // TODO: 활성화 여부 토글 UI 생기면 그 값으로 교체
-        schedules: [],           // TODO: 스케줄 UI 아직 없어서 일단 빈 배열
-        nodes: placedNodes.map(n => ({
-            category: n.category,
-            type: n.type,
-            x: n.x,
-            y: n.y
-            // tempId는 서버 스펙에 없는 필드라 여기서는 빼고 보냄
-        })),
-        connections: placedConnections
-    };
-
-    try {
-        const res = await fetch(`/api/rooms/${roomId}/flows`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestBody)
         });
 
-        if (!res.ok) {
-            // 서버가 400/500 등 에러를 줬을 때
-            console.error('플로우 저장 실패, status:', res.status);
-            alert('플로우 저장에 실패했어요. 잠시 후 다시 시도해주세요.');
-            return;
+        //< 노드 드래그 시작 (mousedown 시점에 오프셋 계산)
+        newNode.addEventListener('mousedown', (evt) => {
+            //!! node-handle 위에서 mousedown 하면 "커넥션 그리기"와 동작이 겹치므로
+            //!! 여기서는 handle 클릭인 경우 드래그 로직을 타지 않도록 제외 처리
+            if (evt.target.classList.contains('node-handle')) return;
+
+            if (currentMode === 'IDLE') {
+                evt.preventDefault(); // 브라우저 텍스트 선택(블록 지정) 방지
+                evt.stopPropagation();
+
+                isDraggingNode = true;
+                draggedNode = newNode;
+
+                const cRect = canvasArea.getBoundingClientRect();
+                const mouseX = evt.clientX - cRect.left;
+                const mouseY = evt.clientY - cRect.top;
+                const nodeCenterX = parseFloat(newNode.style.left);
+                const nodeCenterY = parseFloat(newNode.style.top);
+
+                //< 마우스 클릭 지점과 노드 좌표 사이의 오프셋을 미리 저장해둬야
+                //< 드래그 시 노드가 마우스 위치로 "순간이동"하지 않고 자연스럽게 따라옴
+                dragOffsetX = mouseX - nodeCenterX;
+                dragOffsetY = mouseY - nodeCenterY;
+
+                newNode.style.cursor = 'grabbing';
+            }
+        });
+
+        //< 노드 상하좌우 4방향에 커넥션 연결용 handle 생성
+        const handlePositions = ['top', 'bottom', 'left', 'right'];
+
+        handlePositions.forEach(pos => {
+            const handle = document.createElement('div');
+            handle.className = `node-handle ${pos}`;
+
+            //< handle을 mousedown하면 커넥션(선) 그리기 시작 (CONNECTING_MODE 한정)
+            handle.addEventListener('mousedown', (evt) => {
+                if (currentMode === 'CONNECTING_MODE' && !isDrawing) {
+                    evt.stopPropagation();
+                    isDrawing = true;
+                    startNode = newNode;
+
+                    tempLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    let lineColor = '#B0B4BA';
+                    let arrowId = '';
+
+                    //< 선택된 커넥션 타입(true/false/null)에 따라 선 색상 + 화살표 마커 결정
+                    if (selectedConnectionType === 'true') { lineColor = '#33C09C'; arrowId = 'url(#arrow-true)'; }
+                    else if (selectedConnectionType === 'false') { lineColor = '#EA5C2A'; arrowId = 'url(#arrow-false)'; }
+                    else if (selectedConnectionType === 'null') { lineColor = '#E7C21F'; arrowId = 'url(#arrow-null)'; }
+
+                    tempLine.setAttribute('stroke', lineColor);
+                    tempLine.setAttribute('stroke-width', '3');
+                    tempLine.setAttribute('stroke-dasharray', '5,5');   //< 그리는 중임을 표시하는 점선
+                    tempLine.setAttribute('marker-end', arrowId);
+
+                    //< 선의 시작점 = 클릭한 handle의 중심 좌표
+                    const handleRect = handle.getBoundingClientRect();
+                    const canvasR = canvasArea.getBoundingClientRect();
+                    const startX = handleRect.left + (handleRect.width / 2) - canvasR.left;
+                    const startY = handleRect.top + (handleRect.height / 2) - canvasR.top;
+
+                    tempLine.setAttribute('x1', startX);
+                    tempLine.setAttribute('y1', startY);
+                    tempLine.setAttribute('x2', startX);
+                    tempLine.setAttribute('y2', startY);
+
+                    connectionSvg.appendChild(tempLine);
+                }
+            })
+            newNode.appendChild(handle);
+        });
+
+        canvasArea.appendChild(newNode);
+
+        //< 노드 하나 배치 완료 → 자동으로 IDLE 모드로 복귀 (연속 배치는 지원 안 함)
+        currentMode = 'IDLE';
+        ghostNode.style.display = 'none';
+        canvasHint.style.display = 'none';
+        placementBanner.style.display = 'none';
+        nodeItems.forEach(node => node.classList.remove('selecting'));
+        connectionItems.forEach(conn => conn.classList.remove('selecting'));
+    }
+});
+
+
+//< ================================================================
+//< [ 블록 ] 모드 취소 (배치/연결 취소) 로직
+//< 배너의 취소 버튼과 ESC 키, 두 가지 경로로 진입 가능
+//< ================================================================
+
+//< 배너의 "취소" 버튼 클릭 시
+placementCancelBtn.addEventListener('click', () => {
+    //< 선을 긋는 도중이었다면 임시 선부터 제거
+    if (isDrawing && tempLine) {
+        tempLine.remove();
+        isDrawing = false;
+        startNode = null;
+        tempLine = null;
+    }
+
+    if (currentMode === 'PLACING_MODE' || currentMode === 'CONNECTING_MODE') {
+        currentMode = 'IDLE';
+        ghostNode.style.display = 'none';
+        placementBanner.style.display = 'none';
+        nodeItems.forEach(node => node.classList.remove('selecting'));
+        connectionItems.forEach(conn => conn.classList.remove('selecting'));
+        canvasArea.classList.remove('placing');
+    }
+});
+
+//< ESC 키: 취소 버튼과 동일한 동작 + "선택된 노드 삭제" 기능까지 한 번에 처리
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+
+        //< 1) 선을 긋는 중이었다면 취소
+        if (isDrawing && tempLine) {
+            tempLine.remove();
+            isDrawing = false;
+            startNode = null;
+            tempLine = null;
         }
 
-        const data = await res.json(); // 201 CREATED { flowId }
-        console.log('생성된 flowId:', data.flowId);
+        //< 2) 배치/연결 모드였다면 IDLE로 복귀
+        if (currentMode === 'PLACING_MODE' || currentMode === 'CONNECTING_MODE') {
+            currentMode = 'IDLE';
+            ghostNode.style.display = 'none';
+            placementBanner.style.display = 'none';
+            nodeItems.forEach(node => node.classList.remove('selecting'));
+            connectionItems.forEach(conn => conn.classList.remove('selecting'));
+            canvasArea.classList.remove('placing');
+        }
 
-        // 저장 성공 후 상세 페이지로 이동 (실제 라우팅 경로에 맞게 수정 필요)
-        window.location.href = `/rooms/${roomId}/flows/${data.flowId}`;
+        //< 3) IDLE 상태에서 노드가 선택돼 있었다면 → 노드 + 관련 커넥션까지 함께 삭제
+        if (currentMode === 'IDLE' && selectedPlacedNode) {
+            const nodeIdToDelete = parseInt(selectedPlacedNode.dataset.nodeId, 10);
 
-    } catch (err) {
-        // 네트워크 에러 등
-        console.error('플로우 저장 중 오류:', err);
-        alert('네트워크 오류가 발생했어요.');
+            selectedPlacedNode.remove();
+            placedNodes = placedNodes.filter(node => node.tempNodeId !== nodeIdToDelete);
+
+            //!! 노드를 지울 때 그 노드에 연결된 선(들)도 반드시 같이 지워야
+            //!! "허공에 붕 뜬 선"이 남지 않음 → 화면 요소 + 저장용 데이터 둘 다 정리
+            const connectedLines = document.querySelectorAll(
+                `line[data-source-id="${nodeIdToDelete}"], line[data-target-id="${nodeIdToDelete}"]`
+            );
+            connectedLines.forEach(line => line.remove());
+
+            placedConnections = placedConnections.filter(conn =>
+                conn.sourceNodeId !== nodeIdToDelete && conn.targetNodeId !== nodeIdToDelete
+            );
+            selectedPlacedNode = null;
+
+            //!! 노드를 삭제하여 배치된 노드가 0개가 되면 캔버스 힌트 문구 복원
+            if (placedNodes.length === 0) {
+                canvasHint.style.display = 'block';
+            }
+        }
     }
-}
+});
 
-// 사이드바 "저장" 버튼에 이벤트 연결
-// 지금 보내주신 html의 저장 버튼(<button class="save-btn">저장</button>)엔 id가 없어서
-// 아래 코드는 버튼을 못 찾고 조용히 넘어감. 실제로 저장 기능을 붙이려면
-// <button class="save-btn" id="save-flow-btn">저장</button> 처럼 id를 추가해야 함.
-const saveFlowBtn = document.getElementById('save-flow-btn');
-if (saveFlowBtn) {
-    saveFlowBtn.addEventListener('click', saveFlow);
+
+//< ================================================================
+//< [ 블록 ] 커넥션(선 연결) 모드 진입 로직
+//< 사이드바에서 true/false/null 커넥션 타입을 클릭하면 CONNECTING_MODE로 전환
+//< ================================================================
+connectionItems.forEach(item => {
+    item.addEventListener('click', () => {
+        currentMode = 'CONNECTING_MODE';
+        selectedConnectionType = item.dataset.type;
+        placementBannerText.textContent = '연결할 시작 노드를 클릭하세요. (취소 : ESC)';
+        placementBanner.style.display = 'flex';
+        canvasArea.classList.add('placing');
+        nodeItems.forEach(node => node.classList.remove('selecting'));
+        connectionItems.forEach(conn => conn.classList.remove('selecting'));
+        item.classList.add('selecting');
+    });
+});
+
+
+//< ================================================================
+//< [ 블록 ] 실시간 마우스 이동 처리
+//< (1) 선을 긋는 중이면 임시선의 끝점을 마우스 위치로 갱신
+//< (2) 노드를 드래그하는 중이면 노드 위치 + 연결된 선을 함께 갱신
+//< 하나의 mousemove 리스너에서 두 기능을 같이 처리하고 있음 (동시에 발생 X)
+//< ================================================================
+document.addEventListener('mousemove', (e) => {
+
+    //< 1. 선 그리기 중 → 임시선의 끝점(x2, y2)만 마우스 좌표로 갱신
+    if (isDrawing && tempLine)  {
+        const canvasRect = canvasArea.getBoundingClientRect();
+        const currentX = e.clientX - canvasRect.left;
+        const currentY = e.clientY - canvasRect.top;
+        tempLine.setAttribute('x2', currentX);
+        tempLine.setAttribute('y2', currentY);
+    }
+
+    //< 2. 노드 드래그 중 → 노드 위치를 마우스 좌표 - 오프셋으로 갱신
+    if (isDraggingNode && draggedNode) {
+        const canvasRect = canvasArea.getBoundingClientRect();
+        const mouseX = e.clientX - canvasRect.left;
+        const mouseY = e.clientY - canvasRect.top;
+
+        draggedNode.style.left = (mouseX - dragOffsetX) + 'px';
+        draggedNode.style.top = (mouseY - dragOffsetY) + 'px';
+
+        //< 노드가 움직일 때마다 연결된 선도 실시간으로 같이 따라오게 처리
+        updateConnectedLines(draggedNode.dataset.nodeId);
+    }
+});
+
+
+//< ================================================================
+//< [ 블록 ] 마우스 뗄 때 (노드 드래그 종료) 처리
+//< 드래그가 끝난 최종 좌표를 저장용 데이터(placedNodes)에 반영
+//< ================================================================
+document.addEventListener('mouseup', () => {
+    if (isDraggingNode && draggedNode) {
+        draggedNode.style.cursor = 'grab';
+
+        const nodeId = parseInt(draggedNode.dataset.nodeId, 10);
+
+        //< 드래그가 끝난 최종 위치를 "장부(placedNodes)"에도 반영
+        //< → 나중에 백엔드로 저장할 때 이 값을 그대로 사용
+        const nodeData = placedNodes.find(n => n.tempNodeId === nodeId);
+        if (nodeData) {
+            nodeData.nodeConfig.x = parseFloat(draggedNode.style.left);
+            nodeData.nodeConfig.y = parseFloat(draggedNode.style.top);
+        }
+
+        isDraggingNode = false;
+        draggedNode = null;
+    }
+});
+
+
+//< ================================================================
+//< [ 블록 ] 선 긋기 완료 처리 (캔버스 위에서 mouseup 될 때)
+//< 노드의 handle에서 시작해서 다른 노드 위로 드래그 앤 드롭하면 연결이 완성됨
+//< ================================================================
+canvasArea.addEventListener('mouseup', (e) => {
+    if(isDrawing) {
+        let targetNode = e.target.closest('.placed-node');
+
+        //< 시작 노드와 다른 노드 위에서 손을 뗐을 때만 "연결 성공"으로 처리
+        if (targetNode && startNode !== targetNode) {
+
+            const startCategory = startNode.dataset.category;
+            const targetCategory = targetNode.dataset.category;
+
+            //!! 사용자가 "행동(action) 노드 → 조건(condition) 노드" 순서로 선을 그었더라도
+            //!! 실제 로직 흐름상은 항상 "조건 → 행동" 순서가 맞아야 하므로
+            //!! 여기서 시작/도착 노드를 강제로 뒤집어서 저장함
+            if (startCategory === 'action' && targetCategory === 'condition') {
+                const tempNode = startNode;
+                startNode = targetNode;
+                targetNode = tempNode;
+            }
+
+            const finalSourceId = parseInt(startNode.dataset.nodeId, 10);
+            const finalTargetId = parseInt(targetNode.dataset.nodeId, 10);
+
+            //!! [중복 연결 방지] 이미 두 노드 사이에 연결이 존재하는지 검사
+            const isAlreadyConnected = placedConnections.some(conn =>
+                conn.sourceNodeId === finalSourceId && conn.targetNodeId === finalTargetId
+            );
+
+            if (isAlreadyConnected) {
+                tempLine.remove();
+                isDrawing = false;
+                startNode = null;
+                tempLine = null;
+                return;
+            }
+
+            //< updateConnectedLines 함수를 재사용하기 위해
+            //< 먼저 data-source-id / data-target-id 속성을 심어놓음
+            tempLine.setAttribute('data-source-id', finalSourceId);
+            tempLine.setAttribute('data-target-id', finalTargetId);
+
+            //< 가장 가까운 handle 좌표로 선을 재배치 (노드에 딱 붙게)
+            updateConnectedLines(finalSourceId);
+
+            //< 점선 → 실선으로 전환해서 "연결 완료" 상태를 시각적으로 표시
+            tempLine.setAttribute('stroke-dasharray', '0');
+            tempLine.classList.add('completed-line');
+
+            //< 백엔드 저장용 커넥션 데이터 등록
+            const connectionData = {
+                sourceNodeId: finalSourceId,
+                targetNodeId: finalTargetId,
+                conditionResult: selectedConnectionType.toUpperCase()
+            };
+            placedConnections.push(connectionData);
+
+            //!! 완성된 선은 더블클릭하면 바로 삭제됨 (별도 삭제 버튼 없이 이 방식만 존재)
+            const currentLine = tempLine;
+            currentLine.addEventListener('dblclick', (evt) => {
+                evt.stopPropagation();
+                currentLine.remove();
+                placedConnections = placedConnections.filter(conn =>
+                    !(conn.sourceNodeId === finalSourceId && conn.targetNodeId === finalTargetId)
+                );
+            });
+
+            //< 연결 완료 → 그리기 관련 상태값 전부 초기화하고 IDLE로 복귀
+            isDrawing = false;
+            startNode = null;
+            tempLine = null;
+            currentMode = 'IDLE';
+            placementBanner.style.display = 'none';
+            canvasArea.classList.remove('placing');
+            nodeItems.forEach(node => node.classList.remove('selecting'));
+            connectionItems.forEach(conn => conn.classList.remove('selecting'));
+        }
+        //< 노드가 아닌 빈 공간에서 손을 뗐다면 → 연결 취소, 임시선 제거
+        else if (!targetNode) {
+            tempLine.remove();
+            isDrawing = false;
+            startNode = null;
+            tempLine = null;
+        }
+    }
+});
+
+
+//< ================================================================
+//< [ 블록 ] 플로우 저장 (Save) 버튼 클릭 처리
+//< 백엔드가 지정한 JSON 생성 포맷 그대로 묶어서 전송 또는 출력
+//< ================================================================
+if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+        const flowPayload = {
+            flowName: "CO2 임계치 알림 플로우",
+            description: "CO2가 기준치 이상이면 텔레그램 알림 전송",
+            isActive: true,
+            nodes: placedNodes,
+            connections: placedConnections
+        };
+
+        console.log("=== [백엔드 전송용 JSON Payload] ===");
+        console.log(JSON.stringify(flowPayload, null, 2));
+
+        // API 연동 시 fetch 예시:
+        // fetch('/api/flows', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(flowPayload)
+        // });
+    });
 }

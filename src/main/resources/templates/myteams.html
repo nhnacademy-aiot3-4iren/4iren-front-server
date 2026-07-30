@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Teams - Re I New</title>
+
+  <!-- 기존 본문 CSS -->
+  <link rel="stylesheet" th:href="@{/css/myteams.css}">
+  <!-- 분리된 헤더/사이드바 전용 CSS 추가 -->
+  <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/footer.css}">
+</head>
+<body>
+
+<!-- 전체 레이아웃 래퍼 -->
+<div class="layout">
+
+  <!-- ============ 분리된 사이드바 적용 ============ -->
+  <div th:replace="~{/basic/sidebar :: sidebar}"></div>
+
+  <!-- ============ 오른쪽 전체(헤더 + 컨텐츠) ============ -->
+  <div class="main-wrap">
+
+    <!-- ============ 분리된 헤더 적용 ============ -->
+    <div th:replace="~{/basic/header :: header}"></div>
+
+    <!-- ============ 본문 내용 ============ -->
+    <div class="main-content">
+      <h2>My Teams</h2>
+
+      <div class="empty-state" id="emptyState">
+        <p>팀이 존재하지 않습니다...</p>
+      </div>
+
+      <!-- 새로 생성된 팀 카드가 들어갈 하얀색 바탕 박스 (처음엔 숨김) -->
+      <div class="team-list-container" id="teamListContainer" style="display: none;">
+        <!-- JS를 통해 여기에 팀 카드 HTML이 들어옵니다 -->
+      </div>
+
+      <!-- 우측 하단 팝업 열기 버튼 -->
+      <button class="open-modal-btn" id="openBtn">+ Team 생성</button>
+
+      <!-- ========================================== -->
+      <!-- 모달 팝업 영역 -->
+      <!-- ========================================== -->
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-folder-wrapper">
+          <div class="modal-tab">Team 생성</div>
+          <div class="modal-content">
+            <div class="form-group">
+              <label>Team Name</label>
+              <!-- JS에서 입력값을 가져올 수 있게 id="teamDescInput" 추가 1-->
+              <input type="text" id="teamNameInput" placeholder="ex ) 조선대 NHN 아카데미">
+            </div>
+            <div class="form-group">
+              <label>Team Description</label>
+          <!-- JS에서 입력값을 가져올 수 있게 id="teamDescInput" 추가 2-->
+              <textarea id="teamDescInput" placeholder="팀에 관련된 간단한 내용을 적어주세요.."></textarea>
+            </div>
+            <div class="btn-wrap">
+              <button class="submit-btn" id="closeBtn">Create</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ========================================== -->
+
+      <!-- ========================================== -->
+      <!--  팀 초대 코드 생성 팝업 -->
+      <!-- ========================================== -->
+      <div class="modal-overlay" id="inviteCodeModal">
+        <div class="invite-modal-content">
+        <!-- js로 팀이름 바뀍[         -->
+          <h3 class="invite-title">&lt; <span id="inviteTeamName">팀 이름</span> &gt; 의 Team Code</h3>
+
+          <p class="invite-warning">
+            초대코드는 지금 화면을 벗어나면 다시 확인할 수 없습니다.<br>
+            안전한 곳에 즉시 복사해 두세요. <span class="text-red">(재확인 불가)</span>
+          </p>
+
+          <!-- 팀코드 표시  & 복사 영역-->
+          <div class="code-box-container">
+            <div class="code-box-header">
+              <span class="code-label">Team Code</span>
+              <button class="copy-btn" id="copyCodeBtn">복사</button>
+            </div>
+            <!-- 8개칸 -->
+            <div class="code-squares" id="codeSquaresContainer">
+              <div class="code-square"></div>
+              <div class="code-square"></div>
+              <div class="code-square"></div>
+              <div class="code-square"></div>
+              <div class="code-square"></div>
+              <div class="code-square"></div>
+              <div class="code-square"></div>
+              <div class="code-square"></div>
+            </div>
+          </div>
+
+          <!-- 확인 닫기 버튼 -->
+          <div class="invite-action-btns">
+            <button class="btn-blue" id="inviteConfirmBtn">확인</button>
+            <button class="btn-gray" id="inviteCloseBtn">창 닫기</button>
+          </div>
+        </div>
+      </div>
+      <!-- ========================================== -->
+
+    </div>
+
+  </div>
+</div>
+
+<!-- 푸터 (Thymeleaf) -->
+<div th:replace="~{/basic/footer :: footer}"></div>
+
+<script src="/js/myteams.js"></script>
+</body>
+</html>

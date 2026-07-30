@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<body>
+<!--
+    다른 html 맨 밑에
+  <div th:replace="~{footer :: footer}"></div> 라고 적기
+
+  주의: 이 fragment를 쓰는 페이지의 <head> 안에 footer.css를 링크해야 함
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+-->
+<footer th:fragment="footer" class="site-footer">
+    <div class="footer-inner">
+        <p class="footer-copyright">
+            본 저작물은 기상청에서 &lsquo;2026년&rsquo; 작성하여 공공누리 제1유형으로 개방한
+            &lsquo;단기예보 조회서비스&rsquo;(작성자: 기상청)를 이용하였으며,<br>
+            해당 저작물은 기상청 API허브(apihub.kma.go.kr)에서 무료로 다운로드할 수 있습니다.
+        </p>
+        <span class="footer-brand">4iren</span>
+    </div>
+</footer>
+
+</body>
+</html>

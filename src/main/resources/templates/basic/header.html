@@ -1,0 +1,33 @@
+
+<!-- !! header.html-->
+<!-- 사용법: <div th:replace="~{header :: header}"></div> -->
+
+
+<header xmlns:th="http://www.thymeleaf.org" th:fragment="header" class="header">
+  <h1 class="page-title">My Page</h1>
+
+  <div class="search-bar">
+    <img src="/photo/icon/search-icon.png" alt="search" id="search-icon">
+    <label>
+      <input type="text" placeholder="Search here...">
+    </label>
+  </div>
+
+  <div class="header-right">
+    <!-- 알림 벨 -->
+    <button class="icon-btn">
+      <img src="/photo/icon/alaram-icon.png" alt="notification" id="alaram-icon">
+      <span class="badge"></span>
+    </button>
+
+    <!-- 유저 이름 / 역할 -->
+    <div class="user-info">
+      <span class="user-name">Jae na</span>
+      <span class="user-role">Admin</span>
+    </div>
+
+    <!-- 토글 화살표: user-info의 자식이 아니라 형제로 분리
+         -> header-right의 넓은 gap을 그대로 받아서 안 붙어보임 -->
+    <img src="/photo/icon/toggle-icon.png" alt="toggle" class="user-toggle">
+  </div>
+</header>
