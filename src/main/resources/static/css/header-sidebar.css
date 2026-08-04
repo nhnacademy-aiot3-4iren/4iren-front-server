@@ -1,9 +1,51 @@
 /* ================================================================
    header-sidebar.css
-   header.html / sidebar.html fragment 전용 스타일
+   모든 페이지 공통: header.html / sidebar.html fragment + 전체 레이아웃 전용
+   (팀/모달/텔레그램 등 페이지별 내용은 절대 여기 넣지 않기)
    ================================================================ */
 
+/* 기본 초기화 */
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #fcfcfc;
+}
+
+/* ---------------- 전체 레이아웃 (사이드바 + 본문) ---------------- */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-wrap {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* flex 안에서 내용 넘칠 때 레이아웃 깨지는 것 방지 */
+}
+
+.main-content {
+    padding: 40px;
+    flex-grow: 1;
+    position: relative;
+}
+
 /* ---------------- 사이드바 ---------------- */
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-logo {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
 .sidebar-logo img {
     width: 140px;
     height: auto;
@@ -34,8 +76,7 @@
     transition: filter 0.15s;
 }
 
-/* flow-diy의 .toggle-btn.open과 동일한 방식:
-   호버든 선택(active)이든 배경 주황 + 아이콘/글씨 흰색으로 통일 */
+/* 사이드바 활성화(선택된 메뉴) + 호버 - 배경 주황 + 아이콘/글씨 흰색 */
 .nav-item:hover,
 .nav-item.active {
     background-color: #FF9800;
@@ -47,7 +88,21 @@
     filter: brightness(0) invert(1);
 }
 
-/* ---------------- 헤더 우측 ---------------- */
+/* ---------------- 상단 헤더 ---------------- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #ffffff;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
 
 .search-bar {
     background-color: #f5f5f5;
@@ -73,7 +128,31 @@
     gap: 35px;
 }
 
+/* 알림 벨 버튼 */
+.icon-btn {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
 
+.icon-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: #ff4d4f;
+    border-radius: 50%;
+}
+
+/* 유저 정보 영역 (우측 상단 프로필) - user-name/user-role이 감싸는 div 없이 바로 형제로 있음 */
 .user-info {
     display: flex;
     flex-direction: column;
@@ -94,6 +173,6 @@
 }
 
 .user-toggle {
-    width: 8px;
-    height: 6px;
+    width: 14px;
+    height: 14px;
 }
