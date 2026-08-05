@@ -165,14 +165,15 @@
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: new URLSearchParams({ message: messageToHappen })
             });
 
             if (!response.ok) throw new Error('Network response was not ok');
 
-            const reply = await response.text();
+            const data = await response.json();
+            const reply = data.answer;
             appendMessage(reply, 'bot');
 
         } catch (error) {
