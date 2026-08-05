@@ -2,10 +2,17 @@ spring:
   application:
     name: 4iren-front
 
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 3000
+            read-timeout: 60000
+
 logging:
   level:
-    root: error
-
+    root: info
 
 eureka:
   client:
@@ -15,5 +22,3 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
-server:
-  port: 8888
