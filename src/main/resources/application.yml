@@ -8,7 +8,7 @@ spring:
         config:
           default:
             connect-timeout: 3000
-            read-timeout: 5000
+            read-timeout: 60000
 
 logging:
   level:
