@@ -17,13 +17,13 @@
 <div class="layout">
 
   <!-- ============ 분리된 사이드바 적용 ============ -->
-  <div th:replace="~{/basic/sidebar :: sidebar}"></div>
+  <div th:replace="~{basic/sidebar :: sidebar}"></div>
 
   <!-- ============ 오른쪽 전체(헤더 + 컨텐츠) ============ -->
   <div class="main-wrap">
 
     <!-- ============ 분리된 헤더 적용 ============ -->
-    <div th:replace="~{/basic/header :: header}"></div>
+    <div th:replace="~{basic/header :: header}"></div>
 
     <!-- ============ 본문 내용 ============ -->
     <div class="main-content">
@@ -113,7 +113,7 @@
 </div>
 
 <!-- 푸터 (Thymeleaf) -->
-<div th:replace="~{/basic/footer :: footer}"></div>
+<div th:replace="~{basic/footer :: footer}"></div>
 
 <script src="/js/myteams.js"></script>
 </body>
