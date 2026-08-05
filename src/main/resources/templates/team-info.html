@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Info - Re I New</title>
+
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+
+    <!-- 공통 CSS -->
+    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/team-info.css}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- 사이드바 -->
+    <div th:replace="~{/basic/sidebar :: sidebar}"></div>
+
+    <div class="main-wrap">
+
+        <!-- 헤더 -->
+        <div th:replace="~{/basic/header :: header}"></div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="main-content">
+
+            <!-- 하얀색 메인 둥근 배경 박스 -->
+            <div class="info-card-container">
+
+                <!-- ============================================== -->
+                <!-- 왼쪽: 팀 정보 수정 영역 -->
+                <!-- ============================================== -->
+                <div class="info-left-panel">
+                    <div class="info-header">
+                        <h2>Team Info</h2>
+                        <span class="role-admin">Admin</span>
+                    </div>
+
+                    <div class="input-section">
+                        <div class="form-group">
+                            <label>TEAM NAME</label>
+                            <div class="input-wrapper">
+                                <!-- !! 백엔드 연동 시 th:value="${team.teamName}" 형식으로 데이터 주입 -->
+                                <input type="text" id="editTeamName" value="Team Name">
+                                <button type="button" class="clear-btn" id="clearNameBtn">
+                                    <img src="/photo/icon/remove-icon.png" alt="clear" id="clearIcon">
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>DESCRIPTION</label>
+                            <!-- !! 백엔드 연동 시 th:text="${team.teamDescription}" 형식으로 데이터 주입 -->
+                            <textarea id="editTeamDesc" placeholder="Enter about space ..."></textarea>
+                        </div>
+                    </div>
+
+                    <button class="btn-save" id="saveTeamInfoBtn">Team Info Save</button>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- 오른쪽: 통계 및 구성원 정보 영역 (백엔드 데이터) -->
+                <!-- ============================================== -->
+                <div class="info-right-panel">
+
+                    <!-- 소속 공간 박스 -->
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <h3>belonging</h3>
+                                <span class="sub-text">Space 소속 공간</span>
+                            </div>
+                            <button class="btn-building-list">
+                                <img src="/photo/icon/arrow-icon.png" alt="go"> Building List
+                            </button>
+                        </div>
+
+                        <div class="stat-boxes">
+                            <div class="stat-box">
+                                <span class="stat-label">Buildings</span>
+                                <!--!! 백엔드 연동: th:text="|총 ${buildingCount}개|" -->
+                                <div class="stat-value">총 0개</div>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Classroom</span>
+                                <!-- !!백엔드 연동: th:text="|총 ${classroomCount}개|" -->
+                                <div class="stat-value">총 0개</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 구성원 박스 -->
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <h3>Team Member</h3>
+                                <span class="sub-text">구성원</span>
+                            </div>
+                        </div>
+                        <div class="member-info">
+                            <div class="member-icon-circle">
+                                <img src="/photo/icon/team-member-i.png" alt="team">
+                            </div>
+                            <div class="member-count-box">
+                                <span class="member-label">Total Members</span>
+                                <!-- !!백엔드 연동: th:text="${memberCount}" -->
+                                <span class="member-number">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- <info-right-panel -->
+            </div> <!-- < info-card-container -->
+
+        </div> <!-- <main-content -->
+    </div> <!-- < main-wrap -->
+</div> <!-- < layout -->
+
+
+<!-- Js-->
+<script>
+    const editTeamName = document.getElementById('editTeamName');
+    const clearNameBtn = document.getElementById('clearNameBtn');
+    const saveTeamInfoBtn = document.getElementById('saveTeamInfoBtn');
+    const editTeamDesc = document.getElementById('editTeamDesc');
+
+    // 입력창에 내용이 있을 때만 X 버튼 보이기
+    function toggleClearButton() {
+        if (editTeamName.value.length > 0) {
+            clearNameBtn.style.display = 'block';
+        } else {
+            clearNameBtn.style.display = 'none';
+        }
+    }
+
+    // 첫 로드 시 버튼 표시 여부 확인
+    toggleClearButton();
+
+    // 입력창에 글자를 칠 때마다 확인
+    editTeamName.addEventListener('input', toggleClearButton);
+
+    // X 버튼 클릭 시 텍스트 모두 지우기
+    clearNameBtn.addEventListener('click', () => {
+        editTeamName.value = '';
+        toggleClearButton();
+        editTeamName.focus(); // 지운 후 다시 입력할 수 있게 커서 활성화
+    });
+
+    // 저장 버튼 클릭 시 동작
+    saveTeamInfoBtn.addEventListener('click', () => {
+        const updatedName = editTeamName.value.trim();
+        const updatedDesc = editTeamDesc.value.trim();
+
+        if (!updatedName) {
+            alert("팀 이름을 입력해주세요.");
+            return;
+        }
+
+        // 실제로는 백엔드로 수정한 데이터를 전송(fetch/axios)해야 합니다.
+        // 여기서는 성공적으로 변경되었다고 가정하고 이전 페이지(리스트)로 돌아갑니다.
+        alert("팀 정보가 성공적으로 수정되었습니다!");
+
+        // 이전 페이지로 돌아가기 (임시 연동)
+        globalThis.history.back();
+        // 실제 운영 시: window.location.href = '/myteams'; 등으로 이동
+    });
+
+    // 페이지가 로드될 때 주소창으로 데이ㅓ 가져오기
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const passedName = urlParams.get('name');
+        const passedDesc = urlParams.get('desc');
+
+        // 가져온 데이터가 있다면 빈칸에 채워 넣습니다.
+        if (passedName) {
+            editTeamName.value = passedName;
+        }
+        if (passedDesc) {
+            editTeamDesc.value = passedDesc;
+        }
+
+        // 데이터 채워졋으니까 x 버튼도 띄워주기
+        toggleClearButton();
+    });
+</script>
+
+<div th:replace="~{/basic/footer :: footer}"></div>
+</body>
+</html>

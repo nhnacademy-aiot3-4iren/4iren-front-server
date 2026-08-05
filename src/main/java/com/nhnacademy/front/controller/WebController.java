@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class WebController {
 
     @GetMapping("/")
-    public String getLlm() {
-        return "flow-diy";
+    public String getHome() {
+        return "myteams";
     }
 
-    @GetMapping("/home")
-    public String getHome() {
-        return "start";
-    }
+//    @GetMapping("/llm")
+//    public String getLlm() {
+//        return "llm";
+//    }
 
     @GetMapping("/login")
     public String getLogin() {
@@ -28,4 +28,11 @@ public class WebController {
 
     @GetMapping("/forgot")
     public String getForgot() { return "forgot"; }
+
+    @GetMapping("/flowdiy")
+    public String getFlowdiy() { return "flow-diy"; }
+
+    @GetMapping("/mypage")
+    public String getMypage() { return "mypage"; }
+
 }
