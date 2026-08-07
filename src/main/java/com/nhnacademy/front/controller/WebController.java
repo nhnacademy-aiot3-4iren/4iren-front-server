@@ -10,7 +10,7 @@ public class WebController {
 
     @GetMapping("/")
     public String getHome() {
-        return "/mypage-setting";
+        return "/start";
     }
 
 //    @GetMapping("/llm")
@@ -35,7 +35,7 @@ public class WebController {
     @GetMapping("/mypage")
     public String getMypage() { return "mypage"; }
 
-    @GetMapping("/telegram")
-    public String getTelegram() { return "setting-telegram"; }
+    @GetMapping("/tele")
+    public String getTelegram() { return "telegram"; }
 
 }

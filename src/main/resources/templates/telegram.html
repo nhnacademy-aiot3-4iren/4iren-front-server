@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>setting-telegram</title>
+
+    <link rel="stylesheet" th:href="@{/css/telegram.css}">
+    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+</head>
+<body>
+<!-- 전체 레이아웃 래퍼 -->
+<div class="layout">
+
+    <!-- 좌측 사이드바 -->
+    <div th:replace="~{/basic/sidebar :: sidebar}"></div>
+
+    <!-- 우측 전체(헤더 + 메인 컨텐츠) -->
+    <div class="main-wrap">
+
+        <!-- 상단 헤더 -->
+        <div th:replace="~{/basic/header :: header}"></div>
+
+        <!-- 본문 내용 -->
+        <div class="main-content">
+
+            <!-- 페이지 제목 -->
+            <h2 class="page-title">Settings</h2>
+
+            <!-- 메인 컨텐츠 박스 -->
+            <div class="maincontainer">
+
+                <!-- [좌측] 설정 탭 사이드바 -->
+                <div class="settings-sidebar">
+                    <button type="button" id="securitybtn" class="settings-tab" data-target="security-content">Security</button>
+                    <button type="button" id="notificationbtn" class="settings-tab settings-tab-active" data-target="notifications-content">Notifications</button>
+                </div>
+
+                <!-- [우측] 탭 내용 및 세로 구분선 영역 -->
+                <div class="settings-content-wrap">
+
+                    <!-- Security 탭 내용 -->
+                    <div id="security-content" class="tab-content" style="display: none;">
+                        <p>Security 설정 영역입니다.</p>
+                    </div>
+
+                    <!-- Notifications 탭 내용 (기본 표시) -->
+                    <div id="notifications-content" class="tab-content">
+
+                        <!-- ============================= -->
+                        <!-- 큰 카드: Telegram 알림 상태 전체  -->
+                        <!-- ============================= -->
+                        <div class="telegram-card">
+
+                            <!-- Telegram 알림 상태 헤더, 아이콘 -->
+                            <div class="telegram-header">
+                                <img src="/photo/icon/telegram-icon.png" alt="telegram" class="telegram-icon-img">
+                                <h3 class="telegram-title">Telegram 알림 상태</h3>
+                            </div>
+<!--                            회색 음영선 알림 상태 밑에 줄-->
+                            <hr class="telegram-divider">
+
+                            <div class="telegram-bot-columns">
+
+                                <div th:replace="~{basic/telegramBot :: telegram-bot('member', 'Member Bot')}"></div>
+
+                                <div th:if="${isAdmin}" th:replace="~{basic/telegramBot :: telegram-bot('admin', 'Admin Bot')}"></div>
+
+                            </div>
+
+                        </div>
+                        <!-- // telegram-card 끝 -->
+
+                    </div>
+
+                </div>
+                <!-- // settings-content-wrap 끝 -->
+
+            </div>
+            <!-- // maincontainer 끝 -->
+
+        </div>
+        <!-- // main-content 끝 -->
+
+    </div>
+</div>
+
+
+<!-- 푸터 -->
+<div th:replace="~{basic/footer :: footer}"></div>
+
+<!--스크립트 -->
+<script src="/js/telegram.js"></script>
+</body>
+</html>
