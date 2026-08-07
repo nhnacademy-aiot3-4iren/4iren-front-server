@@ -1,4 +1,4 @@
-package com.nhnacademy.front.controller;
+package com.nhnacademy.front.controller.restcontroller;
 
 import com.nhnacademy.front.notification.client.NotiDeepLinkClient;
 import com.nhnacademy.front.notification.dto.LinkStatusResponse;
