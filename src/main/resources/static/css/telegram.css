@@ -1,0 +1,364 @@
+/* =========================================================
+   메인 컨테이너 (하얀색 바탕 박스)
+   ========================================================= */
+.maincontainer {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    min-height: 550px;
+    margin-top: 20px;
+    display: flex; /* 좌측 탭과 우측 본문을 가로 배치 */
+}
+
+.page-title {
+    margin-top: -10px;
+}
+
+/* =========================================================
+   좌측 탭 사이드바 & 세로 구분선
+   ========================================================= */
+.settings-sidebar {
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 24px;
+    flex-shrink: 0;
+}
+
+/* 기본 스타일 */
+.settings-tab {
+    width: 100%;
+    text-align: center;
+    background: transparent;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffd8b1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 10px 0 10px 0;
+}
+
+.settings-tab:hover {
+    background-color: #f5f5f5;
+}
+
+/* 선택된 탭 (주황색/살구색 하이라이트) */
+.settings-tab-active {
+    background-color: #FBCB96;
+    color: #222222;
+    font-weight: 600;
+    box-shadow: 0px 4px 12px rgba(255, 195, 114, 0.64);
+}
+
+/* 우측 영역 전체 & 회색 세로 구분선 */
+.settings-content-wrap {
+    flex: 1;
+    border-left: 1px solid #E5E7EB;
+    padding-left: 40px;
+}
+
+.tab-content {
+    width: 100%;
+}
+
+.telegram-header {
+    display: flex;         /* 자식들 가로로 나란히 배치 */
+    align-items: center;   /* 세로 중앙 정렬 (아이콘이랑 텍스트 높이 안 맞는 문제 해결) */
+    gap: 12px;              /* 아이콘이랑 텍스트 사이 간격 */
+    margin-bottom: 10px;
+    margin-top: 5px;
+    font-size: 22px;
+}
+
+.telegram-icon-img {
+    margin-top: 10px;
+}
+
+.telegram-title {
+    margin-bottom: 10px;
+}
+
+/*Telegram알림상태 밑줄*/
+.telegram-divider {
+    border: none;
+    border-top: 1px solid #00ADEC;
+    margin: -10px 0 32px 0;
+}
+/* 유저랑 어드민 봇 박스들이 들어갈 자리 (눈에는 보이지 않음)*/
+.telegram-bot-columns {
+    display: flex;
+    gap: 20px;
+}
+
+/*봇 이름*/
+.telegram-bot-label {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2A2828;
+    position: relative;
+    padding-left: 18px;
+}
+
+/* 멤버봇, 어드민 봇 앞에 있는 점*/
+.telegram-bot-label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #00ADEC;
+}
+
+
+/* =========================================================
+   state- fist - member
+   ========================================================= */
+.telegram-bot-card {
+    flex: 1;
+    max-width: 340px;
+    border: 2px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 24px;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;         /* 카드 테두리와 내용물 사이 여백 */
+    gap: 16px;
+}
+
+
+.state-first-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.not-linked {
+    display: block;
+    margin: 0 0 10px 10px;
+    font-size: 16px;
+    color: #737791;
+}
+
+
+
+
+
+/* =========================================================
+   tele btn
+   ========================================================= */
+.tele-btn {
+    margin-top: 10px;
+}
+
+
+
+.button {
+    text-decoration: none;
+    line-height: 1;
+    border-radius: 1.5rem;
+    overflow: hidden; /* 둥근 모서리 밖으로 나가는 요소 잘라내기 */
+    position: relative;
+    box-shadow: 10px 10px 20px rgba(0,0,0,.05);
+    background-color: #fff;
+    color: #121212;
+    border: none;
+    cursor: pointer;
+
+    /* 버튼 전체 높이 일정하게 */
+    display: inline-flex;
+    align-items: center;
+}
+
+.button-decor {
+    position: absolute;
+    inset: 0;
+    background-color: var(--clr);
+    transform: translateX(calc(-100% + 60px));
+    transition: transform .3s ease;
+    z-index: 0;
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    position: relative;
+    z-index: 1; /* decor 위에 오도록 설정 */
+}
+
+.button__icon {
+    width: 50px;
+    height: 100%;
+    min-height: 44px; /* 최소 높이 확보 */
+    display: grid;
+    place-items: center;
+}
+
+.button__text {
+    display: inline-block;
+    transition: color .2s;
+    padding: 10px 1.5rem 10px 0.75rem; /* 위아래 패딩 조정 */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+.button:hover .button__text {
+    color: #fff;
+}
+
+.button:hover .button-decor {
+    transform: translateX(0); /* 호버 시 전체를 파란색으로 채움 */
+}
+
+
+/* =========================================================
+   !! 타이머 css
+   ========================================================= */
+
+.base-timer {
+    position: relative;
+    width: 140px;
+    height: 140px;
+}
+
+.base-timer__svg {
+    transform: scaleX(-1);
+}
+
+.base-timer__circle {
+    fill: none;
+    stroke: none;
+}
+
+.base-timer__path-elapsed {
+    stroke-width: 7px;
+    stroke: grey;
+}
+
+.base-timer__path-remaining {
+    stroke-width: 7px;
+    stroke-linecap: round;
+    transform: rotate(90deg);
+    transform-origin: center;
+    transition: 1s linear all;
+    fill-rule: nonzero;
+    stroke: currentColor;
+}
+
+.base-timer__path-remaining.blue {
+    color: #00ADEC;
+}
+
+.base-timer__path-remaining.orange {
+    color: orange;
+}
+
+.base-timer__path-remaining.red {
+    color: #EE0101;
+}
+
+.base-timer__label {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   상태별 화면 공통 및 개별 스타일 (진행중, 성공, 실패)
+   ========================================================= */
+
+/* 상태별 컨테이너 공통 (자식들을 세로로 예쁘게 정렬) */
+.state-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* 텍스트 내용 기본 스타일 */
+.state-text {
+    font-size: 15px;
+    color: #333333;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* 유효시간 타이틀 텍스트 */
+.deadtime-label {
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #737791;
+}
+
+/* --- [성공 화면] 관련 --- */
+.success-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.check-icon-img {
+    width: 20px;
+    height: 20px;
+}
+
+/* --- [실패 화면] 관련 --- */
+.fail-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+/* "만료" 글자 강조 */
+.expiration {
+    color: #EE0101;
+    font-weight: 700;
+}
+
+/* 다시 연동하기 텍스트 링크 (디자인 시안 기준 파란색 밑줄) */
+.aglinked-btn{
+    position: relative;
+}
+
+.aglinked-btn::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #00ADEC;
+    transform-origin: center;
+    transform: translate(-50%, 0) scaleX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.aglinked-btn:hover::before {
+    transform: translate(-50%, 0) scaleX(1);
+}
+
+

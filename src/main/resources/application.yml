@@ -1,6 +1,13 @@
 spring:
   application:
     name: 4iren-front
+  # html,css 수정시 새로고침 안해도 바로 반영되는 코드
+  thymeleaf:
+    cache: false
+  web:
+    resources:
+          cache:
+            period: 0
 
   cloud:
     openfeign:
