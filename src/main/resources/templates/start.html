@@ -10,32 +10,39 @@
 <body>
 
 <!-- Header -->
-<div class="container">
-    <header>
-        <!-- 로고 적용 (Header) -->
-        <a href="#">
-            <img src="/photo/icon/logo.png" alt="Re I New Logo" class="logo-img">
-        </a>
-        <nav>
-            <a href="#" class="active">Contact Us &gt;</a>
-            <a href="#">Classroom</a>
-            <a href="llm">Chat AI</a>
-            <a href="#">Dashboard</a>
-            <a href="#">My Page</a>
-        </nav>
-        <div class="auth-buttons">
-            <button href="login" class="btn btn-outline">Login</button>
-            <button href="signup" class="btn btn-solid">Sign Up</button>
+<header>
+        <div class="container">
+            <a href="#">
+                <img src="/photo/logo.png" alt="Re I New Logo" class="logo-img">
+            </a>
+            <nav>
+                <a href="#" class="active">Contact Us &gt;</a>
+                <a href="#">Classroom</a>
+                <div class="chatai">
+                    <button href="llm.html" class="button">
+                    Chat AI
+                    </button>
+                </div>
+                <a href="#">Dashboard</a>
+                <a href="mypage.html">My Page</a>
+            </nav>
+            <div class="auth-buttons">
+                <button href="login.html" class="btn btn-outline">Login</button>
+                <button href="signup.html" class="btn btn-solid">Sign Up</button>
+            </div>
         </div>
-    </header>
-</div>
+</header>
 
 <!-- Hero Section -->
-<section class="hero container">
-    <h1><span class="text-orange">공간</span>이 스스로 생각 할 때,<br>완벽한 <span class="text-orange">몰입</span>이 시작됩니다.</h1>
-    <h2>When space thinks for itself, perfect immersion begins.</h2>
-    <p>교육・업무 공간 설계 및 구축을 아우르는 공간 인테리어 분야의 AI DX 솔루션입니다.<br>
-        이제는 공간에서 수동 관리 없이, 학습에 온전히 몰입할 수 있는 최적의 환경을 경험하세요.</p>
+<section class="hero">
+    <canvas id="gradient-canvas"></canvas>
+
+    <div class="container" style="position: relative; z-index: 1;">
+        <h1><span class="text-orange">공간</span>이 스스로 생각 할 때,<br>완벽한 <span class="text-orange">몰입</span>이 시작됩니다.</h1>
+        <h2>When space thinks for itself, perfect immersion begins.</h2>
+        <p>교육・업무 공간 설계 및 구축을 아우르는 공간 인테리어 분야의 AI DX 솔루션입니다.<br>
+            이제는 공간에서 수동 관리 없이, 학습에 온전히 몰입할 수 있는 최적의 환경을 경험하세요.</p>
+    </div>
 </section>
 
 <!-- Section 1: 에너지 절감 -->
@@ -43,35 +50,41 @@
     <div class="flex-row">
         <div class="flex-col">
             <h3 class="section-title">에너지 절감과 교육 환경 개선.</h3>
-            <h4 class="subtitle">이런 공간에 <span class="text-orange">추천</span>합니다</h4>
+            <h4 class="subtitle">이런 공간에 <span class="recommend">추천</span>합니다</h4>
             <ul class="bullet-list">
-                <li>시설 · 장비 제어 번거로움 없애주는 스마트화</li>
-                <li>불필요한 에너지 낭비하는 냉난방기 제어 최적화</li>
-                <li>공간을 최적의 상태로 유지시켜주는 IT 유지보수</li>
-                <li>기기 이상 시 빠른 대처를 위한 모니터링 원격지원</li>
+                <li>· 수십,수백 개의 강의실을 운영하는 <span>대학교</span></li>
+                <li>· 수강생의 컨디션 관리가 필수적인 <span>대형 학원</span></li>
+                <li>· 온종일 사용되는 여러대의 기기들로 쾌적한 실습 환경이 필요한 <span>IT 관련 실습실</span></li>
+                <li>· 체계적인 공기질·에너지 ESG 관리가 필요한 <span>모든 교육기관</span></li>
             </ul>
         </div>
         <div class="flex-col">
-            <div class="gray-box"></div>
+            <div class="img-box">
+                <img src="/photo/uni.png" alt="대학교 이미지" class="uni-img">
+                <img src="/photo/img_1.png" alt="대형학원 이미지" class="aca-img">
+                <img src="/photo/img_2.png" alt="IT 실습십 이미지" class="it-img">
+                <img src="/photo/library.png" alt="도서관 이미지" class="lib-img">
+
+            </div>
         </div>
     </div>
 </section>
+
 
 <!-- Section 2: 공간 맞춤형 (Grid) -->
 <section class="section container">
     <div class="flex-row">
 
-        <!-- 왼쪽 오렌지 카드 -->
         <div class="flex-col">
             <div class="orange-card">
                 <h3>공간 맞춤형<br>자가 학습</h3>
-                <!-- 흰색 배경 박스 -->
-                <div class="white-box"></div>
+                <div class="white-box">
                     <div class="pill pill-solid pill-1">공간관리 사각지대</div>
                     <div class="pill pill-outline pill-2">실내외 복잡한 비교</div>
                     <div class="pill pill-solid pill-3">에너지 요금관리</div>
                     <div class="pill pill-solid pill-4">일괄제어의 한계</div>
                     <div class="pill pill-outline pill-5">늦은 공기질 대처</div>
+                </div>
             </div>
         </div>
 
@@ -107,9 +120,9 @@
             </div>
         </div>
         <div class="flex-col">
-            <h3 class="section-title">IoT 센서와 AI의 만남.<br>하드웨어 설치부터 AI 세팅까지,<br><span class="text-orange">공간 자동화</span>를 경험해 보세요.</h3>
+            <h3 class="section-title">IoT 센서와 AI의 만남.<br>하드웨어 설치부터 AI 세팅까지,<br><span class="text-space">공간 자동화</span>를 경험해 보세요.</h3>
             <p style="color: var(--text-gray); font-size: 15px;">
-                본 솔루션은 센서를 통해 제어가 가능합니다. 사물 인터넷(IoT)과 스마트 환경 제어가 가능하며, 공간 AI 브리핑, 실내외 정보 제공을 스마트폰, 태블릿, PC에서 확인하고 직접 공간을 제어합니다.
+                본 솔루션은 센서를 통해 제어가 가능합니다. 사물 인터넷(IoT)과 스마트 환경 제어가 가능하며, 공간 AI 브리핑, 실내외 정보 제공을 확인하고 직접 공간을 제어합니다.
             </p>
         </div>
     </div>
@@ -206,5 +219,10 @@
     </div>
 </footer>
 
+
+<script type="module" src="/js/background.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script src="/js/falling-pill.js"></script>
 </body>
 </html>
