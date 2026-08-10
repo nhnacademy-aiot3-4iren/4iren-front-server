@@ -10,7 +10,7 @@ public class WebController {
 
     @GetMapping("/")
     public String getHome() {
-        return "/start";
+        return "start";
     }
 
 //    @GetMapping("/llm")
