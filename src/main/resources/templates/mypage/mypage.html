@@ -1,33 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyPage</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPage</title>
 
-  <!--font-->
   <link rel="stylesheet" href="/css/font.css">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="/css/forgotpw.css">
+  <link rel="stylesheet" href="/css/mypage-layout.css">
+  <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 
-
 <body>
-<!-- 좌측 상단 로고 -->
-<div class="brand-logo">
-  <img src="/photo/logo.png" alt="Logo">
-</div>
-
 <div class="layout">
 
-  <!-- ============ 사이드바 ============ -->
-  <div th:replace="~{sidebar :: sidebar}"></div>
+  <div th:replace="~{/mypage/mypageSidebar :: mypageSidebar}"></div>
 
-  <!-- ============ 오른쪽 전체(헤더 + 컨텐츠) ============ -->
-  <div th:replace="~{header :: header}"></div>
+  <div class="main-wrapper">
 
-    <!-- ============ 컨텐츠 ============ -->
+    <div th:replace="~{/basic/header :: header}"></div>
+
     <main class="content">
 
       <!-- 프로필 카드 -->
@@ -37,7 +28,6 @@
 
         <div class="profile-body">
 
-          <!-- 입력 폼 -->
           <form class="profile-form">
 
             <div class="form-group">
@@ -59,7 +49,7 @@
               <label for="password">비밀번호</label>
               <div class="password-field">
                 <input type="password" id="password" placeholder="password">
-                <img src="/icons/eye.svg" alt="toggle password" class="eye-icon">
+                <img src="/photo/icon/pw-eye.png" alt="toggle password" class="eye-icon">
               </div>
             </div>
 
@@ -67,16 +57,13 @@
               <label for="password-check">비밀번호 확인</label>
               <div class="password-field">
                 <input type="password" id="password-check" placeholder="password">
-                <img src="/icons/eye.svg" alt="toggle password" class="eye-icon">
+                <img src="/photo/icon/pw-eye.png" alt="toggle password" class="eye-icon">
               </div>
             </div>
 
           </form>
 
-          <!-- 프로필 사진 -->
-          <div class="profile-photo">
-            <img src="/photo/icon/profile-icon.png" alt="profile photo">
-          </div>
+          <div class="profile-photo"></div>
 
         </div>
 
@@ -84,16 +71,23 @@
 
       </section>
 
-      <!-- 오른쪽 세로 배너 (틀만) -->
-      <aside class="side-banner">
-        <img src="/photo/side-banner.png" alt="brand banner">
-      </aside>
+      <!-- 오른쪽 세로 배너 두 개를 세로로 묶는 wrapper -->
+      <div class="banner-stack">
+        <div class="card">공간관리를<br> 원하세요?</div>
+
+        <div class="box">
+          <span></span>
+          <div class="box-content">
+            <h2>&emsp; Go to Subscribe</h2>
+          </div>
+        </div>
+      </div>
 
     </main>
-
   </div>
-
 </div>
+
+<div th:replace="~{/basic/footer :: footer}"></div>
 
 <script src="/js/eye.js"></script>
 </body>

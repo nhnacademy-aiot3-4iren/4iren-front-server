@@ -1,0 +1,55 @@
+
+<aside xmlns:th="http://www.thymeleaf.org" th:fragment="mypageSidebar" class="sidebar">
+  <div class="sidebar-logo">
+    <img src="/photo/logo.png" alt="Logo">
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <a href="/mypage" class="nav-item active" data-page="profile">
+      <img src="/photo/icon/profile-icon.png" alt="profile">
+      <span>Profile</span>
+    </a>
+
+    <a href="/team" class="nav-item" data-page="team">
+      <img src="/photo/icon/team-icon.png" alt="team">
+      <span>Team</span>
+    </a>
+
+    <a href="#" class="nav-item" data-page="classroom">
+      <img src="/photo/icon/classroom-icon.png" alt="classroom">
+      <span>Classroom</span>
+    </a>
+
+    <a href="#" class="nav-item" data-page="subscribe">
+      <img src="/photo/icon/subscribe-icon.png" alt="subscribe">
+      <span>Subscribe</span>
+    </a>
+
+    <a href="#" class="nav-item" data-page="settings">
+      <img src="/photo/icon/setting-icon.png" alt="setting">
+      <span>Settings</span>
+    </a>
+
+    <a href="/logout" class="nav-item" data-page="signout">
+      <img src="/photo/icon/signout-icon.png" alt="sign out">
+      <span>Sign Out</span>
+    </a>
+
+  </nav>
+</aside>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+
+    navItems.forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        navItems.forEach(function(nav) {
+          nav.classList.remove('active');
+        });
+        this.classList.add('active');
+      });
+    });
+  });
+</script>

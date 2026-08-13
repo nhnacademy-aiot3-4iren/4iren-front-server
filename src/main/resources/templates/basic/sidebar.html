@@ -5,7 +5,7 @@
      ================================================================ -->
 <aside xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar" class="sidebar">
     <div class="sidebar-logo">
-        <img src="/photo/icon/logo.png" alt="Re I New Logo">
+        <img src="/photo/logo.png" alt="Logo">
     </div>
 
     <nav class="sidebar-nav">
@@ -30,22 +30,22 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // 1. 사이드바의 모든 메뉴 아이템을 가져옵니다.
+        // 사이드바의 모든 메뉴 아이템을 가져옴
         const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
 
-        // 2. 각 메뉴 아이템에 클릭 이벤트를 달아줍니다.
+        // 각 메뉴 아이템에 클릭 이벤트를 달아줍
         navItems.forEach(function(item) {
             item.addEventListener('click', function(e) {
 
-                // (선택) 만약 href="#" 인 상태에서 페이지가 위로 튕기는 걸 막고 싶다면 아래 주석을 푸세요.
+                // (선택) 만약 href="#" 인 상태에서 페이지가 위로 튕기는 걸 막고 싶다면 아래 주석 풀기
                 // e.preventDefault();
 
-                // 3. 먼저 모든 메뉴에서 'active' 클래스를 지웁니다.
+                // 먼저 모든 메뉴에서 'active' 클래스를 지움
                 navItems.forEach(function(nav) {
                     nav.classList.remove('active');
                 });
 
-                // 4. 방금 클릭한 메뉴에만 'active' 클래스를 추가합니다.
+                // 방금 클릭한 메뉴에만 'active' 클래스를 추가
                 this.classList.add('active');
             });
         });
