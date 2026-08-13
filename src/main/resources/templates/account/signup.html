@@ -6,15 +6,18 @@
     <title>Sign Up</title>
     <!--font-->
     <link rel="stylesheet" href="/css/font.css">
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 
     <!-- CSS -->
     <link rel="stylesheet" href="/css/signup.css">
 </head>
 
 <body>
+<main class="signup-wrapper">
 <!-- 좌측 상단 로고 -->
 <div class="brand-logo">
-    <img src="/photo/icon/logo.png" alt="Re I New Logo">
+    <img src="/photo/logo-b.png" alt="Re I New Logo">
 </div>
 
 <!-- 왼쪽 캐릭터 -->
@@ -34,7 +37,7 @@
     <div class="sign-header">
         <div class="signin-box">
             <p class="have-acc">Have an Account ?</p>
-            <a href=".." class="signin-link">Sign in</a>
+            <a href="../login" class="signin-link">Sign in</a>
         </div>
     </div>
 
@@ -76,6 +79,10 @@
             <button type="submit" class="signup-btn">Sign up</button>
         </form>
 </div>
+</main>
+
+<!--Footer-->
+<div th:replace="~{/basic/footer :: footer}"></div>
 
 <script src="/js/eye.js"></script>
 </body>

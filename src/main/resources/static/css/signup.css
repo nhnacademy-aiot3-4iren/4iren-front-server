@@ -11,16 +11,23 @@ html, body {
 }
 
 body {
-    min-height: 100vh;
     position: relative;
     overflow-x: hidden;
 
-    /* 배경: 좌측 오렌지 -> 우측 화이트 그라데이션 */
-    background: linear-gradient(90deg, #FFCC99 0%, #FFDEBD 65%, #FFFFFF 100%);
+    background: linear-gradient(90deg, #FFCB94 0%, #f3bda6 55%, #F9DED0 78%, #FFFFFF 100%);
 
+    /* flex:column 유지, 단 body 자체엔 min-height만 */
+    display: flex;
+    flex-direction: column;
+}
+
+.signup-wrapper {
+    min-height: 100vh;     /* 화면 꽉 채우고, footer는 그 아래로 밀려남 */
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    width: 100%;
 }
 
 /* ==========================================

@@ -16,79 +16,16 @@
 <body>
 <!-- 좌측 상단 로고 -->
 <div class="brand-logo">
-  <img src="/photo/icon/logo.png" alt="Re I New Logo">
+  <img src="/photo/logo.png" alt="Logo">
 </div>
 
 <div class="layout">
 
   <!-- ============ 사이드바 ============ -->
-  <aside class="sidebar">
-
-    <div class="sidebar-logo">
-      <img src="/photo/icon/logo.png" alt="Re I New Logo">
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="#" class="nav-item active">
-        <img src="/icons/profile.svg" alt="">
-        <span>Profile</span>
-      </a>
-      <a href="#" class="nav-item">
-        <img src="/icons/team.svg" alt="">
-        <span>Team</span>
-      </a>
-      <a href="#" class="nav-item">
-        <img src="/icons/classroom.svg" alt="">
-        <span>Classroom</span>
-      </a>
-      <a href="#" class="nav-item">
-        <img src="/icons/subscribe.svg" alt="">
-        <span>Subscribe</span>
-      </a>
-      <a href="#" class="nav-item">
-        <img src="/icons/settings.svg" alt="">
-        <span>Settings</span>
-      </a>
-    </nav>
-
-    <div class="sidebar-bottom">
-      <a href="#" class="nav-item">
-        <img src="/icons/signout.svg" alt="">
-        <span>Sign Out</span>
-      </a>
-    </div>
-
-  </aside>
+  <div th:replace="~{sidebar :: sidebar}"></div>
 
   <!-- ============ 오른쪽 전체(헤더 + 컨텐츠) ============ -->
-  <div class="main-wrap">
-
-    <!-- ============ 헤더 ============ -->
-    <header class="header">
-
-      <h1 class="page-title">My Page</h1>
-
-      <div class="search-bar">
-        <img src="/icons/search.svg" alt="">
-        <input type="text" placeholder="Search here...">
-      </div>
-
-      <div class="header-right">
-        <button class="icon-btn">
-          <img src="/icons/bell.svg" alt="notification">
-          <span class="badge"></span>
-        </button>
-
-        <div class="user-info">
-          <div class="user-text">
-            <span class="user-name">Jae na</span>
-            <span class="user-role">User</span>
-          </div>
-          <img src="/icons/chevron-down.svg" alt="" class="user-arrow">
-        </div>
-      </div>
-
-    </header>
+  <div th:replace="~{header :: header}"></div>
 
     <!-- ============ 컨텐츠 ============ -->
     <main class="content">
@@ -138,7 +75,7 @@
 
           <!-- 프로필 사진 -->
           <div class="profile-photo">
-            <img src="/static" alt="profile photo">
+            <img src="/photo/icon/profile-icon.png" alt="profile photo">
           </div>
 
         </div>

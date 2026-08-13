@@ -6,14 +6,15 @@
     <title>4iren</title>
     <!-- 폰트 적용 (Pretendard) -->
     <link rel="stylesheet" href="/css/start.css">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 <body>
 
 <!-- Header -->
 <header>
         <div class="container">
-            <a href="#">
-                <img src="/photo/logo.png" alt="Re I New Logo" class="logo-img">
+            <a href="start.html">
+                <img src="/photo/logo.png" alt="Logo" class="logo-img">
             </a>
             <nav>
                 <a href="#" class="active">Contact Us &gt;</a>
@@ -148,76 +149,7 @@
 </section>
 
 <!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="footer-top">
-            <!-- 이미지 로고(Footer) -->
-            <a href="#">
-                <img src="/photo/logo.png" alt="Logo" class="logo-img">
-            </a>
-            <div class="subscribe-box">
-                <span style="padding: 10px; color: var(--primary-orange);">🔍</span>
-                <input type="text" placeholder="Search Anything">
-                <button>Subscribe</button>
-            </div>
-        </div>
-
-        <div class="footer-links">
-            <div class="footer-col">
-                <h5>Column One</h5>
-                <ul>
-                    <li>Twenty One</li>
-                    <li>Thirty Two</li>
-                    <li>Fourty Three</li>
-                    <li>Fifty Four</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5>Column Two</h5>
-                <ul>
-                    <li>Sixty Two</li>
-                    <li>Seventy Six</li>
-                    <li>Eighty Seven</li>
-                    <li>Ninety Eight</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5>Column Three</h5>
-                <ul>
-                    <li>One Two</li>
-                    <li>Three Four</li>
-                    <li>Five Six</li>
-                    <li>Seven Eight</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5>Column Four</h5>
-                <div class="app-badges">
-                    <div class="badge"> App Store</div>
-                    <div class="badge">▶ Google Play</div>
-                </div>
-                <p style="font-size: 12px; margin-bottom: 10px; font-weight: bold;">Join Us</p>
-                <div class="social-icons">
-                    <span>▶</span>
-                    <span>f</span>
-                    <span>t</span>
-                    <span>◎</span>
-                    <span>in</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div>Copyright © 2024 Re I New. All rights reserved.</div>
-            <div class="footer-bottom-links">
-                <span>Privacy</span>
-                <span>Terms</span>
-                <span>Sitemap</span>
-            </div>
-        </div>
-    </div>
-</footer>
-
+<div th:replace="~{/basic/footer :: footer}"></div>
 
 <script type="module" src="/js/background.js"></script>
 
