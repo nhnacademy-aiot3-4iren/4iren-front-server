@@ -8,7 +8,7 @@
   <div th:id="'state-first-' + ${botType}" class="state-first-wrap">
     <span class="not-linked">연동되지 않음.</span>
     <div class="tele-btn">
-      <div th:replace="~{/basic/telebutton :: telebutton(${botType})}"></div>
+      <div th:replace="~{/telegram/telebutton :: telebutton(${botType})}"></div>
     </div>
   </div>
 

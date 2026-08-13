@@ -10,6 +10,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/css/forgotpw.css">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 
 
@@ -17,7 +18,7 @@
 
 <!-- 좌측 상단 로고 -->
 <div class="brand-logo">
-    <img src="/photo/icon/logo.png" alt="Re I New Logo">
+    <img src="/photo/logo-b.png" alt="Re I New Logo">
 </div>
 
 <!--물음표 이미지-->
@@ -54,6 +55,8 @@
 
     </form>
 </div>
+
+<div th:replace="~{footer :: footer}"></div>
 
 <script src="/js/eye.js"></script>
 </body>

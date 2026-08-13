@@ -20,22 +20,24 @@ public class WebController {
 
     @GetMapping("/login")
     public String getLogin() {
-        return "login";
+        return "/account/login";
     }
 
     @GetMapping("/signup")
-    public String getSign() { return "signup"; }
+    public String getSign() { return "/account/signup"; }
 
     @GetMapping("/forgot")
-    public String getForgot() { return "forgot"; }
+    public String getForgot() { return "/account/forgot"; }
 
     @GetMapping("/flowdiy")
     public String getFlowdiy() { return "flow-diy"; }
 
     @GetMapping("/mypage")
-    public String getMypage() { return "mypage"; }
+    public String getMypage() { return "/mypage/mypage"; }
 
-    @GetMapping("/tele")
-    public String getTelegram() { return "telegram"; }
+    @GetMapping("/table")
+    public String getAlertHis() { return "basic/table"; }
 
+    @GetMapping("/mypage/myteams")
+    public String getMyTeams() { return "/mypage/myteams"; }
 }

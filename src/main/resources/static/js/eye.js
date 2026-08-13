@@ -1,15 +1,17 @@
+// 비밀번호 입력의 eye icon 토글 효과 (여러 개 지원)
+const eyeIcons = document.querySelectorAll('.eye-icon');
 
-//비밀번호 입력의 eye icon 깜빡깜빡 효과
-const passwordInput = document.getElementById('password'); //html에서 id가 password인<input> 태그 전체
-const eyeIcon = document.getElementById('eye-icon') //html에서ㅓ id가 eye-icon인것
+eyeIcons.forEach((eyeIcon) => {
+    // 아이콘 바로 앞(형제)에 있는 input을 찾음
+    const passwordInput = eyeIcon.previousElementSibling;
 
-eyeIcon.addEventListener('click', () => { //클릭이라는 이벤트가 생길때 밑에 적히는 코드가 실행됨
+    eyeIcon.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
 
-    const isPassword = passwordInput.type === 'password' //html에서 type이 password인것을 isPassword라고 부를건데, 그게 'password'라는 타입과 일치한지
+        passwordInput.type = isPassword ? 'text' : 'password';
 
-    passwordInput.type = isPassword ? 'text' : 'password'; //(조건) ? "참일때값" : "거짓일때값";
-
-    eyeIcon.src = isPassword
-        ? '/photo/pw-eye-close.png'
-        : '/photo/pw-eye.png';
-})
+        eyeIcon.src = isPassword
+            ? '/photo/icon/pw-eye-close.png'
+            : '/photo/icon/pw-eye.png';
+    });
+});
