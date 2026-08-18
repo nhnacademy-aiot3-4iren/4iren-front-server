@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>알림 이력 상세</title>
+
+  <!--
+    alert-history.html과 마찬가지로 실제 공통 레이아웃 프래그먼트로 교체.
+    모델 속성명(alertHistory)과 필드는 이미지 가이드에 명시가 없음
+    백엔드 담당자에게 컨트롤러가 model에 어떤 이름/타입으로 담아주는지 확인
+  -->
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Pretendard", "Apple SD Gothic Neo", sans-serif;
+      background: #f5f6f8;
+      color: #222;
+      margin: 0;
+      padding: 32px;
+    }
+    h1 {
+      font-size: 20px;
+      margin: 0 0 20px;
+    }
+    .detail-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      max-width: 480px;
+      padding: 8px 24px;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row .label {
+      color: #888;
+      font-size: 12px;
+      min-width: 110px;
+    }
+    .detail-row .value {
+      text-align: right;
+      word-break: break-word;
+    }
+    .detail-row.message .value {
+      text-align: left;
+      flex: 1;
+      line-height: 1.5;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 20px;
+      height: 36px;
+      padding: 0 18px;
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      text-decoration: none;
+    }
+    .btn-back:hover { background: #f5f5f5; }
+  </style>
+</head>
+<body>
+
+<section>
+  <h1>알림 이력 상세</h1>
+
+  <div class="detail-card">
+    <div class="detail-row">
+      <span class="label">alertHistoryId</span>
+      <span class="value" th:text="${alertHistory.alertHistoryId}">101</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">roomId</span>
+      <span class="value" th:text="${alertHistory.roomId}">3층 스터디룸</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">botType</span>
+      <span class="value" th:text="${alertHistory.botType}">TELEGRAM</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">alertType</span>
+      <span class="value" th:text="${alertHistory.alertType}">CO2_HIGH</span>
+    </div>
+    <div class="detail-row message">
+      <span class="label">message</span>
+      <span class="value" th:text="${alertHistory.message}">CO2 농도가 임계값을 초과했습니다.</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">sendAt</span>
+      <span class="value"
+            th:text="${#temporals.format(alertHistory.sendAt, 'yyyy-MM-dd HH:mm:ss')}">2026-08-12 09:14:03</span>
+    </div>
+  </div>
+
+  <!--
+    목록에서 걸어둔 필터/페이지가 풀리지 않게 하려면
+    목록 페이지에서 넘어올 때 쿼리 파라미터를 그대로 들고 와서
+    아래 링크에 다시 실어주는 방식이 필요 (백엔드와 라우팅 협의 필요)
+    우선은 필터 없이 목록 첫 페이지로 돌아가는 링크로 작성
+  -->
+  <a class="btn-back" th:href="@{/admin/alert-histories}">← 목록으로</a>
+
+</section>
+
+</body>
+</html>

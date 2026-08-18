@@ -94,7 +94,10 @@ header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 20px;
+    padding: 20px 40px;
+    max-width: 1440px;
+    position: relative;
+    margin: 0 auto;
 }
 
 .logo-img {
@@ -110,6 +113,9 @@ nav {
     font-weight: 600;
     font-size: 15px;
     align-items: center;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
 }
 
 nav a.active {
@@ -404,7 +410,18 @@ h4.subtitle {
 /* =========================================
     Section 3: IoT 만남 (비디오)
    ========================================= */
-.play-icon {
+
+.iot-video {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    border-radius: 30px; /* 요즘 앱 스타일처럼 둥근 모서리 */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08); /* 영상이 배경에서 살짝 떠 보이도록 은은한 그림자 */
+    display: block;
+    margin: 0 auto;
+}
+
+.play-video {
     width: 60px;
     height: 60px;
     border: 3px solid white;
@@ -414,7 +431,7 @@ h4.subtitle {
     justify-content: center;
 }
 
-.play-icon::after {
+.play-video::after {
     content: '';
     width: 0;
     height: 0;
