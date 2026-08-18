@@ -1,5 +1,5 @@
 // 비밀번호 입력의 eye icon 토글 효과 (여러 개 지원)
-const eyeIcons = document.querySelectorAll('.eye-icon');
+const eyeIcons = document.querySelectorAll('.eye-icon-c');
 
 eyeIcons.forEach((eyeIcon) => {
     // 아이콘 바로 앞(형제)에 있는 input을 찾음

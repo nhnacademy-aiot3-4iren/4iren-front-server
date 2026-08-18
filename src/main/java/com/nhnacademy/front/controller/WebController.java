@@ -38,6 +38,7 @@ public class WebController {
     @GetMapping("/table")
     public String getAlertHis() { return "basic/table"; }
 
-    @GetMapping("/mypage/myteams")
+    @GetMapping("/team")
     public String getMyTeams() { return "/mypage/myteams"; }
+
 }
