@@ -1,5 +1,26 @@
 package com.nhnacademy.front.auth.config;
 
-// 인터 셉터 등록 및 설정
-public class WebConfig {
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+/**
+ * 인터셉터 등록 및 경로 제외 설정
+ */
+@Configuration
+@RequiredArgsConstructor
+public class WebConfig implements WebMvcConfigurer {
+
+    private final AuthInterceptor authInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor)
+                .addPathPatterns("/**") // 모든 경로에 대해 인터셉터 적용
+                .excludePathPatterns(
+                        "/", "/login", "/logout", "/signup",    // 로그인/가입 관련 경로는 제외
+                        "/css/**", "/js/**", "/photo/**", "/images/**", "/favicon.ico", "/error" // 정적 파일 제외
+                );
+    }
 }
