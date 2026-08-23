@@ -103,6 +103,10 @@ function requestTelegramLink(botType) {
         if (btn) btn.style.pointerEvents = 'none';
     });
 
+    // ★ 클릭 이벤트 핸들러 안에서 순차적으로(동기) 빈 창을 먼저 연다.
+    //    -> 브라우저가 사용자 제스처로 인정해서 팝업 차단을 피할 수 있음
+    const popup = window.open('', '_blank');  //< 빈페이지를 띄움
+
     fetch(`/telegram/${botType}/link-token`, { method: 'POST' })
         .then(res => {
             if (!res.ok) {
@@ -113,22 +117,26 @@ function requestTelegramLink(botType) {
             return res.json();
         })
         .then(data => {
-            // 백엔드 LinkTokenResponse 필드명: deepLinkUrl, expiresInSeconds
             const deepLinkUrl = data.deepLinkUrl;
             const timeLimit = data.expiresInSeconds;
 
-            //텔레그램 딥링크 새 창으로 열기
-            window.open(deepLinkUrl, '_blank');
+            // ★ 미리 열어둔 빈 창에 URL만 주입
+            if (popup) {
+                popup.location.href = deepLinkUrl;
+            } else {
+                // 브라우저 설정 등으로 애초에 open() 자체가 막힌 경우 (극히 드묾)
+                console.warn(`[${botType}] 팝업이 차단되어 새 창을 열지 못했습니다.`);
+                alert('팝업이 차단되어 텔레그램 창을 열 수 없습니다. 브라우저의 팝업 차단을 해제해주세요.');
+            }
 
-            // UI를 '연동중'으로 전환하고 타이머 시작
             showTelegramState(botType, 'pending');
             startTelegramTimer(botType, timeLimit);
-
-            //폴링 시작 (3초마다 연동 완료 확인)
             startPolling(botType);
         })
         .catch(err => {
             console.error(`[${botType}] 링크 발급 에러:`, err);
+            // ★ fetch 실패 시, 열어놨던 빈 창은 닫아준다 (빈 탭만 남는 것 방지)
+            if (popup) popup.close();
             alert(err.message || '서버와 통신할 수 없습니다.');
         })
         .finally(() => {

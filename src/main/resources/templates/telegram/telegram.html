@@ -64,9 +64,9 @@
 
                             <div class="telegram-bot-columns">
 
-                                <div th:replace="~{basic/telegramBot :: telegram-bot('member', 'Member Bot')}"></div>
+                                <div th:replace="~{telegram/telegramBot :: telegram-bot('member', 'Member Bot')}"></div>
 
-                                <div th:if="${isAdmin}" th:replace="~{basic/telegramBot :: telegram-bot('admin', 'Admin Bot')}"></div>
+                                <div th:if="${isAdmin}" th:replace="~{telegram/telegramBot :: telegram-bot('admin', 'Admin Bot')}"></div>
 
                             </div>
 

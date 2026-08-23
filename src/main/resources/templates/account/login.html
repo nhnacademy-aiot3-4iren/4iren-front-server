@@ -9,12 +9,15 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 <body>
 
+<main class="login-wrapper">
+
 <!-- 좌측 상단 로고 -->
 <div class="brand-logo">
-    <img src="/photo/icon/logo.png" alt="Re I New Logo">
+    <img src="/photo/logo-b.png" alt="Logo">
 </div>
 
 <!-- 왼쪽 캐릭터 -->
@@ -31,7 +34,7 @@
 <!-- 로그인 카드 -->
 <div class="login-card">
     <div class="card-header">
-        <p class="welcome-text">Welcome to <img src="/photo/icon/logo.png" alt="Re I New" class="inline-logo"> !</p>
+        <p class="welcome-text">Welcome to <img src="/photo/logo.png" alt="logo" class="inline-logo"> !</p>
         <div class="signup-box">
             <p class="no-account">No Account ?</p>
             <a href="signup" class="signup-link">Sign up</a>
@@ -58,7 +61,7 @@
         </div>
 
         <div class="forgot-password">
-            <a href="forgot">Forgot Password</a>
+            <a href="/account/forgot">Forgot Password</a>
         </div>
 
         <button type="submit" class="signin-btn">Sign in</button>
@@ -79,7 +82,10 @@
         </button>
     </div>
 </div>
+</main>  <!--login-wrapper-->
 
+<!--Footer-->
+<div th:replace="~{/basic/footer :: footer}"></div>
 
 <script src="/js/eye.js"></script>
 </body>

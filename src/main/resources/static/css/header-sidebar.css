@@ -11,17 +11,65 @@ body {
     background-color: #fcfcfc;
 }
 
-/* ---------------- 전체 레이아웃 (사이드바 + 본문) ---------------- */
+
 .layout {
     display: flex;
+    align-items: stretch;   /* 핵심: 사이드바 높이를 main-wrapper 높이에 맞춤 */
     min-height: 100vh;
+    padding: 24px;
+    gap: 0;                  /* 사이드바-헤더 사이 틈 제거 */
 }
 
-.main-wrap {
-    flex-grow: 1;
+/* ---------------- 사이드바 ---------------- */
+.sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background-color: #FFFFFF;
+    border-radius: 20px 0 0 20px;   /* 오른쪽(헤더 붙는 쪽)만 각지게 */
+    padding: 32px 20px;
     display: flex;
     flex-direction: column;
-    min-width: 0; /* flex 안에서 내용 넘칠 때 레이아웃 깨지는 것 방지 */
+}
+
+/* ---------------- 오른쪽 전체(헤더+컨텐츠) ---------------- */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;   /* 내부 콘텐츠가 넘칠 때 레이아웃 깨짐 방지 */
+}
+
+/* header fragment 루트 요소가 이 클래스를 갖고 있어야 함 */
+.header {
+    background-color: #FFFFFF;
+    border-radius: 0 20px 0 0;      /* 왼쪽(사이드바 붙는 쪽)만 각지게 */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    gap: 24px;
+    padding: 24px 0 24px 24px;   /* 프로필 카드가 사이드바에 딱 붙지 않게 여백 */
+    background-color: #F3F4F6;   /* content 영역만 은은한 배경, 원치 않으면 제거 */
+}
+
+.profile-card {
+    flex: 1;
+    background-color: #FFFFFF;
+    border-radius: 24px;
+    padding: 40px 48px;
+}
+
+.side-banner {
+    width: 180px;
+    border-radius: 24px;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #FFCB94 0%, #F9DED0 100%);
+    margin-right: 24px;
 }
 
 .main-content {
@@ -42,11 +90,11 @@ body {
 }
 
 .sidebar-logo {
-    text-align: center;
     margin-bottom: 40px;
 }
 
 .sidebar-logo img {
+    margin-left: -30px;
     width: 140px;
     height: auto;
 }
@@ -89,17 +137,10 @@ body {
 }
 
 /* ---------------- 상단 헤더 ---------------- */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background-color: #ffffff;
-}
 
 .page-title {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 600;
     color: #333;
     margin: 0;
 }
