@@ -23,6 +23,6 @@ public class WebController {
     public String getAlertHis() { return "basic/table"; }
 
     @GetMapping("/team")
-    public String getMyTeams() { return "/mypage/myteams"; }
+    public String getMyTeams() { return "mypage/myteams"; }
 
 }
