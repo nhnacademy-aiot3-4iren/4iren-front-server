@@ -46,31 +46,34 @@
             <h1>Sign Up</h1>
             <span class="subtitle">회원가입</span>
         </div>
+        
+        <!-- 에러 메시지 출력 -->
+        <div th:if="${errorMessage}" style="color: #dc3545; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-weight: bold; text-align: center;" th:text="${errorMessage}"></div>
 
         <!--회원가입 입력칸-->
-        <form action="/signup" method="POST">
+        <form action="/signup" method="POST" th:object="${registerRequest}">
             <div class="enterid">
                 <label for="userId">사용할 ID를 입력하세요</label>
-                <input type="text" id="userId" name="loginId" placeholder="사용할 아이디">
+                <input type="text" id="userId" th:field="*{loginId}" placeholder="사용할 아이디">
             </div>
 
         <!--사용자 이름 & e-mail 입력칸-->
         <div class="ne-input">
             <div class="name-email">
             <label for="username">사용자 이름</label>
-                <input type="text" id="username" name="name" placeholder="사용자 이름">
+                <input type="text" id="username" th:field="*{name}" placeholder="사용자 이름">
             </div>
 
             <div class="name-email">
             <label for="email">e-mail</label>
-                <input type="text" id="email" name="email" placeholder="e-mail">
+                <input type="email" id="email" th:field="*{email}" placeholder="e-mail">
             </div>
         </div>
 
         <div class="pw-box">
             <label for="password">사용할 비밀번호를 입력하세요.</label>
             <div class="password-wrapper">
-                <input type="password" id="password" name="password" placeholder="비밀번호">
+                <input type="password" id="password" th:field="*{password}" placeholder="비밀번호 (8자 이상)" minlength="8" required>
                 <img src="/photo/icon/pw-eye.png" alt="비밀번호 보기" class="eye-icon-c" id="eye-icon">
             </div>
         </div>

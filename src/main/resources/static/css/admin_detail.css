@@ -1,0 +1,24 @@
+    
+        .detail-wrap {
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .info-group { margin-bottom: 20px; border-bottom: 1px solid #f1f3f5; padding-bottom: 15px; }
+        .info-group:last-child { border-bottom: none; }
+        .info-label { font-weight: 600; color: #6c757d; font-size: 14px; margin-bottom: 5px; }
+        .info-value { font-size: 16px; color: #212529; font-weight: 500; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .btn-secondary:hover { background-color: #5a6268; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-success { background-color: #198754; color: white; }
+        
+        .action-buttons { display: flex; gap: 10px; margin-top: 30px; justify-content: center; }
+        .action-buttons form { margin: 0; }
+    
