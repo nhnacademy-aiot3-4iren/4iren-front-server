@@ -528,3 +528,109 @@ h4.subtitle {
     color: var(--primary-orange);
 }
 
+/* Footer */
+footer {
+    background-color: var(--footer-bg);
+    padding: 60px 0 30px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+    margin-left: 100px;
+}
+
+.subscribe-box {
+    display: flex;
+    background: white;
+    border-radius: 30px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    width: 350px;
+    margin-right: 100px;
+}
+
+.subscribe-box input {
+    border: none;
+    outline: none;
+    padding: 10px 15px;
+    flex: 1;
+    border-radius: 30px;
+}
+
+.subscribe-box input::placeholder {
+    color: #999;
+    opacity: 1;  /* 파이어폭스는 기본적으로 placeholder에 투명도가 걸려있어서 명시해주는 게 안전함 */
+}
+
+.subscribe-box button {
+    background: var(--primary-orange);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 100px;
+    margin-bottom: 40px;
+    margin-left: 120px;
+}
+
+.footer-col h5 {
+    font-size: 16px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.footer-col ul li a {
+    color: var(--text-gray);
+}
+
+.footer-col ul li a:hover {
+    color: var(--primary-orange);
+}
+
+.github-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    color: white;
+    margin-left: 15px;
+}
+
+.github-link:hover {
+    background: var(--primary-orange);
+}
+
+.footer-bottom {
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.footer-copyright {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-gray);
+    margin-left: 50px;
+}

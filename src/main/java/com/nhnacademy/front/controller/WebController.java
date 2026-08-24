@@ -44,4 +44,5 @@ public class WebController {
     @GetMapping("/alert-history")
     public String getAlertHistory() { return "/alarms/alert-history"; }
 
+
 }
