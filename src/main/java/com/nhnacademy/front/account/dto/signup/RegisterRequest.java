@@ -3,8 +3,10 @@ package com.nhnacademy.front.account.dto.signup;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+import java.beans.ConstructorProperties;
+
 // 회원가입 요청 DTO
-public record SignupRequest(
+public record RegisterRequest(
     @NotBlank(message = "아이디는 필수입니다")
     String loginId,
 
@@ -17,4 +19,7 @@ public record SignupRequest(
 
     @NotBlank(message = "이름은 필수입니다")
     String name
-) {}
+) {
+    @ConstructorProperties({"loginId", "email", "password", "name"})
+    public RegisterRequest{}
+}

@@ -1,6 +1,8 @@
 package com.nhnacademy.front.auth.controller;
 
-import com.nhnacademy.front.auth.dto.login.LoginRequestDto;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.front.auth.dto.login.LoginRequest;
 import com.nhnacademy.front.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -19,12 +21,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // 1. 루트 (/) 접속 시 로그인 페이지로 리다이렉트
-    @GetMapping("/")
-    public String home() {
-        return "redirect:/login";
-    }
-
     // 2. 로그인 페이지 HTML 띄우기 (GET /login)
     @GetMapping("/login")
     public String loginPage(
@@ -40,17 +36,36 @@ public class AuthController {
     // 3. 로그인 폼 제출 처리 (POST /login)
     @PostMapping("/login")
     public String login(
-            @Valid @ModelAttribute LoginRequestDto requestDto,
-            HttpServletResponse response
+            @Valid @ModelAttribute LoginRequest requestDto,
+            HttpServletResponse response,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes
     ) {
         try {
             // AuthService를 통해 로그인 및 HttpOnly 쿠키 생성
             authService.login(requestDto, response);
-            log.info("Login success for user: {}", requestDto.userLoginId());
+            log.info("Login success for user: {}", requestDto.loginId());
             return "redirect:/";
+        } catch (feign.FeignException e) {
+            String errorMessage = "로그인에 실패했습니다.";
+            try {
+                String content = e.contentUTF8();
+                if (content != null && !content.isEmpty()) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    JsonNode node = objectMapper.readTree(content);
+                    if (node.has("message")) {
+                        errorMessage = node.get("message").asText();
+                    }
+                }
+            } catch (Exception ex) {
+                log.warn("Failed to parse error message: {}", ex.getMessage());
+            }
+            log.error("Login failed (Feign): {}", errorMessage);
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            return "redirect:/login";
         } catch (Exception e) {
             log.error("Login failed: {}", e.getMessage());
-            return "redirect:/login?error";
+            redirectAttributes.addFlashAttribute("errorMessage", "서버 오류가 발생했습니다.");
+            return "redirect:/login";
         }
     }
 
@@ -63,6 +78,6 @@ public class AuthController {
         // AuthService를 통해 로그아웃 및 쿠키 삭제
         authService.logout(accessToken, response);
         log.info("Logout completed");
-        return "redirect:/login";
+        return "redirect:/";
     }
 }

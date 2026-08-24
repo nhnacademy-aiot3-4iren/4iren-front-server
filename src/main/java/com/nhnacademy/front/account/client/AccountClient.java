@@ -1,8 +1,8 @@
 package com.nhnacademy.front.account.client;
 
-import com.nhnacademy.front.account.dto.signup.SignupRequest;
+import com.nhnacademy.front.account.dto.signup.RegisterRequest;
 import com.nhnacademy.front.account.dto.user.UpdateRequest;
-import com.nhnacademy.front.account.dto.user.UserResponseDto;
+import com.nhnacademy.front.account.dto.user.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,27 +12,24 @@ public interface AccountClient {
 
     // 1. 회원가입
     @PostMapping("/signup")
-    void signup(@RequestBody SignupRequest requestDto);
+    void signup(@RequestBody RegisterRequest requestDto);
 
     // 2. 회원 상세 정보 조회 (마이페이지 등)
     @GetMapping("/{user-id}")
-    UserResponseDto getUser(
-            @PathVariable("user-id") Long userId, //대상 사용자 id
-            @RequestHeader("X-User-Id") Long requesterId //요청을 보낸 본인 id
+    UserResponse getUser(
+            @PathVariable("user-id") Long userId //대상 사용자 id
     );
 
     // 3. 회원 정보 수정
     @PutMapping("/{user-id}")
-    UserResponseDto updateUser(
+    UserResponse updateUser(
             @PathVariable("user-id") Long userId,
-            @RequestHeader("X-User-Id") Long requesterId,
             @RequestBody UpdateRequest request
     );
 
     // 4. 회원 탈퇴
     @PatchMapping("/{user-id}")
     void withdraw(
-            @PathVariable("user-id") Long userId,
-            @RequestHeader("X-User-Id") Long requesterId
+            @PathVariable("user-id") Long userId
     );
 }

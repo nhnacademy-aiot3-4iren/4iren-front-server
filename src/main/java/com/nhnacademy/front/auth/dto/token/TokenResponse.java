@@ -2,6 +2,7 @@ package com.nhnacademy.front.auth.dto.token;
 
 public record TokenResponse(
     String accessToken,
-    String refreshToken
+    String refreshToken,
+    Boolean firstLogin
 ){}
 

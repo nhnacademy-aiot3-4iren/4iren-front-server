@@ -1,9 +1,9 @@
-package com.nhnacademy.front.auth.dto.user;
+package com.nhnacademy.front.account.dto.user;
 
 import java.time.LocalDateTime;
 
 // 회원 정보 응답 DTO
-public record UserResponse(
+public record UserResponse (
         Long userId,
         String loginId,
         String role,

@@ -1,11 +1,12 @@
 package com.nhnacademy.front.auth.service;
 
 import com.nhnacademy.front.auth.client.AuthClient;
-import com.nhnacademy.front.auth.dto.login.LoginRequestDto;
+import com.nhnacademy.front.auth.dto.login.LoginRequest;
 import com.nhnacademy.front.auth.dto.token.TokenResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,15 @@ public class AuthService {
 
     private final AuthClient authClient;
 
+    @Value("${app.cookie.secure:false}")
+    private boolean isSecureCookie;
+
     // 1. 로그인 처리 및 쿠키 세팅
-    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        log.info("Requesting login to auth-api for user: {}", loginRequestDto.userLoginId());
+    public void login(LoginRequest loginRequest, HttpServletResponse response) {
+        log.info("Requesting login to auth-api for user: {}", loginRequest.loginId());
 
         // auth-api 로 로그인 요청
-        ResponseEntity<TokenResponse> resp = authClient.login(loginRequestDto);
+        ResponseEntity<TokenResponse> resp = authClient.login(loginRequest);
 
         // 1) auth-api에서 전달된 Set-Cookie 헤더(refreshToken 등)를 클라이언트 브라우저로 전달
         List<String> cookies = resp.getHeaders().get(HttpHeaders.SET_COOKIE);
@@ -41,7 +45,7 @@ public class AuthService {
             ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
                     .path("/")
                     .httpOnly(true)
-                    .secure(false) // 개발 환경: false, HTTPS: true
+                    .secure(isSecureCookie) // 개발 환경: false, HTTPS: true
                     .sameSite("Lax")
                     .maxAge(60 * 60) // 1시간 유지
                     .build();
@@ -64,7 +68,7 @@ public class AuthService {
         ResponseCookie ac = ResponseCookie.from("accessToken", "")
                 .path("/")
                 .httpOnly(true)
-                .secure(false)
+                .secure(isSecureCookie)
                 .sameSite("Lax")
                 .maxAge(0)
                 .build();
@@ -74,7 +78,7 @@ public class AuthService {
         ResponseCookie rc = ResponseCookie.from("refreshToken", "")
                 .path("/")
                 .httpOnly(true)
-                .secure(false)
+                .secure(isSecureCookie)
                 .sameSite("Lax")
                 .maxAge(0)
                 .build();
