@@ -39,29 +39,35 @@ public class GlobalControllerAdvice {
     }
 
     private String extractClaim(HttpServletRequest request, String claimKey) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("accessToken".equals(cookie.getName())) {
-                    String token = cookie.getValue();
-                    if (token != null && !token.isEmpty() && token.startsWith("Bearer ")) {
-                        token = token.substring(7);
-                    }
-                    if (token != null && !token.isEmpty()) {
-                        try {
-                            String[] parts = token.split("\\.");
-                            if (parts.length > 1) {
-                                String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
-                                JsonNode jsonNode = objectMapper.readTree(payload);
-                                if (jsonNode.has(claimKey)) {
-                                    return jsonNode.get(claimKey).asText();
-                                }
-                            }
-                        } catch (Exception e) {
-                            log.warn("Failed to decode JWT payload: {}", e.getMessage());
-                        }
+        String token = (String) request.getAttribute("newAccessToken");
+
+        if (token == null || token.isEmpty()) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("accessToken".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
                     }
                 }
+            }
+        }
+
+        if (token != null && !token.isEmpty()) {
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            try {
+                String[] parts = token.split("\\.");
+                if (parts.length > 1) {
+                    String payload = new String(Base64.getUrlDecoder().decode(parts[1]));
+                    JsonNode jsonNode = objectMapper.readTree(payload);
+                    if (jsonNode.has(claimKey)) {
+                        return jsonNode.get(claimKey).asText();
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("Failed to decode JWT payload: {}", e.getMessage());
             }
         }
         return null;
