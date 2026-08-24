@@ -36,15 +36,14 @@
                 <div class="info-left-panel">
                     <div class="info-header">
                         <h2>Team Info</h2>
-                        <span class="role-admin">Admin</span>
+                        <span class="role-admin" th:text="${team.myRole}">Admin</span>
                     </div>
 
                     <div class="input-section">
                         <div class="form-group">
                             <label>TEAM NAME</label>
                             <div class="input-wrapper">
-                                <!-- !! 백엔드 연동 시 th:value="${team.teamName}" 형식으로 데이터 주입 -->
-                                <input type="text" id="editTeamName" value="Team Name">
+                                <input type="text" id="editTeamName" th:value="${team.teamName}">
                                 <button type="button" class="clear-btn" id="clearNameBtn">
                                     <img src="/photo/icon/remove-icon.png" alt="clear" id="clearIcon">
                                 </button>
@@ -53,12 +52,12 @@
 
                         <div class="form-group">
                             <label>DESCRIPTION</label>
-                            <!-- !! 백엔드 연동 시 th:text="${team.teamDescription}" 형식으로 데이터 주입 -->
-                            <textarea id="editTeamDesc" placeholder="Enter about space ..."></textarea>
+                            <textarea id="editTeamDesc" placeholder="Enter about space ..." th:text="${team.description}"></textarea>
                         </div>
                     </div>
 
-                    <button class="btn-save" id="saveTeamInfoBtn">Team Info Save</button>
+                    <button class="btn-save" id="saveTeamInfoBtn"
+                            th:if="${team.myRole != null && team.myRole.isManager()}">Team Info Save</button>
                 </div>
 
                 <!-- ============================================== -->
@@ -73,21 +72,19 @@
                                 <h3>belonging</h3>
                                 <span class="sub-text">Space 소속 공간</span>
                             </div>
-                            <button class="btn-building-list">
+                            <a class="btn-building-list" th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId})}">
                                 <img src="/photo/icon/arrow-icon.png" alt="go"> Building List
-                            </button>
+                            </a>
                         </div>
 
                         <div class="stat-boxes">
                             <div class="stat-box">
                                 <span class="stat-label">Buildings</span>
-                                <!--!! 백엔드 연동: th:text="|총 ${buildingCount}개|" -->
-                                <div class="stat-value">총 0개</div>
+                                <div class="stat-value" th:text="|총 ${team.buildingCount}개|">총 0개</div>
                             </div>
                             <div class="stat-box">
                                 <span class="stat-label">Classroom</span>
-                                <!-- !!백엔드 연동: th:text="|총 ${classroomCount}개|" -->
-                                <div class="stat-value">총 0개</div>
+                                <div class="stat-value" th:text="|총 ${team.roomCount}개|">총 0개</div>
                             </div>
                         </div>
                     </div>
@@ -106,8 +103,7 @@
                             </div>
                             <div class="member-count-box">
                                 <span class="member-label">Total Members</span>
-                                <!-- !!백엔드 연동: th:text="${memberCount}" -->
-                                <span class="member-number">0</span>
+                                <span class="member-number" th:text="${team.memberCount}">0</span>
                             </div>
                         </div>
                     </div>
@@ -121,7 +117,8 @@
 
 
 <!-- Js-->
-<script>
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
     const editTeamName = document.getElementById('editTeamName');
     const clearNameBtn = document.getElementById('clearNameBtn');
     const saveTeamInfoBtn = document.getElementById('saveTeamInfoBtn');
@@ -149,8 +146,8 @@
         editTeamName.focus(); // 지운 후 다시 입력할 수 있게 커서 활성화
     });
 
-    // 저장 버튼 클릭 시 동작
-    saveTeamInfoBtn.addEventListener('click', () => {
+    if (saveTeamInfoBtn) {
+    saveTeamInfoBtn.addEventListener('click', async () => {
         const updatedName = editTeamName.value.trim();
         const updatedDesc = editTeamDesc.value.trim();
 
@@ -159,32 +156,27 @@
             return;
         }
 
-        // 실제로는 백엔드로 수정한 데이터를 전송(fetch/axios)해야 합니다.
-        // 여기서는 성공적으로 변경되었다고 가정하고 이전 페이지(리스트)로 돌아갑니다.
-        alert("팀 정보가 성공적으로 수정되었습니다!");
+        try {
+            const response = await fetch(`/api/front/teams/${teamId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    teamName: updatedName,
+                    description: updatedDesc
+                })
+            });
 
-        // 이전 페이지로 돌아가기 (임시 연동)
-        globalThis.history.back();
-        // 실제 운영 시: window.location.href = '/myteams'; 등으로 이동
-    });
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
 
-    // 페이지가 로드될 때 주소창으로 데이ㅓ 가져오기
-    window.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const passedName = urlParams.get('name');
-        const passedDesc = urlParams.get('desc');
-
-        // 가져온 데이터가 있다면 빈칸에 채워 넣습니다.
-        if (passedName) {
-            editTeamName.value = passedName;
+            alert("팀 정보가 성공적으로 수정되었습니다!");
+            window.location.href = '/team';
+        } catch (error) {
+            alert(error.message || "팀 정보 수정에 실패했습니다.");
         }
-        if (passedDesc) {
-            editTeamDesc.value = passedDesc;
-        }
-
-        // 데이터 채워졋으니까 x 버튼도 띄워주기
-        toggleClearButton();
     });
+    }
 </script>
 
 <div th:replace="~{basic/footer :: footer}"></div>
