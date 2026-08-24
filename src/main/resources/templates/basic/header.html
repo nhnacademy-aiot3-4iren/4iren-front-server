@@ -22,8 +22,8 @@
 
     <!-- 유저 이름 / 역할 -->
     <div class="user-info">
-      <span class="user-name">Jae na</span>
-      <span class="user-role">Admin</span>
+      <span class="user-name" th:text="${loginId != null ? loginId : 'Guest'}">Jae na</span>
+      <span class="user-role" th:text="${role != null ? role : 'Unknown'}">Admin</span>
     </div>
 
     <!-- 토글 화살표: user-info의 자식이 아니라 형제로 분리

@@ -29,3 +29,7 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
+
+app:
+  cookie:
+    secure: true

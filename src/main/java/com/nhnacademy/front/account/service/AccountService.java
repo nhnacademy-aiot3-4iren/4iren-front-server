@@ -1,0 +1,39 @@
+package com.nhnacademy.front.account.service;
+
+import com.nhnacademy.front.account.client.AccountClient;
+import com.nhnacademy.front.account.dto.signup.RegisterRequest;
+import com.nhnacademy.front.account.dto.user.UpdateRequest;
+import com.nhnacademy.front.account.dto.user.UserResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+// 회원가입,내 정보 조회, 회원정보 수정 로직
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class AccountService {
+    private final AccountClient accountClient;
+
+    //회원가입
+    public void signup(RegisterRequest request){
+        log.info("account-api로 회원가입 요청 전송 - loginId:{} ", request.loginId());
+        accountClient.signup(request);
+    }
+
+    //회원 정보 조회(마이페이지 등)
+    public UserResponse getUser(Long userId) {
+        return accountClient.getUser(userId);
+    }
+
+    //회원 정보 수정
+    public UserResponse updateUser(Long userId, UpdateRequest requestDto) {
+        return accountClient.updateUser(userId, requestDto);
+    }
+
+    //회원 탈퇴
+    public void withdraw(Long userId) {
+        accountClient.withdraw(userId);
+    }
+
+}
