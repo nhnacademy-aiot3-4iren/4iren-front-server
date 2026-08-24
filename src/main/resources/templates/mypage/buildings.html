@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building List - Re I New</title>
+
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/buildings.css}">
+</head>
+<body>
+<div class="layout">
+    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+
+    <div class="main-wrap">
+        <div th:replace="~{basic/header :: header}"></div>
+
+        <main class="main-content">
+            <div class="building-page-header">
+                <div>
+                    <a class="back-link" th:href="@{/team-info/{teamId}(teamId=${team.teamId})}">Team Info</a>
+                    <h2>Building List</h2>
+                    <p th:text="${team.teamName}">Team Name</p>
+                </div>
+                <div class="building-header-actions">
+                    <div class="building-summary">
+                        <span>Buildings</span>
+                        <strong th:text="${buildings.totalElements}">0</strong>
+                    </div>
+                    <button class="building-create-btn" type="button" id="openBuildingModalBtn"
+                            th:if="${team.myRole != null && team.myRole.isManager()}">+ Building 생성</button>
+                </div>
+            </div>
+
+            <section class="building-list-panel" th:if="${!#lists.isEmpty(buildings.content)}">
+                <article class="building-row" th:each="building : ${buildings.content}">
+                    <div class="building-main">
+                        <div class="building-icon">
+                            <img src="/photo/icon/buidling-icon.png" alt="building">
+                        </div>
+                        <div>
+                            <h3 th:text="${building.buildingName}">Building Name</h3>
+                            <p th:text="${#strings.defaultString(building.description, '설명이 없습니다.')}">Description</p>
+                            <address>
+                                <span th:text="${#strings.defaultString(building.roadAddress, '주소 정보 없음')}">Road Address</span>
+                                <span th:if="${building.detailAddress != null && !building.detailAddress.isBlank()}"
+                                      th:text="| ${building.detailAddress}|">Detail Address</span>
+                            </address>
+                        </div>
+                    </div>
+
+                    <div class="building-stats">
+                        <div>
+                            <span>Rooms</span>
+                            <strong th:text="${building.roomCount}">0</strong>
+                        </div>
+                        <div>
+                            <span>Sensors</span>
+                            <strong th:text="${building.sensorCount}">0</strong>
+                        </div>
+                        <div>
+                            <span>Devices</span>
+                            <strong th:text="${building.deviceCount}">0</strong>
+                        </div>
+                    </div>
+
+                    <a class="building-detail-link"
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                        상세 정보
+                    </a>
+                </article>
+            </section>
+
+            <div class="empty-state building-empty" th:if="${#lists.isEmpty(buildings.content)}">
+                <p>등록된 건물이 없습니다.</p>
+            </div>
+
+            <nav class="building-pagination" th:if="${buildings.totalPages > 1}">
+                <a th:classappend="${buildings.first} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId}, page=${buildings.page - 1}, size=${size}, sort=${sort})}">
+                    Previous
+                </a>
+                <span th:text="|${buildings.page + 1} / ${buildings.totalPages}|">1 / 1</span>
+                <a th:classappend="${buildings.last} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId}, page=${buildings.page + 1}, size=${size}, sort=${sort})}">
+                    Next
+                </a>
+            </nav>
+
+            <div class="modal-overlay" id="buildingModalOverlay">
+                <div class="modal-folder-wrapper building-modal">
+                    <div class="modal-tab">Building 생성</div>
+                    <div class="modal-content">
+                        <div class="building-form-group">
+                            <label>Building Name</label>
+                            <input type="text" id="buildingNameInput" placeholder="ex ) NHN Academy">
+                        </div>
+                        <div class="building-form-group">
+                            <label>Description</label>
+                            <textarea id="buildingDescInput" placeholder="건물 설명을 입력해주세요."></textarea>
+                        </div>
+                        <div class="form-grid">
+                            <div class="building-form-group">
+                                <label>Road Address</label>
+                                <div class="address-input-row">
+                                    <input type="text" id="roadAddressInput" placeholder="도로명 주소" readonly>
+                                    <button type="button" id="searchAddressBtn">주소 찾기</button>
+                                </div>
+                            </div>
+                            <div class="building-form-group">
+                                <label>Detail Address</label>
+                                <input type="text" id="detailAddressInput" placeholder="상세 주소">
+                            </div>
+                        </div>
+                        <div class="building-form-group">
+                            <label>Region Name</label>
+                            <input type="text" id="regionNameInput" placeholder="ex ) 광주 동구">
+                        </div>
+                        <div class="building-modal-actions">
+                            <button class="modal-cancel-btn" type="button" id="closeBuildingModalBtn">Cancel</button>
+                            <button class="modal-submit-btn" type="button" id="createBuildingBtn">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{basic/footer :: footer}"></div>
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+</script>
+<script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="/js/buildings.js"></script>
+</body>
+</html>

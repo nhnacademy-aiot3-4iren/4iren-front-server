@@ -5,11 +5,13 @@
      ================================================================ -->
 <aside xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar" class="sidebar">
     <div class="sidebar-logo">
-        <img src="/photo/logo.png" alt="Logo">
+        <a href="/">
+            <img src="/photo/logo.png" alt="Logo">
+        </a>
     </div>
 
     <nav class="sidebar-nav">
-        <a href="/templates/mypage/myteams.html" class="nav-item active" data-page="team">
+        <a href="/team" class="nav-item active" data-page="team">
             <img src="/photo/icon/team-icon.png" alt="team">
             <span>Team</span>
         </a>
