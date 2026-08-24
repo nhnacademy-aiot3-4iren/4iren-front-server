@@ -11,6 +11,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 
@@ -83,5 +85,40 @@ public class AuthService {
                 .maxAge(0)
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, rc.toString());
+    }
+
+
+    // 3. 토큰 갱신 (리프레시 토큰 사용)
+    public boolean refresh(String refreshToken, HttpServletResponse response) {
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            return false;
+        }
+        try {
+            ResponseEntity<TokenResponse> resp = authClient.refreshToken(refreshToken);
+            
+            // 응답에서 새 accessToken 추출 후 쿠키에 저장
+            if (resp.getBody() != null && resp.getBody().accessToken() != null) {
+                String newAccessToken = resp.getBody().accessToken();
+                ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", newAccessToken)
+                        .path("/")
+                        .httpOnly(true)
+                        .secure(isSecureCookie)
+                        .sameSite("Lax")
+                        .maxAge(60 * 60) // 1시간
+                        .build();
+                response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+
+                // FeignConfig 등에서 즉시 참조할 수 있도록 Request 객체의 속성에 저장해 둠
+                ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+                if (attributes != null) {
+                    attributes.getRequest().setAttribute("newAccessToken", newAccessToken);
+                }
+
+                return true;
+            }
+        } catch (Exception e) {
+            log.warn("Token refresh failed: {}", e.getMessage());
+        }
+        return false;
     }
 }
