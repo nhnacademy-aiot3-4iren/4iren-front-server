@@ -202,8 +202,8 @@ window.addEventListener('load', function () {
             }
         });
     }, {
-        threshold: 0.5
-        // box가 50% 이상 화면에 보였을 때 isIntersecting이 true가 되도록 설정함
+        threshold: 0.7
+        // box가 70% 이상 화면에 보였을 때 isIntersecting이 true가 되도록 설정함
     });
 
     observer.observe(box);

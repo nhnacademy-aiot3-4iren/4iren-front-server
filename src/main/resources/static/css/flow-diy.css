@@ -33,19 +33,13 @@ body {
 }
 
 .logo {
-    margin-bottom: 30%;
-    margin-left: 24%;
+    margin-bottom: 20%;
+    margin-left: 10%;
 }
-
-/*.logo-label {*/
-/*    display: block;*/
-/*    font-size: 11px;*/
-/*    color: #B0B4BA;*/
-/*    margin-bottom: 30%;*/
-/*}*/
 
 .logo img {
     height: 55px;
+    width: 100px;
 }
 
 /* ================= 토글 버튼 (Node, Connection 공통) =================

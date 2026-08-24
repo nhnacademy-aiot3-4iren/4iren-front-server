@@ -6,29 +6,39 @@
     <title>4iren</title>
     <!-- 폰트 적용 (Pretendard) -->
     <link rel="stylesheet" href="/css/start.css">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 <body>
 
 <!-- Header -->
 <header>
         <div class="container">
-            <a href="#">
-                <img src="/photo/logo.png" alt="Re I New Logo" class="logo-img">
+            <a href="/start">
+                <img src="/photo/logo.png" alt="Logo" class="logo-img">
             </a>
             <nav>
                 <a href="#" class="active">Contact Us &gt;</a>
                 <a href="#">Classroom</a>
                 <div class="chatai">
-                    <button onclick="location.href='/llm'" class="button">
+                    <a href="/llm" class="button">
                     Chat AI
-                    </button>
+                    </a>
                 </div>
                 <a href="#">Dashboard</a>
                 <a href="/mypage">My Page</a>
             </nav>
-            <div class="auth-buttons">
-                <button onclick="location.href='/login'" class="btn btn-outline">Login</button>
-                <button onclick="location.href='/signup'" class="btn btn-solid">Sign Up</button>
+            <div class="auth-buttons" th:if="${loginId == null}">
+                <a href="/login" class="btn btn-outline">Login</a>
+                <a href="/signup" class="btn btn-solid">Sign Up</a>
+            </div>
+            <div class="auth-buttons" th:if="${loginId != null}" style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-weight: 500; font-size: 15px;">
+                    <span th:text="${loginId}"></span>
+                    <span style="font-size: 0.85em; opacity: 0.8;" th:text="'(' + ${role} + ')'"></span>
+                </span>
+                <form action="/logout" method="post" style="margin: 0;">
+                    <button type="submit" class="btn btn-outline" style="padding: 10px 20px;">Logout</button>
+                </form>
             </div>
         </div>
 </header>
@@ -59,12 +69,11 @@
             </ul>
         </div>
         <div class="flex-col">
-            <div class="img-box">
-                <img src="/photo/uni.png" alt="대학교 이미지" class="uni-img">
+            <div class="img-box" id="imgBox">
+                <img src="/photo/uni.png"  alt="대학교 이미지" class="uni-img">
                 <img src="/photo/img_1.png" alt="대형학원 이미지" class="aca-img">
                 <img src="/photo/img_2.png" alt="IT 실습십 이미지" class="it-img">
                 <img src="/photo/library.png" alt="도서관 이미지" class="lib-img">
-
             </div>
         </div>
     </div>
@@ -149,80 +158,14 @@
 </section>
 
 <!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="footer-top">
-            <!-- 이미지 로고(Footer) -->
-            <a href="#">
-                <img src="/photo/icon/logo.png" alt="Re I New Logo" class="logo-img">
-            </a>
-            <div class="subscribe-box">
-                <span style="padding: 10px; color: var(--primary-orange);">🔍</span>
-                <input type="text" placeholder="Search Anything">
-                <button>Subscribe</button>
-            </div>
-        </div>
-
-        <div class="footer-links">
-            <div class="footer-col">
-                <h5>Column One</h5>
-                <ul>
-                    <li>Twenty One</li>
-                    <li>Thirty Two</li>
-                    <li>Fourty Three</li>
-                    <li>Fifty Four</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5>Column Two</h5>
-                <ul>
-                    <li>Sixty Two</li>
-                    <li>Seventy Six</li>
-                    <li>Eighty Seven</li>
-                    <li>Ninety Eight</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5>Column Three</h5>
-                <ul>
-                    <li>One Two</li>
-                    <li>Three Four</li>
-                    <li>Five Six</li>
-                    <li>Seven Eight</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5>Column Four</h5>
-                <div class="app-badges">
-                    <div class="badge"> App Store</div>
-                    <div class="badge">▶ Google Play</div>
-                </div>
-                <p style="font-size: 12px; margin-bottom: 10px; font-weight: bold;">Join Us</p>
-                <div class="social-icons">
-                    <span>▶</span>
-                    <span>f</span>
-                    <span>t</span>
-                    <span>◎</span>
-                    <span>in</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div>Copyright © 2024 Re I New. All rights reserved.</div>
-            <div class="footer-bottom-links">
-                <span>Privacy</span>
-                <span>Terms</span>
-                <span>Sitemap</span>
-            </div>
-        </div>
-    </div>
-</footer>
-
+<div th:replace="~{/basic/footer :: footer}"></div>
 
 <script type="module" src="/js/background.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<!--Section 1 : img-box -->
+<script src="/js/move-img.js"></script>
+<!---->
 <script src="/js/falling-pill.js"></script>
 </body>
 </html>

@@ -9,12 +9,15 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 <body>
 
+<main class="login-wrapper">
+
 <!-- 좌측 상단 로고 -->
 <div class="brand-logo">
-    <img src="/photo/icon/logo.png" alt="Re I New Logo">
+    <img src="/photo/logo-b.png" alt="Logo">
 </div>
 
 <!-- 왼쪽 캐릭터 -->
@@ -31,7 +34,7 @@
 <!-- 로그인 카드 -->
 <div class="login-card">
     <div class="card-header">
-        <p class="welcome-text">Welcome to <img src="/photo/icon/logo.png" alt="Re I New" class="inline-logo"> !</p>
+        <p class="welcome-text">Welcome to <img src="/photo/logo.png" alt="logo" class="inline-logo"> !</p>
         <div class="signup-box">
             <p class="no-account">No Account ?</p>
             <a href="signup" class="signup-link">Sign up</a>
@@ -43,22 +46,26 @@
         <span class="subtitle">로그인</span>
     </div>
 
-    <form action="#" method="POST">
+    <div th:if="${errorMessage}" class="error-message" style="color: #ff4d4f; background-color: #fff2f0; border: 1px solid #ffccc7; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9em; text-align: center;">
+        <span th:text="${errorMessage}">아이디 또는 비밀번호가 올바르지 않습니다.</span>
+    </div>
+
+    <form action="/login" method="POST">
         <div class="input-group">
-            <label for="username">아이디 or e-mail 주소</label>
-            <input type="text" id="username" placeholder="아이디 또는 이메일 주소">
+            <label for="loginId">아이디</label>
+            <input type="text" id="loginId" name="loginId" placeholder="아이디">
         </div>
 
         <div class="input-group">
             <label for="password">비밀번호</label>
             <div class="password-wrapper">
-                <input type="password" id="password" placeholder="비밀번호">
+                <input type="password" id="password" name="password" placeholder="비밀번호">
                 <img src="/photo/icon/pw-eye.png" alt="비밀번호 보기" class="eye-icon-c" id="eye-icon">
             </div>
         </div>
 
         <div class="forgot-password">
-            <a href="forgot">Forgot Password</a>
+            <a href="/account/forgot">Forgot Password</a>
         </div>
 
         <button type="submit" class="signin-btn">Sign in</button>
@@ -79,7 +86,10 @@
         </button>
     </div>
 </div>
+</main>  <!--login-wrapper-->
 
+<!--Footer-->
+<div th:replace="~{/basic/footer :: footer}"></div>
 
 <script src="/js/eye.js"></script>
 </body>

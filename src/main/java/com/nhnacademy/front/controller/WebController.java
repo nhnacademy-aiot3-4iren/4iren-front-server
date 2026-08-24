@@ -13,29 +13,16 @@ public class WebController {
         return "start";
     }
 
-//    @GetMapping("/llm")
-//    public String getLlm() {
-//        return "llm";
-//    }
-
-    @GetMapping("/login")
-    public String getLogin() {
-        return "login";
-    }
-
-    @GetMapping("/signup")
-    public String getSign() { return "signup"; }
-
     @GetMapping("/forgot")
-    public String getForgot() { return "forgot"; }
+    public String getForgot() { return "/account/forgot"; }
 
     @GetMapping("/flowdiy")
     public String getFlowdiy() { return "flow-diy"; }
 
-    @GetMapping("/mypage")
-    public String getMypage() { return "mypage"; }
+    @GetMapping("/table")
+    public String getAlertHis() { return "basic/table"; }
 
-    @GetMapping("/tele")
-    public String getTelegram() { return "telegram"; }
+    @GetMapping("/team")
+    public String getMyTeams() { return "/mypage/myteams"; }
 
 }
