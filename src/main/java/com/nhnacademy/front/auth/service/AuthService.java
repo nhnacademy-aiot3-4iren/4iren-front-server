@@ -27,7 +27,7 @@ public class AuthService {
     private boolean isSecureCookie;
 
     // 1. 로그인 처리 및 쿠키 세팅
-    public void login(LoginRequest loginRequest, HttpServletResponse response) {
+    public TokenResponse login(LoginRequest loginRequest, HttpServletResponse response) {
         log.info("Requesting login to auth-api for user: {}", loginRequest.loginId());
 
         // auth-api 로 로그인 요청
@@ -53,6 +53,8 @@ public class AuthService {
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         }
+        
+        return resp.getBody();
     }
 
     // 2. 로그아웃 처리 및 쿠키 삭제 (만료)
@@ -118,6 +120,29 @@ public class AuthService {
             }
         } catch (Exception e) {
             log.warn("Token refresh failed: {}", e.getMessage());
+        }
+        return false;
+    }
+
+    // 4. 어드민 최초 로그인 여부 확인
+    public boolean isAdminFirstLogin(TokenResponse tokenResponse) {
+        if (tokenResponse == null || !Boolean.TRUE.equals(tokenResponse.firstLogin())) {
+            return false;
+        }
+        String accessToken = tokenResponse.accessToken();
+        if (accessToken != null) {
+            try {
+                String[] parts = accessToken.split("\\.");
+                if (parts.length == 3) {
+                    String payload = new String(java.util.Base64.getUrlDecoder().decode(parts[1]));
+                    com.fasterxml.jackson.databind.JsonNode payloadNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(payload);
+                    if (payloadNode.has("role") && "ADMIN".equals(payloadNode.get("role").asText())) {
+                        return true;
+                    }
+                }
+            } catch (Exception ex) {
+                log.warn("Failed to parse token payload for role check: {}", ex.getMessage());
+            }
         }
         return false;
     }
