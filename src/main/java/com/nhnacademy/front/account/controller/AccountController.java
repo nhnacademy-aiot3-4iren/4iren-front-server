@@ -1,12 +1,16 @@
 package com.nhnacademy.front.account.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.front.account.dto.signup.RegisterRequest;
 import com.nhnacademy.front.account.dto.user.UserResponse;
 import com.nhnacademy.front.account.service.AccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,19 +24,41 @@ public class AccountController {
 
     // 1. 회원가입 페이지 HTML 띄우기 (GET /signup)
     @GetMapping("/signup")
-    public String getSignupPage() {
+    public String getSignupPage(Model model) {
+        if (!model.containsAttribute("registerRequest")) {
+            model.addAttribute("registerRequest", new RegisterRequest("", "", "", ""));
+        }
         return "account/signup"; // signup.html 호출
     }
 
     // 2. 회원가입 폼 제출 처리 (POST /signup)
     @PostMapping("/signup")
-    public String Signup(@ModelAttribute RegisterRequest requestDto) {
-        // AccountService 통해 account-api로 회원가입 요청 전송
-        accountService.signup(requestDto);
-        log.info("Signup success loginId:{}",requestDto.loginId());
+    public String signUp(
+            @Valid @ModelAttribute("registerRequest") RegisterRequest requestDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        // DTO 검증 에러 발생 시 원래 폼으로 돌아감
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errorMessage", bindingResult.getAllErrors().get(0).getDefaultMessage());
+            return "account/signup";
+        }
 
-        // 회원가입 성공 시 로그인 페이지로 리다이렉트
-        return "redirect:/login";
+        try {
+            accountService.signup(requestDto);
+            log.info("Signup success loginId:{}", requestDto.loginId());
+            return "redirect:/login";
+        } catch (feign.FeignException e) {
+            String errorMessage = "회원가입에 실패했습니다. (중복된 아이디/이메일 등)";
+            try {
+                JsonNode node = new ObjectMapper().readTree(e.contentUTF8());
+                if (node.has("message")) errorMessage = node.get("message").asText();
+            } catch (Exception ex) {
+                log.warn("Error parsing feign exception", ex);
+            }
+            model.addAttribute("errorMessage", errorMessage);
+            return "account/signup";
+        }
     }
 
     @GetMapping("/mypage")
