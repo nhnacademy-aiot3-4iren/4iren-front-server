@@ -42,22 +42,22 @@ public class AuthController {
     ) {
         try {
             // AuthService를 통해 로그인 및 HttpOnly 쿠키 생성
-            authService.login(requestDto, response);
+            com.nhnacademy.front.auth.dto.token.TokenResponse tokenResponse = authService.login(requestDto, response);
             log.info("Login success for user: {}", requestDto.loginId());
+
+            if (authService.isAdminFirstLogin(tokenResponse)) {
+                log.info("Admin first login detected. Redirecting to password change.");
+                return "redirect:/admin/change-password";
+            }
+
             return "redirect:/";
         } catch (feign.FeignException e) {
             String errorMessage = "로그인에 실패했습니다.";
             try {
-                String content = e.contentUTF8();
-                if (content != null && !content.isEmpty()) {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    JsonNode node = objectMapper.readTree(content);
-                    if (node.has("message")) {
-                        errorMessage = node.get("message").asText();
-                    }
-                }
+                JsonNode node = new ObjectMapper().readTree(e.contentUTF8());
+                if (node.has("message")) errorMessage = node.get("message").asText();
             } catch (Exception ex) {
-                log.warn("Failed to parse error message: {}", ex.getMessage());
+                log.warn("Error parsing feign exception", ex);
             }
             log.error("Login failed (Feign): {}", errorMessage);
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);

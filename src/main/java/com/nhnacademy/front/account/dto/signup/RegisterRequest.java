@@ -2,6 +2,7 @@ package com.nhnacademy.front.account.dto.signup;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 
 import java.beans.ConstructorProperties;
 
@@ -15,6 +16,7 @@ public record RegisterRequest(
     String email,
 
     @NotBlank(message = "비밀번호는 필수입니다")
+    @Length(min=8, max=100, message="비밀번호는 8자 이상이어야 합니다.")
     String password,
 
     @NotBlank(message = "이름은 필수입니다")
