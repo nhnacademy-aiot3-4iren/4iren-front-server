@@ -8,6 +8,7 @@ spring:
     resources:
           cache:
             period: 0
+
   cloud:
     openfeign:
       client:
@@ -28,6 +29,3 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
-
-server:
-  port: 8090

@@ -10,30 +10,14 @@ public class WebController {
 
     @GetMapping("/")
     public String getHome() {
-        return "/start";
+        return "start";
     }
-
-//    @GetMapping("/llm")
-//    public String getLlm() {
-//        return "llm";
-//    }
-
-    @GetMapping("/login")
-    public String getLogin() {
-        return "/account/login";
-    }
-
-    @GetMapping("/signup")
-    public String getSign() { return "/account/signup"; }
 
     @GetMapping("/forgot")
     public String getForgot() { return "/account/forgot"; }
 
     @GetMapping("/flowdiy")
     public String getFlowdiy() { return "flow-diy"; }
-
-    @GetMapping("/mypage")
-    public String getMypage() { return "/mypage/mypage"; }
 
     @GetMapping("/table")
     public String getAlertHis() { return "basic/table"; }

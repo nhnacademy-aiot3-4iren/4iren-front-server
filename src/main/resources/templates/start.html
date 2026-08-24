@@ -6,6 +6,7 @@
     <title>4iren</title>
     <!-- 폰트 적용 (Pretendard) -->
     <link rel="stylesheet" href="/css/start.css">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 <body>
 
@@ -90,32 +91,19 @@
         <!-- 오른쪽 텍스트 카드 -->
         <div class="flex-col">
             <div class="card-grid">
-                <!-- 1번 카드 (기존) -->
                 <div class="card">
                     <h4>모니터링 & 스마트 알림</h4>
-                    <p>센서 데이터가 인입되는 즉시 비동기 파이프라인을 거쳐 처리되어 시스템이 먼저 변화를 감지하고 꼭 필요한 순간에 관리자에게 알림을 보냅니다.</p>
+                    <p>센서 데이터가 인입되는 즉시 비동기 파이프라인을 거쳐 처리되어 시스템이 먼저 변화를 감지하고 꼭 필요한 순간에 관리자에게 알림을 보냅니다,</p>
                     <button class="hashtag-btn"># 공간관리</button>
                 </div>
-
-                <!-- 2번 카드 (추가) -->
-                <div class="card">
-                    <h4>공간 맞춤형 자가 학습</h4>
-                    <p>각 공간의 사용 패턴과 누적된 환경 데이터를 AI가 지속적으로 분석합니다. 시간이 지날수록 해당 공간에 적합한 최적의 유지 규칙을 스스로 찾아냅니다.</p>
-                    <button class="hashtag-btn"># 머신러닝</button>
+                <div class="card" style="justify-content: center; align-items: center;">
+                    <h4 style="margin: 0;">공간 맞춤형 자가 학습</h4>
                 </div>
-
-                <!-- 3번 카드 (추가) -->
-                <div class="card">
-                    <h4>AI 스마트 자동 제어</h4>
-                    <p>수동 조작 없이도 늘 쾌적한 환경이 유지됩니다. 실시간 데이터와 예측 모델을 기반으로 냉난방기 및 환기 설비를 AI가 판단하여 자동 제어합니다.</p>
-                    <button class="hashtag-btn"># 공간자동화</button>
+                <div class="card" style="justify-content: center; align-items: center;">
+                    <h4 style="margin: 0;">AI 스마트 자동 제어</h4>
                 </div>
-
-                <!-- 4번 카드 (추가) -->
-                <div class="card">
-                    <h4>자연어 브리핑</h4>
-                    <p>복잡한 수치나 그래프를 분석할 필요가 없습니다. 현재 공간의 상태, 공기질 변화, 에너지 절감 내역 등을 읽기 쉬운 문장으로 요약하여 보고합니다.</p>
-                    <button class="hashtag-btn"># AI리포트</button>
+                <div class="card" style="justify-content: center; align-items: center;">
+                    <h4 style="margin: 0;">자연어 브리핑</h4>
                 </div>
             </div>
         </div>
@@ -126,72 +114,42 @@
 <!-- Section 3: IoT 만남 -->
 <section class="section container">
     <div class="flex-row">
-        <!-- 왼쪽: 영상 영역 (틀 없이 깔끔하게 배치) -->
-        <div class="flex-col" style="display: flex; justify-content: center;">
-            <video src="/video/temperature.mp4" muted autoplay loop playsinline class="iot-video">
-                <track kind="captions" src="/video/empty.vtt" srclang="ko" label="한국어(빈 자막)" />
-            </video>
-        </div>
-
-        <!-- 오른쪽: 텍스트 영역 -->
         <div class="flex-col">
-            <h3 class="section-title">IoT 센서와 AI의 만남.<br>하드웨어 설치부터 AI 세팅까지,<br><span class="text-space" style="color: #FF8C19;">공간 자동화</span>를 경험해 보세요.</h3>
-            <p class="iot-descrip" style="color: var(--text-gray); font-size: 15px; margin-top: 15px; line-height: 1.6; padding-left: 25px;">
+            <div class="gray-box">
+                <div class="play-icon"></div>
+            </div>
+        </div>
+        <div class="flex-col">
+            <h3 class="section-title">IoT 센서와 AI의 만남.<br>하드웨어 설치부터 AI 세팅까지,<br><span class="text-space">공간 자동화</span>를 경험해 보세요.</h3>
+            <p style="color: var(--text-gray); font-size: 15px;">
                 본 솔루션은 센서를 통해 제어가 가능합니다. 사물 인터넷(IoT)과 스마트 환경 제어가 가능하며, 공간 AI 브리핑, 실내외 정보 제공을 확인하고 직접 공간을 제어합니다.
             </p>
         </div>
     </div>
 </section>
 
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="footer-top">
-            <a href="/start">
-                <img src="/photo/logo.png" alt="4iren Logo" class="logo-img">
-            </a>
-            <div class="subscribe-box">
-                <input type="text" placeholder="관련내용을 검색하세요">
-                <button>검색하기</button>
+<!-- Section 4: 앱에서 사용가능 -->
+<section class="app-section">
+    <div class="container flex-row" style="position: relative;">
+        <div class="flex-col app-text">
+            <h3 class="section-title">앱에서 사용가능</h3>
+            <p>Nunc mattis viverra eget feugiat pellentesque. Feugiat adipiscing mattis ullamcorper mi viverra sodales libero viverra lectus sed duis luctus nulla in malesuada vulputate pharetra ipsum orci.</p>
+            <div class="auth-buttons">
+                <button class="btn btn-solid">Contact us</button>
+                <button class="btn btn-outline">App Download</button>
             </div>
         </div>
-
-        <div class="footer-links">
-            <div class="footer-col">
-                <h5>고객지원</h5>
-                <ul>
-                    <li><a href="#">문의하기</a></li>
-                    <li><a href="#">자주 묻는 질문</a></li>
-                    <li><a href="#">공지사항</a></li>
-                </ul>
+        <div class="flex-col">
+            <!-- Phone Mockup Container -->
+            <div class="phone-mockup">
+                <div class="notch"></div>
             </div>
-            <div class="footer-col">
-                <h5>정책</h5>
-                <ul>
-                    <li><a href="#">개인정보처리방침</a></li>
-                    <li><a href="#">이용약관</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5>About Us</h5>
-                <a href="https://github.com/nhnacademy-aiot3-4iren/" target="_blank" rel="noopener" class="github-link" aria-label="GitHub 저장소로 이동">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                        <path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.11.82-.27.82-.6 0-.29-.01-1.06-.02-2.08-3.34.75-4.04-1.65-4.04-1.65-.55-1.44-1.34-1.82-1.34-1.82-1.09-.77.08-.75.08-.75 1.21.09 1.84 1.28 1.84 1.28 1.07 1.87 2.81 1.33 3.5 1.02.11-.79.42-1.33.76-1.64-2.67-.31-5.47-1.38-5.47-6.12 0-1.35.46-2.46 1.22-3.32-.12-.31-.53-1.56.12-3.24 0 0 1-.33 3.3 1.27a11.2 11.2 0 0 1 6 0c2.29-1.6 3.3-1.27 3.3-1.27.65 1.68.24 2.93.12 3.24.76.86 1.22 1.97 1.22 3.32 0 4.75-2.8 5.8-5.48 6.11.43.38.81 1.14.81 2.3 0 1.66-.02 3-.02 3.41 0 .33.22.72.83.6C20.56 22.34 24 17.74 24 12.3 24 5.5 18.63 0 12 0z"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p class="footer-copyright">
-                © 2026 4iren.<br>
-                본 저작물은 기상청에서 &lsquo;2026년&rsquo; 작성하여 공공누리 제1유형으로 개방한
-                &lsquo;단기예보 조회서비스&rsquo;(작성자: 기상청)를 이용하였으며,<br>
-                해당 저작물은 기상청 API허브(apihub.kma.go.kr)에서 무료로 다운로드할 수 있습니다.
-            </p>
         </div>
     </div>
-</footer>
+</section>
+
+<!-- Footer -->
+<div th:replace="~{/basic/footer :: footer}"></div>
 
 <script type="module" src="/js/background.js"></script>
 
