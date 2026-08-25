@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="/css/font.css">
   <link rel="stylesheet" href="/css/mypage-layout.css">
   <link rel="stylesheet" th:href="@{/css/footer.css}">
+  <!-- 프로필 읽기전용 표시 + 수정 팝업 + 우측 hover 박스 전용 스타일 (추가) -->
+  <link rel="stylesheet" th:href="@{/css/mypage-profile-modal.css}">
 </head>
 
 <body>
@@ -28,57 +30,41 @@
 
         <div class="profile-body">
 
-          <form class="profile-form">
+          <!-- 가입 시 등록한 정보 표시 (읽기 전용, 클릭/수정 불가) -->
+          <!-- 비밀번호는 이 화면에 노출하지 않음 -->
+          <div class="profile-form">
 
             <div class="form-group">
               <label for="id">아이디</label>
-              <input type="text" id="id" placeholder="ID" th:value="${myInfo.loginId}" readonly>
+              <input type="text" id="id" th:value="${myInfo.loginId}" readonly>
             </div>
 
             <div class="form-group">
               <label for="username">사용자 이름</label>
-              <input type="text" id="username" placeholder="사용자 이름" th:value="${myInfo.name}">
+              <input type="text" id="username" th:value="${myInfo.name}" readonly>
             </div>
 
             <div class="form-group">
               <label for="email">e - mail</label>
-              <input type="email" id="email" placeholder="e - mail" th:value="${myInfo.email}">
+              <input type="email" id="email" th:value="${myInfo.email}" readonly>
             </div>
 
-            <div class="form-group">
-              <label for="password">비밀번호</label>
-              <div class="password-field">
-                <input type="password" id="password" placeholder="새 비밀번호를 입력하세요">
-                <img src="/photo/icon/pw-eye.png" alt="toggle password" class="eye-icon">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="password-check">비밀번호 확인</label>
-              <div class="password-field">
-                <input type="password" id="password-check" placeholder="비밀번호 확인">
-                <img src="/photo/icon/pw-eye.png" alt="toggle password" class="eye-icon">
-              </div>
-            </div>
-
-          </form>
-
-          <div class="profile-photo"></div>
+          </div>
 
         </div>
 
-        <button type="submit" class="setting-btn">Setting</button>
+        <!-- 클릭 시 프로필 수정 팝업 오픈 -->
+        <button type="button" class="edit-profile-btn" id="openEditModalBtn" aria-haspopup="dialog"
+                aria-controls="editProfileModal">Edit Profile</button>
 
       </section>
 
-      <!-- 오른쪽 세로 배너 두 개를 세로로 묶는 wrapper -->
+      <!-- 오른쪽 hover 박스 -->
       <div class="banner-stack">
-        <div class="card">공간관리를<br> 원하세요?</div>
-
-        <div class="box">
+        <div class="box profile-hover-box">
           <span></span>
           <div class="box-content">
-            <h2>&emsp; Go to Subscribe</h2>
+            <h2>Hover me!</h2>
           </div>
         </div>
       </div>
@@ -89,6 +75,57 @@
 
 <div th:replace="~{basic/footer :: footer}"></div>
 
+<!-- ===================== 프로필 수정 팝업 ===================== -->
+<!-- 네이티브 <dialog> 사용: focus trap / ESC 닫기 / 배경 inert 처리를 브라우저가 자동으로 처리 -->
+<dialog class="modal" id="editProfileModal" aria-labelledby="editProfileModalTitle">
+  <div class="modal-header">
+    <h2 id="editProfileModalTitle">프로필 수정</h2>
+    <button type="button" class="modal-close" id="editModalCloseBtn" aria-label="닫기">&times;</button>
+  </div>
+
+  <form id="editProfileForm" class="modal-body" novalidate>
+
+    <div class="form-group">
+      <label for="editUsername">사용자 이름</label>
+      <input type="text" id="editUsername" name="name" th:value="${myInfo.name}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="editEmail">e - mail</label>
+      <input type="email" id="editEmail" name="email" th:value="${myInfo.email}" required>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <div class="form-group">
+      <label for="editPassword">비밀번호</label>
+      <div class="password-field">
+        <input type="password" id="editPassword" name="password"
+               placeholder="변경하지 않으려면 비워두세요" autocomplete="new-password">
+        <img src="/photo/icon/pw-eye.png" alt="toggle password" class="eye-icon">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="editPasswordCheck">비밀번호 확인</label>
+      <div class="password-field">
+        <input type="password" id="editPasswordCheck" name="passwordConfirm"
+               placeholder="비밀번호 확인" autocomplete="new-password">
+        <img src="/photo/icon/pw-eye.png" alt="toggle password" class="eye-icon">
+      </div>
+    </div>
+
+    <p class="form-error" id="editFormError" role="alert"></p>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline" id="editModalCancelBtn"><img src="/photo/icon/Refund-back.png" alt="뒤로가기"></button>
+      <button type="submit" class="setting-btn" id="editModalSaveBtn">저장</button>
+    </div>
+
+  </form>
+</dialog>
+
 <script src="/js/eye.js"></script>
+<script th:src="@{/js/mypage-profile-modal.js}"></script>
 </body>
 </html>
