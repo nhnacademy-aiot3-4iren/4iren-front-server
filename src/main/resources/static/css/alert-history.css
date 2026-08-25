@@ -1,16 +1,5 @@
 * { box-sizing: border-box; }
 
-body {
-    font-family: "Pretendard", "Apple SD Gothic Neo", sans-serif;
-    background: #f5f6f8;
-    color: #222;
-    margin: 0;
-    padding: 32px;
-}
-h1 {
-    font-size: 20px;
-    margin: 0 0 20px;
-}
 .filter-box {
     display: flex;
     flex-wrap: wrap;
@@ -20,6 +9,7 @@ h1 {
     border: 1px solid #e5e5e5;
     border-radius: 10px;
     padding: 18px 20px;
+    margin-top: 32px;
     margin-bottom: 20px;
 }
 .filter-field {

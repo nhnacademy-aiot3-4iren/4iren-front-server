@@ -31,10 +31,10 @@
                 <a href="/login" class="btn btn-outline">Login</a>
                 <a href="/signup" class="btn btn-solid">Sign Up</a>
             </div>
-            <div class="start-user-info" th:if="${loginId != null}">
+            <div class="auth-buttons" th:if="${loginId != null}" style="display: flex; align-items: center; gap: 15px;">
                 <a href="/mypage" class="start-user-profile">
-                    <span class="start-user-name" th:text="${loginId}">user</span>
-                    <span class="start-user-role" th:text="${role != null ? role : 'USER'}">USER</span>
+                    <span th:text="${loginId}"></span>
+                    <span style="font-size: 0.85em; opacity: 0.8;" th:text="'(' + ${role} + ')'"></span>
                 </a>
                 <form th:action="@{/logout}" method="post">
                     <button type="submit" class="btn btn-outline">Logout</button>
