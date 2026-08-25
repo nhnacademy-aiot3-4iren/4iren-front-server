@@ -1,0 +1,225 @@
+/* ================================================
+   mypage-profile-modal.css
+   기존 mypage-layout.css / font.css 위에 얹는 추가 스타일.
+   이 파일은 mypage.html(프로필 페이지)에서만 불러오므로,
+   .content 같은 공용 클래스를 여기서 조정해도 다른 mypage 하위
+   페이지(Team/Classroom 등)에는 영향 없음.
+================================================= */
+
+/* ---- 읽기 전용 필드 표시 ---- */
+/* 프로필 카드 안의 아이디/사용자 이름/e-mail 은 readonly 속성이 있어
+   실제로 입력은 안 되지만, 시각적으로도 "수정 가능한 입력창"처럼
+   보이지 않도록 살짝 톤을 낮춥니다. (기존 상태 유지) */
+.profile-form input[readonly] {
+    background: #f5f6f8;
+    color: #4b4b4b;
+    cursor: default;
+    pointer-events: none; /* 클릭/포커스 자체를 막음 */
+}
+
+.profile-form input[readonly]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* ---- 오른쪽 hover 박스 높이를 프로필 카드 높이에 맞춤 + 카드 사이 여백 ---- */
+/* mypage-layout.css의 .content는 기본 align-items: flex-start라서
+   내용이 짧은 쪽은 남는 높이가 안 채워짐. 이 페이지에서만 stretch로
+   바꿔서 오른쪽 박스가 프로필 카드와 같은 높이로 늘어나게 함.
+   gap도 24px -> 56px로 넓혀서 hover 박스 그라데이션 번짐과
+   카드 사이에 여유를 둠. */
+.content {
+    align-items: stretch;
+    gap: 56px;
+}
+
+/* ---- profile-card 안쪽 내용(폼 + 버튼) 가운데 정렬 ---- */
+/* .profile-card가 flex:1이라 넓게 늘어나는데, 안의 .profile-form(400px 제한)과
+   .edit-profile-btn은 왼쪽 정렬 상태였음 -> 가운데로 옮김 */
+.profile-body {
+    justify-content: center;
+}
+
+/* ---- Edit Profile 버튼 ---- */
+/* 원래 코드가 button 태그 전체를 지정하고 있어서(팝업 안 취소/저장
+   버튼까지 영향받음) .edit-profile-btn 이라는 전용 클래스로 옮김.
+   원래 스펙(500px/70px/font 32px)은 실제로 보니 너무 커서 축소함.
+   너비는 위 .profile-form과 맞춰서 400px로, margin auto로 가운데 정렬. */
+.edit-profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px;
+    height: 52px;
+    margin: 32px auto 0;
+    background-color: #f3f7fe;
+    color: #f6803b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.edit-profile-btn:hover {
+    background-color: #f6803b;
+    box-shadow: 0 0 0 5px #f6803b5f;
+    color: #fff;
+}
+
+.edit-profile-btn:focus-visible {
+    outline: 3px solid #f6803b;
+    outline-offset: 3px;
+}
+
+/* ---- 오른쪽 hover 박스 (기존 .box/.box-content 재사용) ---- */
+/* .box, .box::before/after, .box span, .box-content, @keyframes animate 는
+   전부 mypage-layout.css에 이미 정의돼 있어서(원래 "Go to Subscribe" 배너용)
+   그대로 재사용. 여기서는 이 인스턴스에만:
+   1) 프로필 카드 높이에 맞게 늘어나도록 height: 100%
+   2) 요청하신 그라데이션 색(#ffbc00 → #ff0058)
+   만 덧씌움. */
+.profile-hover-box.box {
+    height: 100%;
+    width: 220px;
+}
+
+.profile-hover-box.box::before,
+.profile-hover-box.box::after {
+    background: linear-gradient(315deg, #ffbc00, #ff0058);
+}
+
+.profile-hover-box .box-content {
+    height: 100%;
+}
+
+/* ===================== 수정 팝업 (Modal, native <dialog>) ===================== */
+
+.modal {
+    background: #fff;
+    width: 100%;
+    max-width: 400px;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(20, 20, 20, 0.25);
+    padding: 28px 28px 24px;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: auto; /* dialog 기본 위치를 중앙 정렬로 */
+}
+
+.modal::backdrop {
+    background: rgba(20, 20, 20, 0.45);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.modal-close {
+    border: none;
+    background: none;
+    font-size: 22px;
+    line-height: 1;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.modal-close:hover {
+    color: #1a1a1a;
+}
+
+.modal-body .form-group {
+    margin-bottom: 16px;
+}
+
+.modal-body .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.modal-body .form-group input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #e9ebee;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+    box-sizing: border-box;
+}
+
+.modal-body .form-group input:focus {
+    border-color: #ff9800;
+}
+
+.modal-body .password-field {
+    position: relative;
+}
+
+.modal-body .password-field .eye-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.form-divider {
+    height: 1px;
+    background: #e9ebee;
+    margin: 20px 0 18px;
+}
+
+.form-error {
+    color: #e05353;
+    font-size: 13px;
+    margin: 0 0 12px;
+    min-height: 16px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+/* 취소 버튼은 setting-btn과 다르게 아웃라인만 */
+.modal-actions .btn-outline {
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #e9ebee;
+    color: #6b7280;
+}
+
+.modal-actions .btn-outline:hover {
+    border-color: #6b7280;
+}
+
+.modal-actions .setting-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
