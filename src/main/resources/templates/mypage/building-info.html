@@ -62,6 +62,10 @@
                     <div>
                         <span>Rooms</span>
                         <strong th:text="${building.roomCount}">0</strong>
+                        <a class="stat-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                            Classroom List
+                        </a>
                     </div>
                     <div>
                         <span>Sensors</span>

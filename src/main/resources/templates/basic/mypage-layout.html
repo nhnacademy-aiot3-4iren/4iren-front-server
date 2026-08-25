@@ -21,13 +21,13 @@
 <div class="layout">
 
     <!-- ============ 1. 좌측 사이드바 영역 ============ -->
-    <div th:replace="~{/basic/sidebar :: sidebar}"></div>
+    <div th:replace="~{basic/sidebar :: sidebar}"></div>
 
     <!-- ============ 2. 우측 전체(헤더 + 메인 컨텐츠) ============ -->
     <div class="main-wrap">
 
         <!-- ============ 상단 헤더 영역 ============ -->
-        <div th:replace="~{/basic/header :: header}"></div>
+        <div th:replace="~{basic/header :: header}"></div>
 
         <!-- ============ 본문 내용 (여기서부터 작업) ============ -->
         <div class="main-content">
@@ -52,7 +52,7 @@
 </div>
 
 <!-- ============ 하단 푸터 영역 ============ -->
-<div th:replace="~{/basic/footer :: footer}"></div>
+<div th:replace="~{basic/footer :: footer}"></div>
 
 <!-- 해당 페이지 전용 JS가 있다면 여기에 연결하세요 -->
 <!-- <script src="/js/페이지전용.js"></script> -->

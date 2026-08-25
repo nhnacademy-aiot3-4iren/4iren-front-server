@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,12 +32,12 @@
                 <a href="/signup" class="btn btn-solid">Sign Up</a>
             </div>
             <div class="auth-buttons" th:if="${loginId != null}" style="display: flex; align-items: center; gap: 15px;">
-                <span style="font-weight: 500; font-size: 15px;">
+                <a href="/mypage" class="start-user-profile">
                     <span th:text="${loginId}"></span>
                     <span style="font-size: 0.85em; opacity: 0.8;" th:text="'(' + ${role} + ')'"></span>
-                </span>
-                <form action="/logout" method="post" style="margin: 0;">
-                    <button type="submit" class="btn btn-outline" style="padding: 10px 20px;">Logout</button>
+                </a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-outline">Logout</button>
                 </form>
             </div>
         </div>
@@ -158,7 +158,7 @@
 </section>
 
 <!-- Footer -->
-<div th:replace="~{/basic/footer :: footer}"></div>
+<div th:replace="~{basic/footer :: footer}"></div>
 
 <script type="module" src="/js/background.js"></script>
 

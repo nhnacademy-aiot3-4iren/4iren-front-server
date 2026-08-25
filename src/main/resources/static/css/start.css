@@ -127,6 +127,36 @@ nav a.active {
     gap: 10px;
 }
 
+.start-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.start-user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.2;
+}
+
+.start-user-name {
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.start-user-role {
+    margin-top: 3px;
+    color: var(--text-gray);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.start-user-info form {
+    margin: 0;
+}
+
 /* Chat AI 버튼 세부 스타일 */
 .chatai {
     display: flex;

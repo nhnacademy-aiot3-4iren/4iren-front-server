@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device List - Re I New</title>
+
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/buildings.css}">
+</head>
+<body>
+<div class="layout">
+    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+
+    <div class="main-wrap">
+        <div th:replace="~{basic/header :: header}"></div>
+
+        <main class="main-content">
+            <div class="building-page-header">
+                <div>
+                    <a class="back-link"
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
+                        Classroom Info
+                    </a>
+                    <h2>Device List</h2>
+                    <p th:text="${room.roomName}">Classroom Name</p>
+                </div>
+                <div class="building-header-actions">
+                    <div class="building-summary">
+                        <span>Devices</span>
+                        <strong th:text="${devices.totalElements}">0</strong>
+                    </div>
+                    <button class="building-create-btn" type="button" id="openDeviceModalBtn"
+                            th:if="${team.myRole != null && team.myRole.isManager()}">+ Device 생성</button>
+                </div>
+            </div>
+
+            <section class="building-list-panel" th:if="${!#lists.isEmpty(devices.content)}">
+                <article class="building-row asset-row" th:each="device : ${devices.content}">
+                    <div class="building-main">
+                        <div class="building-icon asset-icon">
+                            <img src="/photo/icon/node-icon.png" alt="device">
+                        </div>
+                        <div>
+                            <h3 th:text="${device.deviceName}">Device Name</h3>
+                            <p th:text="|Device ID ${device.deviceId}|">Device ID</p>
+                            <address th:text="${room.roomName}">Classroom Name</address>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <div class="empty-state building-empty" th:if="${#lists.isEmpty(devices.content)}">
+                <p>등록된 장치가 없습니다.</p>
+            </div>
+
+            <nav class="building-pagination" th:if="${devices.totalPages > 1}">
+                <a th:classappend="${devices.first} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId}, page=${devices.page - 1}, size=${size}, sort=${sort})}">
+                    Previous
+                </a>
+                <span th:text="|${devices.page + 1} / ${devices.totalPages}|">1 / 1</span>
+                <a th:classappend="${devices.last} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId}, page=${devices.page + 1}, size=${size}, sort=${sort})}">
+                    Next
+                </a>
+            </nav>
+
+            <div class="modal-overlay" id="deviceModalOverlay">
+                <div class="modal-folder-wrapper building-modal">
+                    <div class="modal-tab">Device 생성</div>
+                    <div class="modal-content">
+                        <div class="building-form-group">
+                            <label>Device Name</label>
+                            <input type="text" id="deviceNameInput" placeholder="ex ) 에어컨 제어 장치">
+                        </div>
+                        <div class="building-modal-actions">
+                            <button class="modal-cancel-btn" type="button" id="closeDeviceModalBtn">Cancel</button>
+                            <button class="modal-submit-btn" type="button" id="createDeviceBtn">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{basic/footer :: footer}"></div>
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+    const roomId = /*[[${room.roomId}]]*/ null;
+</script>
+<script src="/js/devices.js"></script>
+</body>
+</html>
