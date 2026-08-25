@@ -14,7 +14,7 @@ public class WebController {
     }
 
     @GetMapping("/forgot")
-    public String getForgot() { return "/account/forgot"; }
+    public String getForgot() { return "account/forgot"; }
 
     @GetMapping("/flowdiy")
     public String getFlowdiy() { return "flow-diy"; }
@@ -23,10 +23,10 @@ public class WebController {
     public String getAlertHis() { return "basic/table"; }
 
     @GetMapping("/team")
-    public String getMyTeams() { return "mypage/myteams"; }
+    public String getMyTeams() { return "team/myteams"; }
 
     @GetMapping("/alert-history")
-    public String getAlertHistory() { return "/alarms/alert-history"; }
+    public String getAlertHistory() { return "alarms/alert-history"; }
 
 
 }

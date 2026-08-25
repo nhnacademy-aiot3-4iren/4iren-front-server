@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,9 +27,18 @@
                 <a href="#">Dashboard</a>
                 <a href="/mypage">My Page</a>
             </nav>
-            <div class="auth-buttons">
+            <div class="auth-buttons" th:if="${loginId == null}">
                 <a href="/login" class="btn btn-outline">Login</a>
                 <a href="/signup" class="btn btn-solid">Sign Up</a>
+            </div>
+            <div class="start-user-info" th:if="${loginId != null}">
+                <a href="/mypage" class="start-user-profile">
+                    <span class="start-user-name" th:text="${loginId}">user</span>
+                    <span class="start-user-role" th:text="${role != null ? role : 'USER'}">USER</span>
+                </a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-outline">Logout</button>
+                </form>
             </div>
         </div>
 </header>

@@ -16,7 +16,7 @@ public class TeamController {
     @GetMapping("/team-info/{teamId}")
     public String teamInfoPage(@PathVariable Long teamId, Model model) {
         model.addAttribute("team", teamService.getTeam(teamId));
-        return "mypage/team-info";
+        return "team/admin/team-info";
     }
 
     @GetMapping("/team-info")
