@@ -11,6 +11,8 @@ spring:
 
   cloud:
     openfeign:
+      okhttp:
+        enabled: true
       client:
         config:
           default:
@@ -29,3 +31,12 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
+
+app:
+  cookie:
+    secure: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
