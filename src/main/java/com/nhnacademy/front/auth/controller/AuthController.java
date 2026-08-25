@@ -3,6 +3,7 @@ package com.nhnacademy.front.auth.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.front.auth.dto.login.LoginRequest;
+import com.nhnacademy.front.auth.dto.token.TokenResponse;
 import com.nhnacademy.front.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -38,11 +40,11 @@ public class AuthController {
     public String login(
             @Valid @ModelAttribute LoginRequest requestDto,
             HttpServletResponse response,
-            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes
     ) {
         try {
             // AuthService를 통해 로그인 및 HttpOnly 쿠키 생성
-            com.nhnacademy.front.auth.dto.token.TokenResponse tokenResponse = authService.login(requestDto, response);
+            TokenResponse tokenResponse = authService.login(requestDto, response);
             log.info("Login success for user: {}", requestDto.loginId());
 
             if (authService.isAdminFirstLogin(tokenResponse)) {
