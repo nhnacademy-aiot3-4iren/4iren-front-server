@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom List - Re I New</title>
+
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/buildings.css}">
+</head>
+<body>
+<div class="layout">
+    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+
+    <div class="main-wrap">
+        <div th:replace="~{basic/header :: header}"></div>
+
+        <main class="main-content">
+            <div class="building-page-header">
+                <div>
+                    <a class="back-link"
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                        Building Info
+                    </a>
+                    <h2>Classroom List</h2>
+                    <p>
+                        <span th:text="${team.teamName}">Team Name</span>
+                        <span> / </span>
+                        <span th:text="${building.buildingName}">Building Name</span>
+                    </p>
+                </div>
+                <div class="building-header-actions">
+                    <div class="building-summary">
+                        <span>Classrooms</span>
+                        <strong th:text="${rooms.totalElements}">0</strong>
+                    </div>
+                    <button class="building-create-btn" type="button" id="openRoomModalBtn"
+                            th:if="${team.myRole != null && team.myRole.isManager()}">+ Classroom 생성</button>
+                </div>
+            </div>
+
+            <section class="building-list-panel" th:if="${!#lists.isEmpty(rooms.content)}">
+                <article class="building-row room-row" th:each="room : ${rooms.content}"
+                         th:with="subscription=${roomSubscriptionStatuses[room.roomId]}">
+                    <div class="building-main">
+                        <div class="building-icon room-icon">
+                            <img src="/photo/icon/door-icon.png" alt="classroom">
+                        </div>
+                        <div>
+                            <h3 th:text="${room.roomName}">Classroom Name</h3>
+                            <p th:text="${#strings.defaultString(room.description, '설명이 없습니다.')}">Description</p>
+                            <address th:text="${#strings.defaultString(room.buildingName, building.buildingName)}">
+                                Building Name
+                            </address>
+                        </div>
+                    </div>
+
+                    <div class="building-stats room-stats">
+                        <div>
+                            <span>Sensors</span>
+                            <strong th:text="${room.sensorCount}">0</strong>
+                        </div>
+                        <div>
+                            <span>Devices</span>
+                            <strong th:text="${room.deviceCount}">0</strong>
+                        </div>
+                    </div>
+
+                    <div class="room-actions">
+                        <section class="room-subscription-controls" th:attr="data-room-id=${room.roomId}">
+                            <p class="room-subscription-text"
+                               th:text="${subscription.subscribed} ? '구독 중' : '미구독'">구독 상태</p>
+                            <div class="room-subscription-actions">
+                                <label class="notification-toggle compact"
+                                       th:classappend="${!subscription.subscribed} ? 'disabled'">
+                                    <input type="checkbox" class="room-notification-toggle"
+                                           th:checked="${subscription.notificationEnabled}"
+                                           th:disabled="${!subscription.subscribed}">
+                                    <span></span>
+                                    <strong>알림</strong>
+                                </label>
+                                <button class="subscription-btn subscribe room-subscribe-btn" type="button"
+                                        th:if="${team.myRole != null && team.myRole.name() == 'NORMAL'}"
+                                        th:style="${subscription.subscribed} ? 'display:none' : ''">
+                                    구독
+                                </button>
+                                <button class="subscription-btn unsubscribe room-unsubscribe-btn" type="button"
+                                        th:if="${team.myRole != null && team.myRole.name() == 'NORMAL'}"
+                                        th:style="${subscription.subscribed} ? '' : 'display:none'">
+                                    구독 취소
+                                </button>
+                            </div>
+                        </section>
+                        <a class="building-detail-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
+                            상세 정보
+                        </a>
+                    </div>
+                </article>
+            </section>
+
+            <div class="empty-state building-empty" th:if="${#lists.isEmpty(rooms.content)}">
+                <p>등록된 강의실이 없습니다.</p>
+            </div>
+
+            <nav class="building-pagination" th:if="${rooms.totalPages > 1}">
+                <a th:classappend="${rooms.first} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId}, page=${rooms.page - 1}, size=${size}, sort=${sort})}">
+                    Previous
+                </a>
+                <span th:text="|${rooms.page + 1} / ${rooms.totalPages}|">1 / 1</span>
+                <a th:classappend="${rooms.last} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId}, page=${rooms.page + 1}, size=${size}, sort=${sort})}">
+                    Next
+                </a>
+            </nav>
+
+            <div class="modal-overlay" id="roomModalOverlay">
+                <div class="modal-folder-wrapper building-modal">
+                    <div class="modal-tab">Classroom 생성</div>
+                    <div class="modal-content">
+                        <div class="building-form-group">
+                            <label>Classroom Name</label>
+                            <input type="text" id="roomNameInput" placeholder="ex ) 301호">
+                        </div>
+                        <div class="building-form-group">
+                            <label>Description</label>
+                            <textarea id="roomDescInput" placeholder="강의실 설명을 입력해주세요."></textarea>
+                        </div>
+                        <div class="building-modal-actions">
+                            <button class="modal-cancel-btn" type="button" id="closeRoomModalBtn">Cancel</button>
+                            <button class="modal-submit-btn" type="button" id="createRoomBtn">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{basic/footer :: footer}"></div>
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+    const buildingId = /*[[${building.buildingId}]]*/ null;
+</script>
+<script src="/js/rooms.js"></script>
+</body>
+</html>

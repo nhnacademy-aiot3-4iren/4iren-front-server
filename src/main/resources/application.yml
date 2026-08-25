@@ -11,6 +11,8 @@ spring:
 
   cloud:
     openfeign:
+      okhttp:
+        enabled: true
       client:
         config:
           default:
