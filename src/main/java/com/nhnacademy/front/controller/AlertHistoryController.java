@@ -55,7 +55,7 @@ public class AlertHistoryController {
         model.addAttribute("size", size);
         model.addAttribute("sort", sort);
 
-        return "alert-history";
+        return "alarms/alert-history";
     }
 
     /**
@@ -71,7 +71,7 @@ public class AlertHistoryController {
 
         model.addAttribute("alertHistory", alertHistory);
 
-        return "alert-history-detail";
+        return "alarms/alert-history-detail";
     }
 
     /**

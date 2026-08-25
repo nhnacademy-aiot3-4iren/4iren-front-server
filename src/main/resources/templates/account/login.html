@@ -46,10 +46,10 @@
         <span class="subtitle">로그인</span>
     </div>
 
-    <form th:action="@{/login}" method="POST">
+    <form action="/login" method="POST">
         <div class="input-group">
-            <label for="loginId">아이디 or e-mail 주소</label>
-            <input type="text" id="loginId" name="loginId" placeholder="아이디 또는 이메일 주소" required>
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="loginId" placeholder="아이디">
         </div>
 
         <div class="input-group">
