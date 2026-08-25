@@ -13,7 +13,7 @@
 <!-- Header -->
 <header>
         <div class="container">
-            <a th:href="@{/}">
+            <a href="/start">
                 <img src="/photo/logo.png" alt="Logo" class="logo-img">
             </a>
             <nav>
@@ -27,18 +27,9 @@
                 <a href="#">Dashboard</a>
                 <a href="/mypage">My Page</a>
             </nav>
-            <div class="auth-buttons" th:if="${loginId == null}">
+            <div class="auth-buttons">
                 <a href="/login" class="btn btn-outline">Login</a>
                 <a href="/signup" class="btn btn-solid">Sign Up</a>
-            </div>
-            <div class="auth-buttons" th:if="${loginId != null}" style="display: flex; align-items: center; gap: 15px;">
-                <span style="font-weight: 500; font-size: 15px;">
-                    <span th:text="${loginId}"></span>
-                    <span style="font-size: 0.85em; opacity: 0.8;" th:text="'(' + ${role} + ')'"></span>
-                </span>
-                <form action="/logout" method="post" style="margin: 0;">
-                    <button type="submit" class="btn btn-outline" style="padding: 10px 20px;">Logout</button>
-                </form>
             </div>
         </div>
 </header>
@@ -158,7 +149,7 @@
 </section>
 
 <!-- Footer -->
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{/basic/footer :: footer}"></div>
 
 <script type="module" src="/js/background.js"></script>
 

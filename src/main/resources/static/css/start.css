@@ -94,7 +94,10 @@ header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 20px;
+    padding: 20px 40px;
+    max-width: 1440px;
+    position: relative;
+    margin: 0 auto;
 }
 
 .logo-img {
@@ -110,6 +113,9 @@ nav {
     font-weight: 600;
     font-size: 15px;
     align-items: center;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
 }
 
 nav a.active {
@@ -404,7 +410,18 @@ h4.subtitle {
 /* =========================================
     Section 3: IoT 만남 (비디오)
    ========================================= */
-.play-icon {
+
+.iot-video {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    border-radius: 30px; /* 요즘 앱 스타일처럼 둥근 모서리 */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08); /* 영상이 배경에서 살짝 떠 보이도록 은은한 그림자 */
+    display: block;
+    margin: 0 auto;
+}
+
+.play-video {
     width: 60px;
     height: 60px;
     border: 3px solid white;
@@ -414,7 +431,7 @@ h4.subtitle {
     justify-content: center;
 }
 
-.play-icon::after {
+.play-video::after {
     content: '';
     width: 0;
     height: 0;
@@ -471,10 +488,47 @@ h4.subtitle {
     margin: 0 auto;
 }
 
-
 /* =========================================
-    푸터 영역 (Footer)
+    고객지원 섹션 (Footer 위 영역)
    ========================================= */
+.support-section {
+    margin-left: 10%;
+    padding: 40px 0;
+}
+
+.support-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.support-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: #1a1a1a;
+}
+
+.support-nav {
+    display: flex;
+    gap: 40px;
+}
+
+.support-nav a {
+    font-size: 14px;
+    color: #444;
+    font-weight: 500;
+}
+
+.support-nav a:hover {
+    color: var(--primary-orange);
+}
+
+/* Footer */
 footer {
     background-color: var(--footer-bg);
     padding: 60px 0 30px;
@@ -486,6 +540,7 @@ footer {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 50px;
+    margin-left: 100px;
 }
 
 .subscribe-box {
@@ -495,6 +550,7 @@ footer {
     padding: 5px;
     border: 1px solid #ddd;
     width: 350px;
+    margin-right: 100px;
 }
 
 .subscribe-box input {
@@ -503,6 +559,11 @@ footer {
     padding: 10px 15px;
     flex: 1;
     border-radius: 30px;
+}
+
+.subscribe-box input::placeholder {
+    color: #999;
+    opacity: 1;  /* 파이어폭스는 기본적으로 placeholder에 투명도가 걸려있어서 명시해주는 게 안전함 */
 }
 
 .subscribe-box button {
@@ -517,9 +578,10 @@ footer {
 
 .footer-links {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    margin-bottom: 50px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 100px;
+    margin-bottom: 40px;
+    margin-left: 120px;
 }
 
 .footer-col h5 {
@@ -535,42 +597,40 @@ footer {
 .footer-col ul li {
     margin-bottom: 10px;
     font-size: 14px;
+}
+
+.footer-col ul li a {
     color: var(--text-gray);
 }
 
-.app-badges {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+.footer-col ul li a:hover {
+    color: var(--primary-orange);
 }
 
-.badge {
-    background: black;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 10px;
-    display: flex;
+.github-link {
+    display: inline-flex;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    color: white;
+    margin-left: 15px;
 }
 
-.social-icons {
-    display: flex;
-    gap: 15px;
-    font-weight: bold;
+.github-link:hover {
+    background: var(--primary-orange);
 }
 
 .footer-bottom {
-    display: flex;
-    justify-content: space-between;
     border-top: 1px solid #ddd;
     padding-top: 20px;
-    font-size: 12px;
-    color: var(--text-gray);
 }
 
-.footer-bottom-links span {
-    margin-left: 15px;
-    cursor: pointer;
+.footer-copyright {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-gray);
+    margin-left: 50px;
 }

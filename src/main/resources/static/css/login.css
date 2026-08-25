@@ -61,14 +61,12 @@ body {
     width: 701px;
     height: 640px;
     z-index: 11;
-    pointer-events: none;
 }
 
 .alaram {
     position: absolute;
     left: 6%;
     bottom: 58%;
-    pointer-events: none;
 }
 
 
@@ -83,7 +81,6 @@ body {
     max-height: 720px;
     width: auto;
     z-index: 1;
-    pointer-events: none;
 }
 
 /* ==========================================
@@ -99,7 +96,7 @@ body {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
 
     position: relative;
-    z-index: 20;
+    z-index: 10;
 }
 
 /* ==========================================
