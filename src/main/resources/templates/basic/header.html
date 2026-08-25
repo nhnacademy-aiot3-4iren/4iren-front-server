@@ -16,12 +16,12 @@
   <div class="header-right">
     <!-- 알림 벨 -->
     <button class="icon-btn">
-      <img src="/photo/icon/alaram-icon.png" alt="notification" id="alarm-icon">
+      <img src="/photo/icon/alaram-icon.png" alt="notification" id="alaram-icon">
       <span class="badge"></span>
     </button>
 
     <!-- 오너 전용 대시보드 버튼 (상단) -->
-    <a th:if="${role == 'OWNER'}" href="/owner/admin/list" 
+    <a th:if="${role == 'OWNER'}" href="/owner/admin/list"
        style="margin-right: 15px; padding: 8px 12px; border-radius: 5px; text-decoration: none; color: #fff; font-weight: bold; background-color: #d63384; font-size: 14px; display: flex; align-items: center;">
       관리자 페이지
     </a>
