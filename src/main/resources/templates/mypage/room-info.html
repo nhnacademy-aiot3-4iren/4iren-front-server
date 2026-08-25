@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Info - Re I New</title>
+
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/buildings.css}">
+</head>
+<body>
+<div class="layout">
+    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+
+    <div class="main-wrap">
+        <div th:replace="~{basic/header :: header}"></div>
+
+        <main class="main-content">
+            <div class="building-page-header">
+                <div>
+                    <a class="back-link"
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                        Classroom List
+                    </a>
+                    <h2>Classroom Info</h2>
+                    <p>
+                        <span th:text="${team.teamName}">Team Name</span>
+                        <span> / </span>
+                        <span th:text="${building.buildingName}">Building Name</span>
+                    </p>
+                </div>
+                <div class="building-summary">
+                    <span>Classroom ID</span>
+                    <strong th:text="${room.roomId}">0</strong>
+                </div>
+            </div>
+
+            <section class="subscription-panel">
+                <div>
+                    <h3>Subscription</h3>
+                    <p id="subscriptionStatusText"
+                       th:text="${subscriptionStatus.subscribed} ? '구독 중인 강의실입니다.' : '구독하지 않은 강의실입니다.'">
+                        구독 상태
+                    </p>
+                </div>
+                <div class="subscription-actions">
+                    <label class="notification-toggle"
+                           th:classappend="${!subscriptionStatus.subscribed} ? 'disabled'">
+                        <input type="checkbox" id="notificationToggle"
+                               th:checked="${subscriptionStatus.notificationEnabled}"
+                               th:disabled="${!subscriptionStatus.subscribed}">
+                        <span></span>
+                        <strong>알림</strong>
+                    </label>
+                    <button class="subscription-btn subscribe" type="button" id="subscribeBtn"
+                            th:if="${team.myRole != null && team.myRole.name() == 'NORMAL'}"
+                            th:style="${subscriptionStatus.subscribed} ? 'display:none' : ''">
+                        구독
+                    </button>
+                    <button class="subscription-btn unsubscribe" type="button" id="unsubscribeBtn"
+                            th:if="${team.myRole != null && team.myRole.name() == 'NORMAL'}"
+                            th:style="${subscriptionStatus.subscribed} ? '' : 'display:none'">
+                        구독 취소
+                    </button>
+                </div>
+            </section>
+
+            <section class="building-info-panel">
+                <div class="building-info-main">
+                    <div class="building-info-title">
+                        <div class="building-icon room-icon">
+                            <img src="/photo/icon/door-icon.png" alt="classroom">
+                        </div>
+                        <div>
+                            <h3 th:text="${room.roomName}">Classroom Name</h3>
+                            <p th:text="${#strings.defaultString(room.description, '설명이 없습니다.')}">Description</p>
+                        </div>
+                    </div>
+
+                    <dl class="building-detail-list">
+                        <div>
+                            <dt>Building</dt>
+                            <dd th:text="${#strings.defaultString(room.buildingName, building.buildingName)}">Building Name</dd>
+                        </div>
+                        <div>
+                            <dt>Room ID</dt>
+                            <dd th:text="${room.roomId}">0</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="building-info-stats">
+                    <div>
+                        <span>Sensors</span>
+                        <strong th:text="${room.sensorCount}">0</strong>
+                        <a class="stat-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/sensor-locations(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
+                            Sensor List
+                        </a>
+                    </div>
+                    <div>
+                        <span>Devices</span>
+                        <strong th:text="${room.deviceCount}">0</strong>
+                        <a class="stat-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
+                            Device List
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{basic/footer :: footer}"></div>
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+    const buildingId = /*[[${building.buildingId}]]*/ null;
+    const roomId = /*[[${room.roomId}]]*/ null;
+</script>
+<script src="/js/room-info.js"></script>
+</body>
+</html>

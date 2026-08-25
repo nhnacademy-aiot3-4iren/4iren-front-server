@@ -25,4 +25,8 @@ public class WebController {
     @GetMapping("/team")
     public String getMyTeams() { return "mypage/myteams"; }
 
+    @GetMapping("/alert-history")
+    public String getAlertHistory() { return "/alarms/alert-history"; }
+
+
 }
