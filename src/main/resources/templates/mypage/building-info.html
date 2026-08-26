@@ -24,9 +24,16 @@
                     <h2>Building Info</h2>
                     <p th:text="${team.teamName}">Team Name</p>
                 </div>
-                <div class="building-summary">
-                    <span>Building ID</span>
-                    <strong th:text="${building.buildingId}">0</strong>
+                <div class="building-header-actions">
+                    <a class="building-create-btn mqtt-register-link"
+                       th:if="${team.myRole != null && team.myRole.isManager()}"
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}/mqtt(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                        MQTT 등록
+                    </a>
+                    <div class="building-summary">
+                        <span>Building ID</span>
+                        <strong th:text="${building.buildingId}">0</strong>
+                    </div>
                 </div>
             </div>
 
