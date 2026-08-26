@@ -1,6 +1,6 @@
 /* ================================================
    mypage-profile-modal.css
-   기존 mypage-layout.css / font.css 위에 얹는 추가 스타일.
+   기존 mypage-content.css / font.css 위에 얹는 추가 스타일.
    이 파일은 mypage.html(프로필 페이지)에서만 불러오므로,
    .content 같은 공용 클래스를 여기서 조정해도 다른 mypage 하위
    페이지(Team/Classroom 등)에는 영향 없음.
@@ -78,21 +78,24 @@
 /* .box, .box::before/after, .box span, .box-content, @keyframes animate 는
    전부 mypage-layout.css에 이미 정의돼 있어서(원래 "Go to Subscribe" 배너용)
    그대로 재사용. 여기서는 이 인스턴스에만:
-   1) 프로필 카드 높이에 맞게 늘어나도록 height: 100%
-   2) 요청하신 그라데이션 색(#ffbc00 → #ff0058)
-   만 덧씌움. */
+   1) 프로필 카드 높이에 맞게 늘어나도록 height: 100% */
+.banner-stack {
+    margin-top: 30%;
+}
+
 .profile-hover-box.box {
-    height: 100%;
+    height: 70%;
     width: 220px;
 }
 
 .profile-hover-box.box::before,
 .profile-hover-box.box::after {
-    background: linear-gradient(315deg, #ffbc00, #ff0058);
+    background: linear-gradient(315deg, #ffbc00, #e85b3b) !important;
+    width: 50% !important; /* 또는 inset 값을 좁혀서 기울어진 띠의 두께 자체를 얇게 축소 */
 }
 
 .profile-hover-box .box-content {
-    height: 100%;
+    height: 80%;
 }
 
 /* ===================== 수정 팝업 (Modal, native <dialog>) ===================== */

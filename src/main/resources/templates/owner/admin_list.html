@@ -6,10 +6,11 @@
     <title>최고관리자 대시보드 - Re I New</title>
 
     <!-- 공통 헤더/사이드바/푸터 CSS -->
-    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
-    
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
     <link rel="stylesheet" th:href="@{/css/admin_list.css}">
 
     <link rel="icon" href="/favicon.ico" sizes="any">
@@ -27,7 +28,7 @@
 
     <div class="main-wrap">
         <!-- 상단 헤더 (공통) -->
-        <div th:replace="~{basic/header :: header}"></div>
+        <div th:replace="~{basic/header :: header('Admin List')}"></div>
 
         <!-- 본문 영역 -->
         <div class="main-content">

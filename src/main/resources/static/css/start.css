@@ -575,6 +575,7 @@ footer {
 
 .subscribe-box {
     display: flex;
+    align-items: center;
     background: white;
     border-radius: 30px;
     padding: 5px;
@@ -593,10 +594,13 @@ footer {
 
 .subscribe-box input::placeholder {
     color: #999;
-    opacity: 1;  /* 파이어폭스는 기본적으로 placeholder에 투명도가 걸려있어서 명시해주는 게 안전함 */
+    opacity: 1;
 }
 
 .subscribe-box button {
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: inherit;
     background: var(--primary-orange);
     color: white;
     border: none;
@@ -646,7 +650,6 @@ footer {
     border-radius: 50%;
     background: #1a1a1a;
     color: white;
-    margin-left: 15px;
 }
 
 .github-link:hover {
@@ -656,11 +659,11 @@ footer {
 .footer-bottom {
     border-top: 1px solid #ddd;
     padding-top: 20px;
+    margin-left: 120px;
 }
 
 .footer-copyright {
     font-size: 12px;
     line-height: 1.6;
     color: var(--text-gray);
-    margin-left: 50px;
 }

@@ -5,27 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyPage</title>
 
-  <link rel="stylesheet" href="/css/font.css">
-  <link rel="stylesheet" href="/css/mypage-layout.css">
-  <link rel="stylesheet" th:href="@{/css/footer.css}">
-  <!-- 프로필 읽기전용 표시 + 수정 팝업 + 우측 hover 박스 전용 스타일 (추가) -->
-  <link rel="stylesheet" th:href="@{/css/mypage-profile-modal.css}">
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="application-name" content="4iren">
+  <link rel="stylesheet" href="/fonts/font.css">
+  <link rel="stylesheet" href="/css/mypage/mypage-content.css">
+  <link rel="stylesheet" th:href="@{/css/mypage/mypage-profile-modal.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+
 </head>
 
 <body>
 <div class="layout">
 
-  <div th:replace="~{mypage/mypageSidebar :: mypageSidebar}"></div>
+  <div th:replace="~{basic/sidebar :: sidebar}"></div>
 
-  <div class="main-wrapper">
+  <div class="main-content-area">
 
-    <div th:replace="~{basic/header :: header}"></div>
+    <div th:replace="~{basic/header :: header('My Page')}">My Page</div>
 
     <main class="content">
 
@@ -36,8 +33,8 @@
 
         <div class="profile-body">
 
-          <!-- 가입 시 등록한 정보 표시 (읽기 전용, 클릭/수정 불가) -->
-          <!-- 비밀번호는 이 화면에 노출하지 않음 -->
+          <!-- 가입 시 등록한 정보 표시 (읽기 전용) -->
+          <!-- 비밀번호는 이 화면에 노출 x -->
           <div class="profile-form">
 
             <div class="form-group">
@@ -70,7 +67,7 @@
         <div class="box profile-hover-box">
           <span></span>
           <div class="box-content">
-            <h2>Hover me!</h2>
+            <a><h2>&nbsp; &nbsp; &nbsp; Go to Subscribe</h2></a>
           </div>
         </div>
       </div>
@@ -124,7 +121,7 @@
     <p class="form-error" id="editFormError" role="alert"></p>
 
     <div class="modal-actions">
-      <button type="button" class="btn btn-outline" id="editModalCancelBtn"><img src="/photo/icon/Refund-back.png" alt="뒤로가기"></button>
+      <button type="button" class="btn btn-outline" id="editModalCancelBtn"><img src="/photo/icon/Refund_back.png" alt="뒤로가기"></button>
       <button type="submit" class="setting-btn" id="editModalSaveBtn">저장</button>
     </div>
 

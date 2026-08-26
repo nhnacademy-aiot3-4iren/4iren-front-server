@@ -29,6 +29,7 @@ public class FeignConfig implements RequestInterceptor {
             // 1. 방금 갱신되어서 request attribute에 저장된 토큰이 있는지 먼저 확인
             String newAccessToken = (String) request.getAttribute("newAccessToken");
             if (newAccessToken != null && !newAccessToken.isEmpty()) {
+                template.removeHeader("Authorization"); // 기존 실패한 토큰 헤더 삭제
                 template.header("Authorization", "Bearer " + newAccessToken);
                 return;
             }
