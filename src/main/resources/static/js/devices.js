@@ -54,6 +54,34 @@ if (createDeviceBtn) {
     });
 }
 
+document.querySelectorAll('.device-delete-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+        const deviceId = button.dataset.deviceId;
+        const deviceName = button.dataset.deviceName || '장치';
+
+        if (!confirm(`${deviceName}을(를) 삭제할까요?`)) {
+            return;
+        }
+
+        try {
+            button.disabled = true;
+            const response = await fetch(`/api/front/teams/${teamId}/rooms/${roomId}/devices/${deviceId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
+
+            window.location.reload();
+        } catch (error) {
+            alert(error.message || '장치 삭제에 실패했습니다.');
+        } finally {
+            button.disabled = false;
+        }
+    });
+});
+
 function closeDeviceModal() {
     deviceModalOverlay.classList.remove('active');
     deviceNameInput.value = '';

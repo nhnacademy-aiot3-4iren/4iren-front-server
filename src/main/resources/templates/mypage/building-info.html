@@ -9,6 +9,12 @@
     <link rel="stylesheet" th:href="@{/css/basic/header-sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
     <link rel="stylesheet" th:href="@{/css/buildings.css}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
 </head>
 <body>
 <div class="layout">
@@ -24,9 +30,16 @@
                     <h2>Building Info</h2>
                     <p th:text="${team.teamName}">Team Name</p>
                 </div>
-                <div class="building-summary">
-                    <span>Building ID</span>
-                    <strong th:text="${building.buildingId}">0</strong>
+                <div class="building-header-actions">
+                    <a class="building-create-btn mqtt-register-link"
+                       th:if="${team.myRole != null && team.myRole.isManager()}"
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}/mqtt(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                        MQTT 등록
+                    </a>
+                    <div class="building-summary">
+                        <span>Building ID</span>
+                        <strong th:text="${building.buildingId}">0</strong>
+                    </div>
                 </div>
             </div>
 

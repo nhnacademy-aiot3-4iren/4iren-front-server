@@ -41,6 +41,15 @@ public class CoreRoomRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomService.createRoom(teamId, buildingId, request));
     }
 
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<Void> deleteRoom(
+            @PathVariable Long teamId,
+            @PathVariable Long roomId
+    ) {
+        roomService.deleteRoom(teamId, roomId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{roomId}/subscription")
     public ResponseEntity<RoomSubscriptionStatus> getSubscriptionStatus(
             @PathVariable Long teamId,

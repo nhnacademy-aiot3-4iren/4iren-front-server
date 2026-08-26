@@ -12,6 +12,12 @@
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
 
     <link rel="stylesheet" th:href="@{/css/buildings.css}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
 </head>
 <body>
 <div class="layout">
@@ -51,6 +57,13 @@
                             <p th:text="${#strings.defaultString(sensor.locationDetail, '위치 상세 정보 없음')}">Location</p>
                             <address th:text="|Sensor Location ID ${sensor.sensorLocationId}|">Sensor Location ID</address>
                         </div>
+                    </div>
+                    <div class="asset-actions">
+                        <button class="asset-delete-btn sensor-delete-btn" type="button"
+                                th:if="${team.myRole != null && team.myRole.isManager()}"
+                                th:attr="data-sensor-location-id=${sensor.sensorLocationId},data-dev-eui=${sensor.devEui}">
+                            삭제
+                        </button>
                     </div>
                 </article>
             </section>

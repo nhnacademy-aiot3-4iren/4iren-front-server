@@ -12,6 +12,12 @@
     
     <link rel="stylesheet" th:href="@{/css/admin_detail.css}">
 
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
 </head>
 <body>
 
@@ -25,7 +31,7 @@
 
         <!-- 본문 영역 -->
         <div class="main-content">
-            <h2 style="margin-bottom: 20px; text-align: center; color: #2c3e50;">🧑‍💻 관리자 상세 정보</h2>
+            <h2 style="margin-bottom: 20px; text-align: center; color: #2c3e50;">관리자 상세 정보</h2>
 
             <div class="detail-wrap">
                 <div class="info-group">
@@ -47,8 +53,8 @@
                 <div class="info-group">
                     <div class="info-label">계정 상태</div>
                     <div class="info-value">
-                        <span th:if="${admin.status == 'ACTIVE'}" style="color: #198754; font-weight: bold;">✅ 활성 (ACTIVE)</span>
-                        <span th:if="${admin.status == 'WITHDRAWN'}" style="color: #dc3545; font-weight: bold;">🚫 비활성 (삭제됨)</span>
+                        <span th:if="${admin.status == 'ACTIVE'}" style="color: #198754; font-weight: bold;">활성 (ACTIVE)</span>
+                        <span th:if="${admin.status == 'WITHDRAWN'}" style="color: #dc3545; font-weight: bold;">비활성 (삭제됨)</span>
                     </div>
                 </div>
                 <div class="info-group">

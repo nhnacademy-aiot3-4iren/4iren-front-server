@@ -12,16 +12,22 @@
  -->
 
     <link rel="stylesheet" href="/css/alert-history.css">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
 </head>
 <body>
 
 <div class="layout">
     <!-- 좌측 사이드바 (공통) -->
-    <div th:replace="~{/basic/sidebar :: sidebar}"></div>
+    <div th:replace="~{basic/sidebar :: sidebar}"></div>
 
     <div class="main-wrap">
         <!-- 상단 헤더 (공통) -->
-        <div th:replace="~{/basic/header :: header}"></div>
+        <div th:replace="~{basic/header :: header}"></div>
 
         <!-- 본문 영역 -->
         <div class="main-content">
@@ -161,7 +167,7 @@
 </div>
 
 <!-- 하단 푸터 (공통) -->
-<div th:replace="~{/basic/footer :: footer}"></div>
+<div th:replace="~{basic/footer :: footer}"></div>
 
 <script>
     document.querySelectorAll('tr.clickable-row').forEach(function (row) {

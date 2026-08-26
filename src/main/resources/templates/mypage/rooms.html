@@ -12,6 +12,12 @@
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
 
     <link rel="stylesheet" th:href="@{/css/buildings.css}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
 </head>
 <body>
 <div class="layout">
@@ -100,6 +106,11 @@
                            th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
                             상세 정보
                         </a>
+                        <button class="asset-delete-btn room-delete-btn" type="button"
+                                th:if="${team.myRole != null && team.myRole.isManager()}"
+                                th:attr="data-room-id=${room.roomId},data-room-name=${room.roomName}">
+                            삭제
+                        </button>
                     </div>
                 </article>
             </section>

@@ -36,4 +36,13 @@ public class CoreDeviceRestController {
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(deviceService.createDevice(teamId, roomId, request));
     }
+
+    @DeleteMapping("/{deviceId}")
+    public ResponseEntity<Void> deleteDevice(
+            @PathVariable Long teamId,
+            @PathVariable Long deviceId
+    ) {
+        deviceService.deleteDevice(teamId, deviceId);
+        return ResponseEntity.noContent().build();
+    }
 }
