@@ -1,4 +1,10 @@
 /* 기본 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
 body {
     margin: 0;
     font-family: sans-serif;
@@ -11,74 +17,6 @@ body {
     min-height: 100vh;
 }
 
-/* 사이드바 */
-.sidebar {
-    width: 250px;
-    background-color: #ffffff;
-    border-right: 1px solid #e0e0e0;
-    padding: 30px 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.sidebar-logo {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    padding: 15px 30px;
-    color: #666;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-/* 사이드바 활성화 (Team) 스타일 */
-.nav-item.active {
-    background-color: #ff9d42;
-    border-radius: 8px;
-    margin: 0 15px;
-    padding: 15px 15px;
-}
-
-/* 우측 컨텐츠 영역 */
-.main-wrap {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-/* 상단 헤더 */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background-color: #ffffff;
-}
-
-.search-bar {
-    background-color: #f5f5f5;
-    padding: 10px 20px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-}
-
-.search-bar input {
-    border: none;
-    background: transparent;
-    outline: none;
-    margin-left: 10px;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
 
 /* 메인 본문 */
 .main-content {
@@ -128,103 +66,6 @@ body {
     font-size: 16px;
 }
 
-/* 로고 크기 고정 */
-.sidebar-logo img {
-    width: 140px;
-    height: auto;
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.nav-item img {
-    width: 20px;
-    height: 20px;
-    margin-right: 12px;
-}
-
-
-#profile-icon {
-    height: 22px;
-}
-
-.nav-item.active #team-icon {
-    background-color: #FFFFFF;
-    -webkit-mask: url("../photo/icon/team-icon.png") no-repeat center / contain;
-    mask: url("../photo/icon/team-icon.png") no-repeat center / contain;
-}
-
-
-#classroom-icon {
-    background-color: #737791;
-    -webkit-mask: url("../photo/icon/classroom-icon.png") no-repeat center / contain;
-    mask: url("../photo/icon/classroom-icon.png") no-repeat center / contain;
-}
-
-/* 페이지 타이틀 */
-.page-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #333;
-    margin: 0;
-}
-
-/* 알림 벨 버튼 */
-.icon-btn {
-    position: relative;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-}
-
-.icon-btn img {
-    width: 20px;
-    height: 20px;
-}
-
-.badge {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 8px;
-    height: 8px;
-    background-color: #ff4d4f;
-    border-radius: 50%;
-}
-
-/* 유저 정보 영역 */
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-}
-
-.user-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.3;
-}
-
-.user-name {
-    font-weight: 700;
-    font-size: 14px;
-    color: #333;
-}
-
-.user-role {
-    font-size: 12px;
-    color: #ff9800;
-}
-
-.user-toggle {
-    width: 14px;
-    height: 14px;
-}
 
 /* =========================================================
   popup 관련 스타일

@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Info - Re I New</title>
+    <title>Team Info</title>
 
+    <link rel="stylesheet" href="/fonts/font.css">
     <link rel="stylesheet" th:href="@{/css/myteams.css}">
-
     <!-- 공통 CSS -->
-    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
     <link rel="stylesheet" th:href="@{/css/team-info.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
 </head>
 <body>
 
@@ -22,7 +24,7 @@
     <div class="main-wrap">
 
         <!-- 헤더 -->
-        <div th:replace="~{basic/header :: header}"></div>
+        <div th:replace="~{basic/header :: header('Team Info')}"></div>
 
         <!-- 메인 컨텐츠 -->
         <div class="main-content">

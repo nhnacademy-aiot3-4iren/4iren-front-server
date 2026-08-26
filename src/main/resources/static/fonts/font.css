@@ -17,6 +17,13 @@
 }
 @font-face {
     font-family: 'Poppins';
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    src: url('../fonts/Poppins/Poppins-SemiBold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Poppins';
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -40,11 +47,19 @@
 }
 @font-face {
     font-family: 'Pretendard';
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    src: url('../fonts/pretendard/Pretendard-Bold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Pretendard';
     font-weight: 700;
     font-style: normal;
     font-display: swap;
     src: url('../fonts/pretendard/Pretendard-Bold.woff2') format('woff2');
 }
+
 
 /*전체 폰트 적용*/
 * {
