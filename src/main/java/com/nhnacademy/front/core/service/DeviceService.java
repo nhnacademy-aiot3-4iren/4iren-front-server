@@ -20,4 +20,8 @@ public class DeviceService {
     public DeviceResponse createDevice(Long teamId, Long roomId, DeviceCreateRequest request) {
         return coreDeviceClient.createDevice(teamId, roomId, request);
     }
+
+    public void deleteDevice(Long teamId, Long deviceId) {
+        coreDeviceClient.deleteDevice(teamId, deviceId);
+    }
 }

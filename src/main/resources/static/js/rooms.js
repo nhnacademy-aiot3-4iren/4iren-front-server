@@ -58,6 +58,29 @@ if (createRoomBtn) {
     });
 }
 
+document.querySelectorAll('.room-delete-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+        const roomId = button.dataset.roomId;
+        const roomName = button.dataset.roomName || '강의실';
+
+        if (!confirm(`${roomName}을(를) 삭제할까요?`)) {
+            return;
+        }
+
+        try {
+            button.disabled = true;
+            await requestJson(`/api/front/teams/${teamId}/buildings/${buildingId}/rooms/${roomId}`, {
+                method: 'DELETE'
+            });
+            window.location.reload();
+        } catch (error) {
+            alert(error.message || '강의실 삭제에 실패했습니다.');
+        } finally {
+            button.disabled = false;
+        }
+    });
+});
+
 document.querySelectorAll('.room-subscription-controls').forEach(control => {
     const roomId = control.dataset.roomId;
     const subscribeBtn = control.querySelector('.room-subscribe-btn');

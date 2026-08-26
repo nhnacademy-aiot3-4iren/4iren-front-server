@@ -37,4 +37,13 @@ public class CoreSensorLocationRestController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(sensorLocationService.createSensorLocation(teamId, roomId, request));
     }
+
+    @DeleteMapping("/{sensorLocationId}")
+    public ResponseEntity<Void> deleteSensorLocation(
+            @PathVariable Long teamId,
+            @PathVariable Long sensorLocationId
+    ) {
+        sensorLocationService.deleteSensorLocation(teamId, sensorLocationId);
+        return ResponseEntity.noContent().build();
+    }
 }

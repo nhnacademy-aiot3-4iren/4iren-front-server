@@ -40,4 +40,8 @@ public class BuildingService {
     public BuildingResponse createBuilding(Long teamId, BuildingCreateRequest request) {
         return coreBuildingClient.createBuilding(teamId, request);
     }
+
+    public void deleteBuilding(Long teamId, Long buildingId) {
+        coreBuildingClient.deleteBuilding(teamId, buildingId);
+    }
 }
