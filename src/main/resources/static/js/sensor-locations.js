@@ -67,6 +67,34 @@ if (createSensorBtn) {
     });
 }
 
+document.querySelectorAll('.sensor-delete-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+        const sensorLocationId = button.dataset.sensorLocationId;
+        const devEui = button.dataset.devEui || '센서';
+
+        if (!confirm(`${devEui}을(를) 삭제할까요?`)) {
+            return;
+        }
+
+        try {
+            button.disabled = true;
+            const response = await fetch(`/api/front/teams/${teamId}/rooms/${roomId}/sensor-locations/${sensorLocationId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
+
+            window.location.reload();
+        } catch (error) {
+            alert(error.message || '센서 삭제에 실패했습니다.');
+        } finally {
+            button.disabled = false;
+        }
+    });
+});
+
 function closeSensorModal() {
     sensorModalOverlay.classList.remove('active');
     devEuiInput.value = '';

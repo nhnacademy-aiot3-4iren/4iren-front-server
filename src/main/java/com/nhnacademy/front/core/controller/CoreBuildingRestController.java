@@ -43,4 +43,13 @@ public class CoreBuildingRestController {
     ) {
         return ResponseEntity.ok(buildingService.getBuilding(teamId, buildingId));
     }
+
+    @DeleteMapping("/{buildingId}")
+    public ResponseEntity<Void> deleteBuilding(
+            @PathVariable Long teamId,
+            @PathVariable Long buildingId
+    ) {
+        buildingService.deleteBuilding(teamId, buildingId);
+        return ResponseEntity.noContent().build();
+    }
 }

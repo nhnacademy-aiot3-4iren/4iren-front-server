@@ -30,4 +30,8 @@ public class SensorLocationService {
     ) {
         return coreSensorLocationClient.createSensorLocation(teamId, roomId, request);
     }
+
+    public void deleteSensorLocation(Long teamId, Long sensorLocationId) {
+        coreSensorLocationClient.deleteSensorLocation(teamId, sensorLocationId);
+    }
 }

@@ -52,6 +52,10 @@ public class RoomService {
         return coreRoomClient.createRoom(teamId, buildingId, request);
     }
 
+    public void deleteRoom(Long teamId, Long roomId) {
+        coreRoomClient.deleteRoom(teamId, roomId);
+    }
+
     public RoomSubscriptionStatus getSubscriptionStatus(Long teamId, Long roomId) {
         int page = 0;
         PageResponse<RoomSubscriptionResponse> subscriptions;
