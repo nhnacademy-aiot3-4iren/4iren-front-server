@@ -6,8 +6,8 @@
     <title>관리자 상세 정보 - Re I New</title>
 
     <!-- 공통 헤더/사이드바/푸터 CSS -->
-    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
     <link rel="stylesheet" th:href="@{/css/layout.css}">
     
     <link rel="stylesheet" th:href="@{/css/admin_detail.css}">
@@ -27,7 +27,7 @@
 
     <div class="main-wrap">
         <!-- 상단 헤더 (공통) -->
-        <div th:replace="~{basic/header :: header}"></div>
+        <div th:replace="~{basic/header :: header('Alert-Detail')}"></div>
 
         <!-- 본문 영역 -->
         <div class="main-content">

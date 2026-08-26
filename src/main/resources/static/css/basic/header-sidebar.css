@@ -1,4 +1,4 @@
-/* ---------------- 사이드바 ---------------- */
+/* ---------------- 사이드바 (공통) ---------------- */
 .sidebar {
     width: 250px;
     flex-shrink: 0;
@@ -10,13 +10,16 @@
 }
 
 .sidebar-logo {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 40px;
 }
 
 .sidebar-logo img {
-    height: 55px;
-    width: 100px;
+    width: 130px;        /* 기존보다 확대 (2번째 사이드바 크기에 맞춤) */
+    height: auto;
+    margin-left: -15px;   /* 로고 이미지 자체의 좌우 비대칭 보정용 오른쪽 이동 */
 }
 
 .sidebar-nav {
@@ -29,22 +32,22 @@
     display: flex;
     align-items: center;
     margin: 0 15px;
-    padding: 15px 15px;
+    padding: 20px 15px;
     border-radius: 8px;
     color: #666;
     text-decoration: none;
     font-weight: 500;
+    font-size: 15px;
     transition: background-color 0.15s, color 0.15s;
 }
 
 .nav-item img {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     margin-right: 12px;
     transition: filter 0.15s;
 }
 
-/* 사이드바 활성화(선택된 메뉴) + 호버 - 배경 주황 + 아이콘/글씨 흰색 */
 .nav-item:hover,
 .nav-item.active {
     background-color: #FF9800;

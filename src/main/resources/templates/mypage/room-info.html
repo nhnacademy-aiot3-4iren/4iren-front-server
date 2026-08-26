@@ -6,8 +6,11 @@
     <title>Classroom Info - Re I New</title>
 
     <link rel="stylesheet" th:href="@{/css/myteams.css}">
-    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+
     <link rel="stylesheet" th:href="@{/css/buildings.css}">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -21,7 +24,7 @@
     <div th:replace="~{basic/sidebar :: sidebar}"></div>
 
     <div class="main-wrap">
-        <div th:replace="~{basic/header :: header}"></div>
+        <div th:replace="~{basic/header :: header('Room Info')}"></div>
 
         <main class="main-content">
             <div class="building-page-header">
