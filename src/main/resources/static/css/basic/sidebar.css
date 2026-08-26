@@ -1,0 +1,134 @@
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background-color: #faf7f1;
+    border-radius: 21px;
+    margin: 10px 20px 25px 10px;
+    box-shadow:
+            -24px 0 24px -24px rgba(162, 142, 104, 0.38),
+            24px 0 24px -24px rgba(162, 142, 104, 0.38);
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.sidebar-logo img {
+    width: 130px;
+    height: auto;
+    margin-left: -15px;
+}
+
+.user-info-block {
+    padding: 0 24px;
+    margin-bottom: 20px;
+}
+
+.user-role {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+.user-role[data-role="owner"]  { color: #4A90D9; }
+.user-role[data-role="admin"]  { color: #FF9800; }
+.user-role[data-role="user"]   { color: #999999; }
+
+.user-name {
+    margin: 4px 0 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+.sidebar-section-label {
+    padding: 0 24px;
+    margin: 0 0 12px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #b3b3b3;
+    letter-spacing: 0.03em;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 15px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    color: #666;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 14px;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.nav-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    color: inherit;
+}
+
+.nav-icon-lg {
+    width: 22px;
+    height: 22px;
+}
+
+.nav-icon-profile {
+    width: 24px;
+    height: 24px;
+}
+
+.nav-item:hover {
+    background-color: #F7F2EC;
+    color: #444;
+}
+
+.nav-item.active {
+    background-color: #EFE6DD;
+    color: #333;
+    font-weight: 500;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+.sidebar-bottom .nav-item {
+    color: #999;
+}
+
+.sidebar-bottom .nav-item:hover {
+    background-color: #F7F2EC;
+    color: #666;
+}
+
+/* 관리자 페이지 버튼 */
+.owner-page-btn {
+    margin-top: 20px;
+    margin-right: 15px;
+    padding: 7px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #ff8132;
+    font-weight: 600;
+    font-size: 13px;
+    background-color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+}
