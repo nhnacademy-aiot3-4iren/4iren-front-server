@@ -62,6 +62,34 @@ createBuildingBtn.addEventListener('click', async () => {
     }
 });
 
+document.querySelectorAll('.building-delete-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+        const buildingId = button.dataset.buildingId;
+        const buildingName = button.dataset.buildingName || '건물';
+
+        if (!confirm(`${buildingName}을(를) 삭제할까요?`)) {
+            return;
+        }
+
+        try {
+            button.disabled = true;
+            const response = await fetch(`/api/front/teams/${teamId}/buildings/${buildingId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
+
+            window.location.reload();
+        } catch (error) {
+            alert(error.message || '건물 삭제에 실패했습니다.');
+        } finally {
+            button.disabled = false;
+        }
+    });
+});
+
 function closeBuildingModal() {
     buildingModalOverlay.classList.remove('active');
     buildingNameInput.value = '';
