@@ -22,7 +22,7 @@
 
   <div class="main-content-area">
 
-    <div th:replace="~{basic/header :: header('My Page')}">My Page</div>
+    <div th:replace="~{basic/header :: header('마이페이지')}"></div>
 
     <main class="content">
 
@@ -33,8 +33,8 @@
 
         <div class="profile-body">
 
-          <!-- 가입 시 등록한 정보 표시 (읽기 전용) -->
-          <!-- 비밀번호는 이 화면에 노출 x -->
+          <!-- 가입 시 등록한 정보 표시 (읽기 전용, 클릭/수정 불가) -->
+          <!-- 비밀번호는 이 화면에 노출하지 않음 -->
           <div class="profile-form">
 
             <div class="form-group">

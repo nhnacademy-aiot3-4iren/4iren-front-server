@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>플랜 선택 - Re I New</title>
+
+  <link rel="stylesheet" href="/fonts/font.css">
+  <link rel="stylesheet" href="/css/mypage/mypage-content.css">
+  <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+  <link rel="stylesheet" th:href="@{/css/payment.css}">
+</head>
+
+<body>
+<div class="layout">
+
+  <div th:replace="~{basic/sidebar :: sidebar}"></div>
+
+  <div class="main-content-area">
+
+    <div th:replace="~{basic/header :: header('플랜 선택')}"></div>
+
+    <main class="content">
+
+      <div class="plan-page">
+
+        <section class="profile-card plan-select-card">
+          <h2 class="card-title">플랜 선택</h2>
+
+          <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+          <div class="plan-cards">
+            <label class="plan-card" th:each="planPrice, iter : ${plans}">
+              <input type="radio" name="plan" th:value="${planPrice.plan()}" th:checked="${iter.first}">
+              <div class="plan-card-body">
+                <span class="plan-name" th:text="${planPrice.plan()}"></span>
+                <span class="plan-price" th:text="${#numbers.formatInteger(planPrice.amount(), 0, 'COMMA')} + '원'"></span>
+              </div>
+            </label>
+          </div>
+
+          <p th:if="${alreadySubscribed}" class="notice-card-inline">이미 구독 중입니다. 결제수단 변경은 결제 관리 페이지에서 할 수 있어요.</p>
+
+          <div class="pg-buttons">
+            <form method="post" th:action="@{/payment/registrations/toss}" id="tossForm">
+              <input type="hidden" name="plan" id="tossPlan">
+              <button type="submit" class="pg-button pg-toss" th:disabled="${alreadySubscribed}">토스로 결제</button>
+            </form>
+            <form method="post" th:action="@{/payment/registrations/kakao}" id="kakaoForm">
+              <input type="hidden" name="plan" id="kakaoPlan">
+              <button type="submit" class="pg-button pg-kakao" th:disabled="${alreadySubscribed}">카카오페이로 결제</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="profile-card notice-card">
+          <h3 class="notice-title">주의사항</h3>
+          <p>팀은 결제를 완료해야 생성할 수 있으며, 이미 소속된 팀이 있다면 결제를 진행할 수 없습니다.</p>
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div th:replace="~{basic/footer :: footer}"></div>
+
+<script th:src="@{/js/payment.js}"></script>
+</body>
+</html>

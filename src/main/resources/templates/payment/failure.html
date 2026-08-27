@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결제수단 등록 실패 - Re I New</title>
+
+  <link rel="stylesheet" href="/fonts/font.css">
+  <link rel="stylesheet" href="/css/mypage/mypage-content.css">
+  <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+  <link rel="stylesheet" th:href="@{/css/payment.css}">
+</head>
+
+<body>
+<div class="layout">
+
+  <div th:replace="~{basic/sidebar :: sidebar}"></div>
+
+  <div class="main-content-area">
+
+    <div th:replace="~{basic/header :: header('결제 결과')}"></div>
+
+    <main class="content">
+
+      <section class="profile-card result-card">
+        <h2 class="result-title result-failure">결제수단 등록에 실패했습니다</h2>
+        <p class="result-desc">다시 시도하거나 다른 결제수단으로 시도해 주세요.</p>
+        <a th:href="@{/mypage}" class="setting-btn">마이페이지로</a>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div th:replace="~{basic/footer :: footer}"></div>
+</body>
+</html>
