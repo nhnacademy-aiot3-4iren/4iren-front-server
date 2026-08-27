@@ -311,6 +311,62 @@
     font-weight: 700;
 }
 
+.room-briefing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.room-briefing-panel {
+    background: #ffffff;
+    border: 1px solid #edf0f5;
+    border-radius: 8px;
+    padding: 22px 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
+}
+
+.room-briefing-header {
+    margin-bottom: 14px;
+}
+
+.room-briefing-header span {
+    display: block;
+    margin-bottom: 6px;
+    color: #4a7dff;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.room-briefing-header h3 {
+    margin: 0;
+    color: #111;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.45;
+}
+
+.room-briefing-panel p {
+    margin: 10px 0 0;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.room-briefing-panel ul {
+    margin: 14px 0 0;
+    padding-left: 18px;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.room-briefing-panel li + li {
+    margin-top: 6px;
+}
+
 .subscription-actions {
     display: flex;
     align-items: center;
