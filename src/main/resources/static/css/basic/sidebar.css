@@ -36,8 +36,8 @@
     letter-spacing: 0.03em;
 }
 
-.user-role[data-role="owner"]  { color: #4A90D9; }
-.user-role[data-role="admin"]  { color: #FF9800; }
+.user-role[data-role="owner"]  { color: #FF9800; }
+.user-role[data-role="admin"]  { color: #4A90D9; }
 .user-role[data-role="user"]   { color: #999999; }
 
 .user-name {
