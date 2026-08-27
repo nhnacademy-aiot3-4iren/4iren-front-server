@@ -107,9 +107,23 @@ function openPostcodeSearch() {
 
     new kakao.Postcode({
         oncomplete: data => {
-            roadAddressInput.value = data.roadAddress || data.address || '';
-            regionNameInput.value = [data.sido, data.sigungu].filter(Boolean).join(' ');
+            const jibunAddress = data.jibunAddress || data.autoJibunAddress || data.address || '';
+            const roadAddress = data.roadAddress || '';
+            roadAddressInput.value = roadAddress;
+            regionNameInput.value = extractRegionName(jibunAddress, data);
             detailAddressInput.focus();
         }
     }).open();
+}
+
+function extractRegionName(jibunAddress, data) {
+    const fallback = [data.sido, data.sigungu].filter(Boolean).join(' ');
+    const tokens = jibunAddress.trim().split(/\s+/);
+    const dongIndex = tokens.findIndex(token => token.endsWith('동'));
+
+    if (dongIndex < 0) {
+        return fallback;
+    }
+
+    return tokens.slice(0, dongIndex + 1).join(' ');
 }

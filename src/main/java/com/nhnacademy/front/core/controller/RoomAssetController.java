@@ -7,6 +7,7 @@ import com.nhnacademy.front.core.dto.room.RoomDetailResponse;
 import com.nhnacademy.front.core.dto.sensor.SensorLocationResponse;
 import com.nhnacademy.front.core.dto.team.TeamDetailResponse;
 import com.nhnacademy.front.core.service.*;
+import com.nhnacademy.front.recommendation.service.RoomBriefingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,7 @@ public class RoomAssetController {
     private final RoomService roomService;
     private final DeviceService deviceService;
     private final SensorLocationService sensorLocationService;
+    private final RoomBriefingService roomBriefingService;
 
     @GetMapping("/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}")
     public String roomDetailPage(
@@ -33,6 +35,10 @@ public class RoomAssetController {
     ) {
         addRoomContext(teamId, buildingId, roomId, model);
         model.addAttribute("subscriptionStatus", roomService.getSubscriptionStatus(teamId, roomId));
+        roomBriefingService.getWelcomeBriefing(teamId, roomId)
+                .ifPresent(briefing -> model.addAttribute("welcomeBriefing", briefing));
+        roomBriefingService.getDailySummary(teamId, roomId)
+                .ifPresent(summary -> model.addAttribute("dailySummary", summary));
         return "mypage/room-info";
     }
 
