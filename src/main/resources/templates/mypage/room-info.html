@@ -76,6 +76,49 @@
                 </div>
             </section>
 
+            <section class="room-briefing-grid"
+                     th:if="${welcomeBriefing != null || dailySummary != null}">
+                <article class="room-briefing-panel" th:if="${welcomeBriefing != null}">
+                    <div class="room-briefing-header">
+                        <span>Welcome Briefing</span>
+                        <h3 th:text="${welcomeBriefing.summary}">오늘의 브리핑</h3>
+                    </div>
+                    <p th:if="${welcomeBriefing.currentStatus != null}"
+                       th:text="${welcomeBriefing.currentStatus}">현재 상태</p>
+                    <p th:if="${welcomeBriefing.comparison != null}"
+                       th:text="${welcomeBriefing.comparison}">비교</p>
+                    <ul th:if="${!#lists.isEmpty(welcomeBriefing.recommendations)}">
+                        <li th:each="recommendation : ${welcomeBriefing.recommendations}"
+                            th:text="${recommendation}">추천</li>
+                    </ul>
+                    <ul th:if="${!#lists.isEmpty(welcomeBriefing.checks)}">
+                        <li th:each="check : ${welcomeBriefing.checks}"
+                            th:text="${check}">체크</li>
+                    </ul>
+                </article>
+
+                <article class="room-briefing-panel" th:if="${dailySummary != null}">
+                    <div class="room-briefing-header">
+                        <span>Daily Summary</span>
+                        <h3 th:text="${dailySummary.summary}">하루 요약</h3>
+                    </div>
+                    <p th:if="${dailySummary.indoorEnvironment != null}"
+                       th:text="${dailySummary.indoorEnvironment}">실내 환경</p>
+                    <p th:if="${dailySummary.outdoorEnvironment != null}"
+                       th:text="${dailySummary.outdoorEnvironment}">외부 환경</p>
+                    <p th:if="${dailySummary.comparison != null}"
+                       th:text="${dailySummary.comparison}">비교</p>
+                    <ul th:if="${!#lists.isEmpty(dailySummary.recommendations)}">
+                        <li th:each="recommendation : ${dailySummary.recommendations}"
+                            th:text="${recommendation}">추천</li>
+                    </ul>
+                    <ul th:if="${!#lists.isEmpty(dailySummary.checks)}">
+                        <li th:each="check : ${dailySummary.checks}"
+                            th:text="${check}">체크</li>
+                    </ul>
+                </article>
+            </section>
+
             <section class="building-info-panel">
                 <div class="building-info-main">
                     <div class="building-info-title">
