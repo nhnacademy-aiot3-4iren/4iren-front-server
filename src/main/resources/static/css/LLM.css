@@ -101,6 +101,10 @@ body {
 }
 
 .nav-item {
+
+}
+
+.nav-link {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -110,10 +114,11 @@ body {
     color: var(--text-main);
     font-size: 0.9rem;
     font-weight: 500;
+    text-decoration: none;
     transition: background-color 0.2s;
 }
 
-.nav-item:hover {
+.nav-link:hover {
     background-color: #f9f9f9;
 }
 
@@ -295,4 +300,42 @@ body {
 
 .loader-bubble .loader-wrapper {
     color: var(--text-muted);   /* 흰 배경 위에서도 보이게 */
+}
+
+.loading-bubble {
+    display: flex;
+    align-items: center;
+    padding: 10px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.loading-bubble .spinner {
+    background-image: linear-gradient(rgb(255, 98, 43) 35%, rgb(255, 177, 72));
+    width: 35px;
+    height: 35px;
+    animation: spinning82341 1.7s linear infinite;
+    text-align: center;
+    border-radius: 50px;
+    filter: blur(1px);
+    box-shadow: 0px -5px 20px 0px rgb(255, 150, 130), 0px 5px 20px 0px rgb(255, 220, 94);
+}
+
+.loading-bubble .spinner1 {
+    background-color: rgb(240, 248, 255);
+    width: 35px;
+    height: 35px;
+    border-radius: 50px;
+    filter: blur(10px);
+}
+
+.loading-bubble .loading-text {
+    color: #fbfbfb;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+@keyframes spinning82341 {
+    to { transform: rotate(360deg); }
 }

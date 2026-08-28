@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Bot UI</title>
 
+    <!--  css  -->
     <link rel="stylesheet" href="/css/LLM.css">
+
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -30,13 +32,12 @@
 
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                    Home
+                    <a href="/home" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        Home
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    History
-                </li>
+
                 <li class="nav-item">
                     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
                     Report
@@ -160,6 +161,7 @@
         // 화면 표시 및 초기화
         appendMessage(messageToHappen, 'user');
         if(chatInput) chatInput.value = '';
+        showLoading();
 
         // (이하 서버 전송 로직 생략 없이 그대로 유지)
         if(chatInput) chatInput.disabled = true;
@@ -180,16 +182,38 @@
 
             const data = await response.json();
             const reply = data.answer;
+            hideLoading();
             appendMessage(reply, 'bot');
 
         } catch (error) {
             console.error('Error:', error);
+            hideLoading();
             appendMessage('서버와 연결할 수 없습니다.', 'bot');
         } finally {
             if(chatInput) chatInput.disabled = false;
             if(sendBtn) sendBtn.disabled = false;
             if(chatInput) chatInput.focus();
         }
+    }
+
+
+
+    function showLoading() {
+        const messageRow = document.createElement('div');
+        messageRow.className = 'message-row bot';
+        messageRow.id = 'loadingIndicator';
+        messageRow.innerHTML = `
+        <div class="chat-bubble bot-bubble loading-bubble">
+            <div class="spinner"><div class="spinner1"></div></div>
+            <div class="loading-text">&emsp;&nbsp;답변 생성중 ・・・</div>
+        </div>`;
+        chatContent.appendChild(messageRow);
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    function hideLoading() {
+        const el = document.getElementById('loadingIndicator');
+        if (el) el.remove();
     }
 </script>
 
