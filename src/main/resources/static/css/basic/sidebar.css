@@ -1,12 +1,20 @@
 .sidebar {
     width: 250px;
     flex-shrink: 0;
-    background-color: #faf7f1;
+    /* 맑은 유리 패널: 알파 있는 흰색 + 원본 베젤 하이라이트 그대로 유지 */
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow:
+            0px 0px 2px rgba(0, 0, 0, 0.1),
+            0px 1px 8px rgba(0, 0, 0, 0.1),
+            inset 3px 3px 0.5px -3.5px #FFFFFF,
+            inset 2px 2px 0.5px -2px #262626,
+            inset -2px -2px 0.5px -2px #262626,
+            inset 0px 0px 0px 1px #A6A6A6,
+            inset 0px 0px 8px #F2F2F2;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border-radius: 21px;
     margin: 10px 20px 25px 10px;
-    box-shadow:
-            -24px 0 24px -24px rgba(162, 142, 104, 0.38),
-            24px 0 24px -24px rgba(162, 142, 104, 0.38);
     padding: 30px 0;
     display: flex;
     flex-direction: column;
@@ -28,6 +36,8 @@
 .user-info-block {
     padding: 0 24px;
     margin-bottom: 20px;
+    border-bottom: 1px solid rgba(102, 90, 80, 0.12);
+    padding-bottom: 20px;
 }
 
 .user-role {
@@ -36,24 +46,22 @@
     letter-spacing: 0.03em;
 }
 
-.user-role[data-role="owner"]  { color: #FF9800; }
+/*
+   data-role 값은 GlobalControllerAdvice가 내려주는 role("ADMIN"/"NORMAL")을
+   #strings.toLowerCase 한 값이라서 "admin"/"normal" 두 가지만 옵니다.
+   ("owner"는 팀 역할이지 시스템 role이 아니라서 여기서는 안 잡힙니다 - 이전엔
+   "owner"/"user"로 되어있어 실제로는 색이 전혀 안 먹혔던 상태였습니다.)
+   owner/admin(팀 관리자) 구분이 필요해지면, 팀 역할 값을 별도로 모델에 내려받아
+   여기에 조건을 추가해야 합니다.
+*/
 .user-role[data-role="admin"]  { color: #4A90D9; }
-.user-role[data-role="user"]   { color: #999999; }
+.user-role[data-role="normal"] { color: #999999; }
 
 .user-name {
     margin: 4px 0 0;
     font-size: 15px;
     font-weight: 500;
     color: #333;
-}
-
-.sidebar-section-label {
-    padding: 0 24px;
-    margin: 0 0 12px;
-    font-size: 11px;
-    font-weight: 500;
-    color: #b3b3b3;
-    letter-spacing: 0.03em;
 }
 
 .sidebar-nav {
@@ -75,6 +83,34 @@
     transition: background-color 0.15s, color 0.15s;
 }
 
+.nav-item-toggle {
+    width: 100%;           /* 버튼 너비를 부모 영역에 꽉 차게 설정 */
+    background: none;      /* 브라우저 기본 버튼 배경 제거 */
+    border: none;          /* 브라우저 기본 버튼 테두리 제거 */
+    font: inherit;         /* 부모의 폰트/사이즈/굵기 상속 */
+    text-align: left;      /* 텍스트 좌측 정렬 */
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.nav-item-main {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.nav-icon-chevron {
+    flex-shrink: 0;
+    margin-left: 8px;
+    color: inherit;
+    transition: transform 0.15s ease;
+}
+
+.nav-item-toggle.expanded .nav-icon-chevron {
+    transform: rotate(180deg);
+}
+
 .nav-icon {
     width: 18px;
     height: 18px;
@@ -93,14 +129,109 @@
     height: 24px;
 }
 
-.nav-item:hover {
-    background-color: #F7F2EC;
+.nav-item:hover,
+.nav-item-toggle:hover {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     color: #444;
 }
 
-.nav-item.active {
-    background-color: #EFE6DD;
-    color: #333;
+/* 선택된 메뉴 = 같은 유리 레시피를 적용한 필 버튼 */
+.nav-item.active,
+.nav-item-toggle.expanded {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow:
+            0px 0px 2px rgba(0, 0, 0, 0.1),
+            0px 1px 8px rgba(0, 0, 0, 0.1),
+            inset 3px 3px 0.5px -3.5px #FFFFFF,
+            inset 2px 2px 0.5px -2px #262626,
+            inset -2px -2px 0.5px -2px #262626,
+            inset 0px 0px 0px 1px #A6A6A6,
+            inset 0px 0px 8px #F2F2F2;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 100px;
+    color: #000;
+    font-weight: 500;
+}
+
+/* Team 하위 메뉴 (Buildings / Classrooms) — 트리 형태의 연결선 */
+.submenu {
+    position: relative;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 34px;
+    margin: 0 0 2px 0;
+}
+
+.submenu.open {
+    display: flex;
+}
+
+.submenu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 8px;
+    color: #666;
+    text-decoration: none;
+    font-size: 13.5px;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+/* 트리 연결선: 항목마다 자기 몫의 L자 선을 그려서 둥글게 이어지게 함
+   (세로선 하나 + 가로 stub 대신, border로 둥근 모서리를 만드는 방식) */
+.submenu-item::before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    top: -21px;
+    width: 16px;
+    height: 40px; /* 항목 높이(38px) + 항목 간 gap(2px) */
+    border-left: 1.5px solid #b3a89c;
+    border-bottom: 1.5px solid #b3a89c;
+    border-bottom-left-radius: 8px;
+}
+
+/* 첫 항목은 위로 이어지는 이전 항목이 없으니 자기 절반 높이만큼만 그림 */
+.submenu-item:first-child::before {
+    top: 0;
+    height: 19px;
+}
+
+/* "모든 팀 보기": 팀 하위 목록이지만 성격이 달라서(특정 팀에 종속되지 않음)
+   바로 아래 항목들과 살짝 구분되도록 연한 구분선을 아래에 둠 */
+.submenu-item[data-page="team-list"] {
+    margin-bottom: 6px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(102, 90, 80, 0.08);
+}
+
+.submenu-item:hover {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #444;
+}
+
+.submenu-item.active {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow:
+            0px 0px 2px rgba(0, 0, 0, 0.1),
+            0px 1px 8px rgba(0, 0, 0, 0.1),
+            inset 3px 3px 0.5px -3.5px #FFFFFF,
+            inset 2px 2px 0.5px -2px #262626,
+            inset -2px -2px 0.5px -2px #262626,
+            inset 0px 0px 0px 1px #A6A6A6,
+            inset 0px 0px 8px #F2F2F2;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 100px;
+    color: #000;
     font-weight: 500;
 }
 
@@ -111,24 +242,12 @@
 }
 
 .sidebar-bottom .nav-item {
-    color: #999;
-}
-
-.sidebar-bottom .nav-item:hover {
-    background-color: #F7F2EC;
     color: #666;
 }
 
-/* 관리자 페이지 버튼 */
-.owner-page-btn {
-    margin-top: 20px;
-    margin-right: 15px;
-    padding: 7px 20px;
-    border-radius: 10px;
-    text-decoration: none;
-    color: #ff8132;
-    font-weight: 600;
-    font-size: 13px;
-    background-color: rgba(255, 255, 255, 0.6);
-    white-space: nowrap;
+.sidebar-bottom .nav-item:hover {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #666;
 }
