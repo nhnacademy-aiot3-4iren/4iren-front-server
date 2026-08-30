@@ -90,6 +90,15 @@ function renderTeams(teams) {
     teams.forEach(team => teamListContainer.appendChild(createTeamCard(team)));
 }
 
+// 역할값 → 뱃지에 쓸 라벨/클래스 매핑
+// team.myRole은 "OWNER" / "ADMIN" / "NORMAL" 중 하나로 내려옴 (TeamRole enum)
+// 화면 표기는 일반 유저를 "MEMBER"로 부르기로 했으므로 NORMAL만 라벨을 바꿔줌
+function getRoleBadge(myRole) {
+    const label = myRole === 'NORMAL' ? 'MEMBER' : myRole;
+    const cssClass = 'role-badge-' + (myRole || 'normal').toLowerCase();
+    return `<span class="role-badge ${cssClass}">${label}</span>`;
+}
+
 function createTeamCard(team) {
     const card = document.createElement('div');
     card.className = 'team-card';
@@ -99,6 +108,7 @@ function createTeamCard(team) {
       <div class="team-info">
         <div class="team-header-row">
           <span class="team-card-name">${escapeHtml(team.teamName || '')}</span>
+          ${getRoleBadge(team.myRole)}
           <span class="team-card-desc">${escapeHtml(team.description || '')}</span>
         </div>
         <div class="team-meta-row">
@@ -222,3 +232,4 @@ function escapeHtml(value) {
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
 }
+

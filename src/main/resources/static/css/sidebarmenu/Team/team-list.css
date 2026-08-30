@@ -502,4 +502,17 @@ body {
     background-color: #d1d1d1;
 }
 
+/* ---------------- 역할 뱃지 ---------------- */
+.role-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
 
+.role-badge-owner  { background: #FFF3E8; color: #FF9800; }
+.role-badge-admin  { background: #E8F1FC; color: #4A90D9; }
+.role-badge-normal { background: #F2F2F2; color: #888; }
