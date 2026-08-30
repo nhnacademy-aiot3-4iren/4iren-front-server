@@ -34,8 +34,8 @@ public class PaymentPageController {
 
     @PostMapping("/payment/registrations/toss")
     public String startToss(@ModelAttribute("role") String role,
-                             @RequestParam Plan plan,
-                             RedirectAttributes redirectAttributes) {
+                            @RequestParam Plan plan,
+                            RedirectAttributes redirectAttributes) {
         if (!"NORMAL".equals(role)) {
             redirectAttributes.addFlashAttribute("errorMessage", "이미 구독 중이거나 결제할 수 없는 계정입니다.");
             return "redirect:/payment/plans";
@@ -52,8 +52,8 @@ public class PaymentPageController {
 
     @PostMapping("/payment/registrations/kakao")
     public String startKakao(@ModelAttribute("role") String role,
-                              @RequestParam Plan plan,
-                              RedirectAttributes redirectAttributes) {
+                             @RequestParam Plan plan,
+                             RedirectAttributes redirectAttributes) {
         if (!"NORMAL".equals(role)) {
             redirectAttributes.addFlashAttribute("errorMessage", "이미 구독 중이거나 결제할 수 없는 계정입니다.");
             return "redirect:/payment/plans";
@@ -71,6 +71,10 @@ public class PaymentPageController {
     @GetMapping("/payment/billing")
     public String getBillingPage(Model model) {
         model.addAttribute("payments", paymentClient.getPaymentHistory());
+        // 결제 내역엔 plan 정보가 없어서(PaymentHistoryResponse에 plan 필드 없음),
+        // amount 기준으로 요금제를 역매칭하기 위해 plans도 같이 내려줌.
+        // (뷰에서 최근 DONE 결제 건의 amount와 plans의 amount를 비교해서 plan명을 찾음)
+        model.addAttribute("plans", paymentClient.getPlans());
         return "payment/billing";
     }
 
@@ -96,6 +100,20 @@ public class PaymentPageController {
             redirectAttributes.addFlashAttribute("errorMessage", "결제수단 변경 시작에 실패했습니다.");
             return "redirect:/payment/billing";
         }
+    }
+
+    // 신규 추가: 구독 해지. PaymentClient.cancelSubscription()은 이미 있었으나
+    // 이걸 실제로 호출해서 화면 버튼과 연결하는 엔드포인트가 없었음.
+    @PostMapping("/payment/billing/cancel")
+    public String cancelSubscription(RedirectAttributes redirectAttributes) {
+        try {
+            paymentClient.cancelSubscription();
+            redirectAttributes.addFlashAttribute("successMessage", "구독이 해지되었습니다. 다음 결제일까지는 계속 이용하실 수 있습니다.");
+        } catch (FeignException e) {
+            log.error("구독 해지 실패", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "구독 해지에 실패했습니다.");
+        }
+        return "redirect:/payment/billing";
     }
 
     @GetMapping("/payments/success")

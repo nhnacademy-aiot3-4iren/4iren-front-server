@@ -115,65 +115,22 @@
           </section>
 
           <!-- ---------------- Payment (owner 전용) ----------------
-               payment/billing.html 의 "결제내역" + "결제수단 변경" 섹션을 그대로 이식.
-               구독 해지 버튼은 아직 백엔드 기능이 없어 자리표시자로만 추가함
-               (Core 문서상 "구현 안 됨" 항목). -->
+               결제 내역/수단변경/구독해지는 전부 별도 페이지(/payment/billing)로
+               분리됨 (payment-billing.html - 실제 데이터 연동 + 구독 해지까지
+               완성된 버전). 여기서는 안내 문구와 바로가기 버튼만 둠. -->
           <section class="settings-panel" id="panel-payment"
                    th:if="${team != null and team.myRole != null and team.myRole.name() == 'OWNER'}">
             <h2 class="panel-title">Payment</h2>
 
-            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-
-            <h3 class="panel-subtitle">결제내역</h3>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                <tr>
-                  <th>결제일시</th>
-                  <th>금액</th>
-                  <th>상태</th>
-                  <th>실패사유</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="payment : ${payments}">
-                  <td th:text="${#temporals.format(payment.attemptedAt(), 'yyyy-MM-dd HH:mm')}">2026-08-26 09:00</td>
-                  <td th:text="${#numbers.formatInteger(payment.amount(), 0, 'COMMA')} + '원'">29,000원</td>
-                  <td>
-                    <span th:if="${payment.status() == 'DONE'}" class="status-badge status-active">성공</span>
-                    <span th:if="${payment.status() == 'FAILED'}" class="status-badge status-withdrawn">실패</span>
-                    <span th:if="${payment.status() == 'READY'}" class="status-badge status-pending">진행중</span>
-                  </td>
-                  <td th:text="${payment.failureReason() ?: '-'}">-</td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(payments)}">
-                  <td colspan="4" style="padding: 40px; color: #6c757d;">결제내역이 없습니다.</td>
-                </tr>
-                </tbody>
-              </table>
+            <div class="setting-row">
+              <div class="setting-row-text">
+                <strong>결제 관리</strong>
+                <p>구독 정보, 결제 내역, 결제 수단 변경, 구독 해지를 한 곳에서 관리할 수 있습니다.</p>
+              </div>
+              <a href="/payment/billing" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center;">
+                결제 관리 페이지로 이동 →
+              </a>
             </div>
-
-            <div class="setting-divider"></div>
-
-            <h3 class="panel-subtitle">결제수단 변경</h3>
-            <p class="panel-desc">변경한 결제수단은 다음 결제일부터 적용됩니다. 현재 이용 중인 결제수단으로는 계속 정상 청구됩니다.</p>
-
-            <div class="pg-buttons">
-              <form method="post" th:action="@{/payment/billing/change/toss}">
-                <button type="submit" class="pg-button pg-toss">토스로 변경</button>
-              </form>
-              <form method="post" th:action="@{/payment/billing/change/kakao}">
-                <button type="submit" class="pg-button pg-kakao">카카오페이로 변경</button>
-              </form>
-            </div>
-
-            <div class="setting-divider"></div>
-
-            <!-- TODO: 구독 해지 - 아직 백엔드 기능 없음 (Core 문서상 "구현 안 됨").
-                 API 준비되면 confirm 후 POST 요청으로 연결 -->
-            <h3 class="panel-subtitle">구독 해지</h3>
-            <p class="panel-desc">해지하면 다음 결제일 이후 팀 이용이 중단됩니다.</p>
-            <button type="button" class="btn-outline" disabled>구독 해지 (준비 중)</button>
           </section>
 
         </div> <!-- /settings-content -->
