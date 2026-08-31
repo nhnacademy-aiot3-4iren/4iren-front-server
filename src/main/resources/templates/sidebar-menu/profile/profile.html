@@ -18,11 +18,11 @@
 <body>
 <div class="layout">
 
-  <div th:replace="~{basic/sidebar :: sidebar}"></div>
+  <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
   <div class="main-content-area">
 
-    <div th:replace="~{basic/header :: header('마이페이지')}"></div>
+    <div th:replace="~{layout/header :: header('마이페이지')}"></div>
 
     <main class="content">
 
@@ -76,7 +76,7 @@
   </div>
 </div>
 
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 <!-- ===================== 프로필 수정 팝업 ===================== -->
 <!-- 네이티브 <dialog> 사용: focus trap / ESC 닫기 / 배경 inert 처리를 브라우저가 자동으로 처리 -->

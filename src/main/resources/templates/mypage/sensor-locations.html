@@ -21,10 +21,10 @@
 </head>
 <body>
 <div class="layout">
-    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
     <div class="main-wrap">
-        <div th:replace="~{basic/header :: header('Sensor Loc.')}"></div>
+        <div th:replace="~{layout/header :: header('Sensor Loc.')}"></div>
 
         <main class="main-content">
             <div class="building-page-header">
@@ -41,8 +41,9 @@
                         <span>Sensors</span>
                         <strong th:text="${sensorLocations.totalElements}">0</strong>
                     </div>
+                    <!-- 상단 버튼: Sensor 등록 -->
                     <button class="building-create-btn" type="button" id="openSensorModalBtn"
-                            th:if="${team.myRole != null && team.myRole.isManager()}">+ Sensor 생성</button>
+                            th:if="${team.myRole != null && team.myRole.isManager()}">+ Sensor 등록</button>
                 </div>
             </div>
 
@@ -84,21 +85,25 @@
                 </a>
             </nav>
 
+            <!-- 센서 등록 모달 -->
             <div class="modal-overlay" id="sensorModalOverlay">
                 <div class="modal-folder-wrapper building-modal">
-                    <div class="modal-tab">Sensor 생성</div>
+                    <div class="modal-tab">Sensor 등록</div>
                     <div class="modal-content">
                         <div class="building-form-group">
-                            <label>DevEUI</label>
-                            <input type="text" id="devEuiInput" maxlength="16" placeholder="16자리 HEX">
+                            <label>등록할 센서 선택</label>
+                            <div id="availableSensorsContainer" class="sensor-select-box">
+                                <p class="sensor-select-status">센서 목록을 불러오는 중...</p>
+                            </div>
+
+                            <p class="sensor-notice-text">
+                                * 빌딩에 MQTT 등록 후 센서가 보이기까지 2~30분 정도가 소요될 수 있습니다.
+                            </p>
                         </div>
-                        <div class="building-form-group">
-                            <label>Location Detail</label>
-                            <input type="text" id="locationDetailInput" placeholder="ex ) 창가 오른쪽">
-                        </div>
+
                         <div class="building-modal-actions">
                             <button class="modal-cancel-btn" type="button" id="closeSensorModalBtn">Cancel</button>
-                            <button class="modal-submit-btn" type="button" id="createSensorBtn">Create</button>
+                            <button class="modal-submit-btn" type="button" id="createSensorBtn">등록</button>
                         </div>
                     </div>
                 </div>
@@ -107,9 +112,10 @@
     </div>
 </div>
 
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 <script th:inline="javascript">
     const teamId = /*[[${team.teamId}]]*/ null;
+    const buildingId = /*[[${building.buildingId}]]*/ null;
     const roomId = /*[[${room.roomId}]]*/ null;
 </script>
 <script src="/js/sensor-locations.js"></script>

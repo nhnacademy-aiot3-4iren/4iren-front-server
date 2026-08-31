@@ -1,4 +1,4 @@
-package com.nhnacademy.front.processing.dto;
+package com.nhnacademy.front.processing.dto.mqtt;
 
 public record MqttBrokerInfoDto(
         Long id,

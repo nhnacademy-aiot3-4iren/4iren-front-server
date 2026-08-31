@@ -1,7 +1,7 @@
 package com.nhnacademy.front.processing.client;
 
-import com.nhnacademy.front.processing.dto.MqttBrokerCreateRequest;
-import com.nhnacademy.front.processing.dto.MqttBrokerInfoDto;
+import com.nhnacademy.front.processing.dto.mqtt.MqttBrokerCreateRequest;
+import com.nhnacademy.front.processing.dto.mqtt.MqttBrokerInfoDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;

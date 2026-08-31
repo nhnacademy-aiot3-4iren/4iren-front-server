@@ -104,6 +104,7 @@
     </div>
 </div>
 
+<!-- 건물 추가 모달 (MQTT 설정 포함) -->
 <dialog class="modal" id="addBuildingModal">
     <div class="modal-header">
         <h2>건물 추가</h2>
@@ -112,14 +113,39 @@
     <div class="modal-body">
         <label class="modal-field-label" for="newBuildingName">건물 이름</label>
         <input type="text" id="newBuildingName" placeholder="예) 본관">
+
         <label class="modal-field-label" for="newBuildingDesc">설명</label>
         <input type="text" id="newBuildingDesc" placeholder="선택 입력">
+
         <label class="modal-field-label" for="newBuildingRegion">지역명</label>
         <input type="text" id="newBuildingRegion" placeholder="예) 광주광역시">
+
         <label class="modal-field-label" for="newBuildingRoadAddress">도로명 주소</label>
         <input type="text" id="newBuildingRoadAddress" placeholder="선택 입력">
+
         <label class="modal-field-label" for="newBuildingDetailAddress">상세 주소</label>
         <input type="text" id="newBuildingDetailAddress" placeholder="선택 입력">
+
+        <!-- MQTT 브로커 입력 필드 -->
+        <div style="margin-top: 18px; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 14px;">
+            <div style="font-size: 14px; font-weight: 600; color: #4a5568; margin-bottom: 10px;">MQTT 브로커 설정 (선택)</div>
+
+            <label class="modal-field-label" for="newMqttServerName">MQTT 서버 이름</label>
+            <input type="text" id="newMqttServerName" placeholder="예) 본관 센서 브로커">
+
+            <label class="modal-field-label" for="newMqttBrokerUrl">브로커 URL</label>
+            <input type="text" id="newMqttBrokerUrl" placeholder="예) tcp://broker.emqx.io:1883">
+
+            <label class="modal-field-label" for="newMqttTopic">구독 토픽 (Topic)</label>
+            <input type="text" id="newMqttTopic" placeholder="예) nhn/building/+/sensor">
+
+            <label class="modal-field-label" for="newMqttUsername">Username</label>
+            <input type="text" id="newMqttUsername" placeholder="선택 입력">
+
+            <label class="modal-field-label" for="newMqttPassword">Password</label>
+            <input type="password" id="newMqttPassword" placeholder="선택 입력">
+        </div>
+
         <p class="form-error" id="addBuildingError"></p>
         <div class="modal-actions">
             <button type="button" class="btn-outline" id="addBuildingCancelBtn">취소</button>
@@ -128,6 +154,7 @@
     </div>
 </dialog>
 
+<!-- 강의실 추가 모달 -->
 <dialog class="modal" id="addRoomModal">
     <div class="modal-header">
         <h2>강의실 추가</h2>
@@ -231,6 +258,7 @@
         buildingListEl.innerHTML = buildings.map(b => `
             <li class="entity-list-item" data-building-id="${b.buildingId}">
                 <span class="entity-name">${escapeHtml(b.buildingName)}</span>
+                <a href="/teams/${teamId}/buildings/${b.buildingId}" class="btn-detail-blue" onclick="event.stopPropagation()">상세보기</a>
             </li>`).join('');
         buildingListEl.querySelectorAll('.entity-list-item').forEach(li => {
             li.addEventListener('click', () => selectBuilding(Number(li.dataset.buildingId), li));
@@ -269,6 +297,7 @@
         classroomListEl.innerHTML = rooms.map(r => `
             <li class="entity-list-item" data-room-id="${r.roomId}">
                 <span class="entity-name">${escapeHtml(r.roomName)}</span>
+                <a href="/teams/${teamId}/buildings/${selectedBuildingId}/rooms/${r.roomId}" class="btn-detail-blue" onclick="event.stopPropagation()">상세보기</a>
             </li>`).join('');
         classroomListEl.querySelectorAll('.entity-list-item').forEach(li => {
             li.addEventListener('click', () => {
@@ -280,8 +309,29 @@
         });
     }
 
+    // 건물 추가 모달 컨트롤
     const addBuildingModal = document.getElementById('addBuildingModal');
-    if (addBuildingBtn) addBuildingBtn.addEventListener('click', () => addBuildingModal.showModal());
+
+    function resetAddBuildingForm() {
+        document.getElementById('newBuildingName').value = '';
+        document.getElementById('newBuildingDesc').value = '';
+        document.getElementById('newBuildingRegion').value = '';
+        document.getElementById('newBuildingRoadAddress').value = '';
+        document.getElementById('newBuildingDetailAddress').value = '';
+        document.getElementById('newMqttServerName').value = '';
+        document.getElementById('newMqttBrokerUrl').value = '';
+        document.getElementById('newMqttTopic').value = '';
+        document.getElementById('newMqttUsername').value = '';
+        document.getElementById('newMqttPassword').value = '';
+        document.getElementById('addBuildingError').textContent = '';
+    }
+
+    if (addBuildingBtn) {
+        addBuildingBtn.addEventListener('click', () => {
+            resetAddBuildingForm();
+            addBuildingModal.showModal();
+        });
+    }
     document.getElementById('addBuildingModalCloseBtn')?.addEventListener('click', () => addBuildingModal.close());
     document.getElementById('addBuildingCancelBtn')?.addEventListener('click', () => addBuildingModal.close());
 
@@ -289,8 +339,10 @@
         const errorEl = document.getElementById('addBuildingError');
         const buildingName = document.getElementById('newBuildingName').value.trim();
         if (!buildingName) { errorEl.textContent = '건물 이름을 입력해주세요.'; return; }
+
         try {
-            await requestJson(`/api/front/teams/${teamId}/buildings`, {
+            // 1. 건물 생성 API 호출
+            const buildingResult = await requestJson(`/api/front/teams/${teamId}/buildings`, {
                 method: 'POST',
                 body: JSON.stringify({
                     buildingName,
@@ -300,8 +352,37 @@
                     detailAddress: document.getElementById('newBuildingDetailAddress').value.trim()
                 })
             });
+
+            const buildingId = buildingResult.buildingId;
+
+            // 2. MQTT 브로커 입력 필드 확인
+            const serverName = document.getElementById('newMqttServerName').value.trim();
+            const brokerUrl = document.getElementById('newMqttBrokerUrl').value.trim();
+            const topic = document.getElementById('newMqttTopic').value.trim();
+            const username = document.getElementById('newMqttUsername').value.trim();
+            const password = document.getElementById('newMqttPassword').value.trim();
+
+            // MQTT 필수 값(서버 이름, 브로커 URL, 토픽)이 작성된 경우 등록 실행
+            if (serverName && brokerUrl && topic) {
+                try {
+                    await requestJson(`/api/front/teams/${teamId}/buildings/${buildingId}/mqtt`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            serverName,
+                            brokerUrl,
+                            topic,
+                            username: username || null,
+                            password: password || null
+                        })
+                    });
+                } catch (mqttErr) {
+                    console.error('MQTT 브로커 등록 실패:', mqttErr);
+                    alert(`건물은 추가되었으나, MQTT 브로커 등록에 실패했습니다:\n${mqttErr.message || ''}`);
+                }
+            }
+
+            resetAddBuildingForm();
             addBuildingModal.close();
-            errorEl.textContent = '';
             await loadBuildings();
         } catch (error) {
             errorEl.textContent = error.message || '건물 추가에 실패했습니다.';
@@ -330,6 +411,9 @@
     if (addRoomBtn) {
         addRoomBtn.addEventListener('click', () => {
             if (!selectedBuildingId) { alert('먼저 왼쪽에서 건물을 선택해주세요.'); return; }
+            document.getElementById('newRoomName').value = '';
+            document.getElementById('newRoomDesc').value = '';
+            document.getElementById('addRoomError').textContent = '';
             addRoomModal.showModal();
         });
     }

@@ -51,14 +51,18 @@ public class GlobalControllerAdvice {
      * /team으로 리다이렉트하도록 이미 처리되어 있어서 에러 없이 넘어감.
      */
     @ModelAttribute("currentTeamId")
-    public Long getCurrentTeamId() {
+    public Long getCurrentTeamId(HttpServletRequest request) {
+        // 로그인되지 않은 상태(userId가 없음)라면 Feign 호출 생략
+        if (getUserId(request) == null) {
+            return null;
+        }
+
         try {
             PageResponse<TeamDetailResponse> teams = teamService.getTeams(0, 1, "id,ASC");
             if (teams != null && teams.content() != null && !teams.content().isEmpty()) {
                 return teams.content().get(0).teamId();
             }
         } catch (Exception e) {
-            // 비로그인 상태거나 팀이 없는 유저(회원가입 직후 등)일 수 있으므로 조용히 넘어감
             log.debug("Failed to resolve currentTeamId: {}", e.getMessage());
         }
         return null;

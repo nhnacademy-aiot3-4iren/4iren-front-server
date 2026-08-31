@@ -52,6 +52,6 @@ public class BuildingController {
         model.addAttribute("building", building);
 
         // 파일 위치: templates/sidebar-menu/team/buildings/building-info.html
-        return "sidebar-menu/team/buildings/building-info";
+        return "team/building-info";
     }
 }
