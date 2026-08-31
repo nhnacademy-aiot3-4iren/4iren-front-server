@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Members</title>
+
+    <link rel="stylesheet" href="/fonts/font.css">
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/team-info.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+    <link rel="stylesheet" th:href="@{/css/team-members.css}">
+</head>
+<body>
+
+<div class="layout">
+
+    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+
+    <div class="main-wrap">
+
+        <div th:replace="~{basic/header :: header('Team Members')}"></div>
+
+        <main class="main-content">
+
+            <div class="info-card-container members-page">
+
+                <!-- ============================================== -->
+                <!-- 초대 코드 -->
+                <!-- team-info.html과 같은 team.myRole.isManager() 조건 재사용,
+                     API는 myteams.js의 openInviteModal 로직과 동일 -->
+                <!-- ============================================== -->
+                <section class="members-card">
+                    <div class="members-card-header">
+                        <div>
+                            <h2>Members</h2>
+                            <p class="sub-text" th:text="${team.teamName}">Team Name</p>
+                        </div>
+                    </div>
+
+                    <div class="setting-row" th:if="${team.myRole != null && team.myRole.isManager()}">
+                        <div class="setting-row-text">
+                            <strong>초대 코드</strong>
+                            <p>새로운 8자리 초대 코드를 발급합니다. (활성 팀에서만 가능)</p>
+                        </div>
+                        <button type="button" class="btn-primary" id="createInviteCodeBtn">코드 생성</button>
+                    </div>
+
+                    <div class="code-squares" id="codeSquaresContainer" hidden>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                    </div>
+                    <button type="button" class="btn-outline-sm" id="copyInviteCodeBtn" hidden>복사</button>
+
+                    <div class="info-section-divider"></div>
+
+                    <!-- ============================================== -->
+                    <!-- 팀원 목록
+                         실제 API: GET /api/front/teams/{teamId}/members (page/size/sort)
+                         TeamMemberResponse = { teamMemberId, teamId, userId, teamRole }
+                         ※ userId → 이름 변환 API가 아직 없어서 지금은 userId를 그대로 표시함.
+                            나중에 이름 조회 API가 생기면 renderMembers()의 표시 부분만
+                            바꾸면 됨 (fetchUserNames 같은 함수를 추가해서 매핑). -->
+                    <!-- ============================================== -->
+                    <h3 class="panel-subtitle">팀원 목록</h3>
+                    <table class="members-table">
+                        <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>역할</th>
+                            <th>관리</th>
+                        </tr>
+                        </thead>
+                        <tbody id="membersTableBody">
+                        <tr class="empty-row">
+                            <td colspan="3">팀원 목록을 불러오는 중입니다.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <nav class="building-pagination" id="membersPagination" hidden>
+                        <a href="#" id="membersPrevBtn">Previous</a>
+                        <span id="membersPageIndicator">1 / 1</span>
+                        <a href="#" id="membersNextBtn">Next</a>
+                    </nav>
+                </section>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{basic/footer :: footer}"></div>
+
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+    const canManageTeam = /*[[${team.myRole != null && team.myRole.isManager()}]]*/ false;
+
+    let currentPage = 0;
+    const pageSize = 20;
+
+    async function requestJson(url, options = {}) {
+        const response = await fetch(url, {
+            headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+            ...options
+        });
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(text || `요청 실패 (${response.status})`);
+        }
+        if (response.status === 204) return null;
+        return response.json();
+    }
+
+    // ============================================================
+    // 팀원 목록 조회 및 렌더링
+    // ============================================================
+    async function loadMembers(page = 0) {
+        const tbody = document.getElementById('membersTableBody');
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="3">팀원 목록을 불러오는 중입니다.</td></tr>';
+
+        try {
+            const result = await requestJson(
+                `/api/front/teams/${teamId}/members?page=${page}&size=${pageSize}&sort=id,ASC`
+            );
+            currentPage = result.page;
+            renderMembers(result.content || []);
+            renderPagination(result);
+        } catch (error) {
+            tbody.innerHTML = `<tr class="empty-row"><td colspan="3">${error.message || '팀원 목록을 불러오지 못했습니다.'}</td></tr>`;
+        }
+    }
+
+    function renderMembers(members) {
+        const tbody = document.getElementById('membersTableBody');
+
+        if (members.length === 0) {
+            tbody.innerHTML = '<tr class="empty-row"><td colspan="3">팀원이 없습니다.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = members.map(member => `
+            <tr>
+                <td>User #${member.userId}</td>
+                <td><span class="role-badge role-${member.teamRole.toLowerCase()}">${member.teamRole}</span></td>
+                <td>
+                    ${canManageTeam && member.teamRole !== 'OWNER'
+            ? `<button type="button" class="btn-outline-sm remove-member-btn" data-member-id="${member.teamMemberId}">내보내기</button>`
+            : '-'}
+                </td>
+            </tr>
+        `).join('');
+
+        // 내보내기 버튼에 이벤트 연결
+        // TODO: 실제 "팀원 내보내기" API 경로 확인 필요 (CoreTeamRestController에 아직 없음)
+        tbody.querySelectorAll('.remove-member-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert('팀원 내보내기 기능은 아직 준비 중입니다.');
+            });
+        });
+    }
+
+    function renderPagination(pageResult) {
+        const pagination = document.getElementById('membersPagination');
+        const indicator = document.getElementById('membersPageIndicator');
+        const prevBtn = document.getElementById('membersPrevBtn');
+        const nextBtn = document.getElementById('membersNextBtn');
+
+        if (pageResult.totalPages <= 1) {
+            pagination.hidden = true;
+            return;
+        }
+
+        pagination.hidden = false;
+        indicator.textContent = `${pageResult.page + 1} / ${pageResult.totalPages}`;
+
+        prevBtn.classList.toggle('disabled', pageResult.first);
+        nextBtn.classList.toggle('disabled', pageResult.last);
+
+        prevBtn.onclick = (e) => {
+            e.preventDefault();
+            if (!pageResult.first) loadMembers(pageResult.page - 1);
+        };
+        nextBtn.onclick = (e) => {
+            e.preventDefault();
+            if (!pageResult.last) loadMembers(pageResult.page + 1);
+        };
+    }
+
+    // ============================================================
+    // 초대 코드 생성 - myteams.js의 openInviteModal 로직 재사용
+    // ============================================================
+    const createInviteCodeBtn = document.getElementById('createInviteCodeBtn');
+    const codeSquares = document.querySelectorAll('#codeSquaresContainer .code-square');
+    const codeSquaresContainer = document.getElementById('codeSquaresContainer');
+    const copyInviteCodeBtn = document.getElementById('copyInviteCodeBtn');
+    let currentInviteCode = '';
+
+    if (createInviteCodeBtn) {
+        createInviteCodeBtn.addEventListener('click', async () => {
+            createInviteCodeBtn.disabled = true;
+            createInviteCodeBtn.textContent = '생성 중...';
+            currentInviteCode = '';
+            codeSquares.forEach(sq => sq.textContent = '');
+
+            try {
+                const data = await requestJson(`/api/front/teams/${teamId}/invitation-codes`, {
+                    method: 'POST',
+                    body: JSON.stringify({})
+                });
+
+                currentInviteCode = data.code || '';
+                for (let i = 0; i < codeSquares.length; i += 1) {
+                    codeSquares[i].textContent = currentInviteCode[i] || '';
+                }
+
+                codeSquaresContainer.hidden = false;
+                copyInviteCodeBtn.hidden = false;
+            } catch (err) {
+                alert(err.message || '초대 코드 발급에 실패했습니다.');
+            } finally {
+                createInviteCodeBtn.disabled = false;
+                createInviteCodeBtn.textContent = '코드 생성';
+            }
+        });
+    }
+
+    if (copyInviteCodeBtn) {
+        copyInviteCodeBtn.addEventListener('click', () => {
+            if (!currentInviteCode) {
+                alert('아직 코드가 발급되지 않았습니다.');
+                return;
+            }
+            navigator.clipboard.writeText(currentInviteCode)
+                .then(() => alert('초대 코드가 복사되었습니다!'))
+                .catch(() => alert('복사에 실패했습니다.'));
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => loadMembers(0));
+</script>
+
+</body>
+</html>

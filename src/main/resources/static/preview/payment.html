@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 관리 미리보기 - 4iren</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px 20px 25px 0;
+            min-width: 0;
+        }
+
+        .preview-header {
+            padding: 15px 10px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        /* ================================================================
+           사이드바 스타일 (sidebar.css)
+           ================================================================ */
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow:
+                    0px 0px 2px rgba(0, 0, 0, 0.1),
+                    0px 1px 8px rgba(0, 0, 0, 0.1),
+                    inset 3px 3px 0.5px -3.5px #FFFFFF,
+                    inset 2px 2px 0.5px -2px #262626,
+                    inset -2px -2px 0.5px -2px #262626,
+                    inset 0px 0px 0px 1px #A6A6A6,
+                    inset 0px 0px 8px #F2F2F2;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 21px;
+            margin: 10px 20px 25px 10px;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .sidebar-logo img {
+            width: 130px;
+            height: auto;
+            margin-left: -15px;
+        }
+
+        .user-info-block {
+            padding: 0 24px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(102, 90, 80, 0.12);
+            padding-bottom: 20px;
+        }
+
+        .user-role {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        .user-role[data-role="admin"]  { color: #4A90D9; }
+        .user-role[data-role="normal"] { color: #999999; }
+
+        .user-name {
+            margin: 4px 0 0;
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: #666;
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 14px;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .nav-item-toggle {
+            width: 100%;
+            background: none;
+            border: none;
+            font: inherit;
+            text-align: left;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .nav-item-main {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+        }
+
+        .nav-icon-chevron {
+            flex-shrink: 0;
+            margin-left: 8px;
+            color: inherit;
+            transition: transform 0.15s ease;
+        }
+
+        .nav-item-toggle.expanded .nav-icon-chevron {
+            transform: rotate(180deg);
+        }
+
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            color: inherit;
+        }
+
+        .nav-icon-lg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .nav-icon-profile {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item:hover,
+        .nav-item-toggle:hover {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #444;
+        }
+
+        .nav-item.active,
+        .nav-item-toggle.expanded {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow:
+                    0px 0px 2px rgba(0, 0, 0, 0.1),
+                    0px 1px 8px rgba(0, 0, 0, 0.1),
+                    inset 3px 3px 0.5px -3.5px #FFFFFF,
+                    inset 2px 2px 0.5px -2px #262626,
+                    inset -2px -2px 0.5px -2px #262626,
+                    inset 0px 0px 0px 1px #A6A6A6,
+                    inset 0px 0px 8px #F2F2F2;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 100px;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .submenu {
+            position: relative;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            padding-left: 34px;
+            margin: 0 0 2px 0;
+        }
+
+        .submenu.open {
+            display: flex;
+        }
+
+        .submenu-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 38px;
+            padding: 0 12px;
+            border-radius: 8px;
+            color: #666;
+            text-decoration: none;
+            font-size: 13.5px;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .submenu-item::before {
+            content: '';
+            position: absolute;
+            left: -16px;
+            top: -21px;
+            width: 16px;
+            height: 40px;
+            border-left: 1.5px solid #b3a89c;
+            border-bottom: 1.5px solid #b3a89c;
+            border-bottom-left-radius: 8px;
+        }
+
+        .submenu-item:first-child::before {
+            top: 0;
+            height: 19px;
+        }
+
+        .submenu-item[data-page="team-list"] {
+            margin-bottom: 6px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(102, 90, 80, 0.08);
+        }
+
+        .submenu-item:hover {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #444;
+        }
+
+        .submenu-item.active {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow:
+                    0px 0px 2px rgba(0, 0, 0, 0.1),
+                    0px 1px 8px rgba(0, 0, 0, 0.1),
+                    inset 3px 3px 0.5px -3.5px #FFFFFF,
+                    inset 2px 2px 0.5px -2px #262626,
+                    inset -2px -2px 0.5px -2px #262626,
+                    inset 0px 0px 0px 1px #A6A6A6,
+                    inset 0px 0px 8px #F2F2F2;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 100px;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .sidebar-bottom .nav-item {
+            color: #666;
+        }
+
+        .sidebar-bottom .nav-item:hover {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #666;
+        }
+
+        /* ================================================================
+           결제 관리 전용 스타일 (payment-billing.css)
+           ================================================================ */
+        :root {
+            --primary: #ff9800;
+            --primary-dark: #eb8700;
+            --primary-light: #fff4e5;
+
+            --text-main: #17191f;
+            --text-sub: #737791;
+            --text-light: #9ca3af;
+
+            --border: #eceef2;
+            --background: #f6f7f9;
+            --white: #ffffff;
+
+            --success: #22b78b;
+            --success-bg: #eafaf5;
+
+            --danger: #e23c3c;
+            --danger-bg: #fff5f5;
+            --danger-border: #ffd1d1;
+
+            --shadow-sm: 0 2px 8px rgba(25, 30, 40, 0.04);
+            --shadow-md: 0 8px 24px rgba(25, 30, 40, 0.06);
+
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        .page {
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Breadcrumb / Header */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .breadcrumb-current {
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        .breadcrumb-arrow {
+            color: #c5c8cf;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 30px;
+            line-height: 1.3;
+            letter-spacing: -0.7px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .page-desc {
+            margin: 9px 0 0;
+            font-size: 14px;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        /* 알림 메시지 */
+        .notice-inline {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .notice-success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .notice-danger {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        /* Section / Card */
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            margin: 0 0 10px 2px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            color: var(--text-main);
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        /* Current Plan */
+        .plan-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card::after {
+            content: "";
+            position: absolute;
+            top: -70px;
+            right: -70px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255, 152, 0, 0.07);
+            pointer-events: none;
+        }
+
+        .plan-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .plan-info {
+            flex: 1;
+        }
+
+        .plan-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 12px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .plan-name {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .plan-name span {
+            color: var(--primary);
+        }
+
+        .plan-desc {
+            margin: 8px 0 0;
+            color: var(--text-sub);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .plan-price {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .price {
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            color: var(--text-main);
+        }
+
+        .price-unit {
+            margin-left: 3px;
+            color: var(--text-sub);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--border);
+            margin-top: 24px;
+            padding-top: 20px;
+        }
+
+        .info-item {
+            padding: 0 20px;
+            border-right: 1px solid var(--border);
+        }
+
+        .info-item:first-child {
+            padding-left: 0;
+        }
+
+        .info-item:last-child {
+            padding-right: 0;
+            border-right: none;
+        }
+
+        .info-label {
+            margin-bottom: 7px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .empty-inline {
+            padding: 20px 0;
+            color: var(--text-light);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* 결제 수단 변경 버튼 */
+        .pg-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .pg-button {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .pg-button:hover {
+            opacity: 0.85;
+        }
+
+        .pg-toss {
+            background-color: #0064FF;
+            color: #fff;
+        }
+
+        .pg-kakao {
+            background-color: #FEE500;
+            color: #191919;
+        }
+
+        /* Buttons 공통 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            height: 40px;
+            padding: 0 15px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+            transform 0.15s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-outline {
+            background: #fff;
+            color: var(--text-main);
+            border-color: #dfe2e8;
+        }
+
+        .btn-outline:hover {
+            background: #f9fafb;
+            border-color: #cfd3da;
+        }
+
+        /* 결제 내역 테이블 */
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        .table th {
+            padding: 13px 24px;
+            background: #fafbfc;
+            color: var(--text-light);
+            font-size: 11px;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table td {
+            padding: 17px 24px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background: #fcfcfd;
+        }
+
+        .payment-date {
+            font-weight: 600;
+        }
+
+        .amount {
+            font-weight: 700;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-done {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .status-failed {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        .status-ready {
+            background: #FFF8E1;
+            color: #F57F17;
+        }
+
+        .status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Danger Zone */
+        .danger-card {
+            margin-top: 20px;
+            border: 1px solid var(--danger-border);
+            background: var(--danger-bg);
+        }
+
+        .danger-card .card-header {
+            border-bottom-color: var(--danger-border);
+        }
+
+        .danger-card .card-icon {
+            background: #ffe5e5;
+            color: var(--danger);
+        }
+
+        .danger-title {
+            color: var(--danger);
+        }
+
+        .danger-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 22px 24px;
+        }
+
+        .danger-text {
+            flex: 1;
+        }
+
+        .danger-heading {
+            margin: 0 0 7px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #2b2b2f;
+        }
+
+        .danger-desc {
+            margin: 0;
+            font-size: 12px;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        .btn-danger {
+            flex-shrink: 0;
+            background: #fff;
+            color: var(--danger);
+            border-color: #f1abab;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: #fff;
+            border-color: var(--danger);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(20, 22, 27, 0.45);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 430px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+            animation: modalOpen 0.2s ease;
+        }
+
+        @keyframes modalOpen {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 8px;
+            background: #f5f6f8;
+            color: var(--text-sub);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            background: #eceef1;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-desc {
+            margin: 0 0 20px;
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 18px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .warning-box {
+            padding: 14px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            background: #fff7f7;
+            color: #8a4a4a;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 700px) {
+            .page-title {
+                font-size: 26px;
+            }
+
+            .plan-main {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .plan-price {
+                width: 100%;
+                text-align: left;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .info-item,
+            .info-item:first-child,
+            .info-item:last-child {
+                padding: 0;
+                border-right: none;
+            }
+
+            .info-item:not(:last-child) {
+                padding-bottom: 17px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .pg-buttons {
+                flex-direction: column;
+            }
+
+            .card-header {
+                padding: 18px;
+            }
+
+            .card-content {
+                padding: 20px 18px;
+            }
+
+            .danger-content {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px 18px;
+            }
+
+            .danger-content .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <a href="/">
+                <img src="/photo/logo.png" alt="Logo">
+            </a>
+        </div>
+
+        <div class="user-info-block">
+            <span class="user-role" data-role="admin">ADMIN</span>
+            <p class="user-name">jae na</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/mypage" class="nav-item" data-page="profile">
+                <svg class="nav-icon nav-icon-profile" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18.5 9.5V8.7C18.5 7.57989 18.5 7.01984 18.282 6.59202C18.0903 6.21569 17.7843 5.90973 17.408 5.71799C16.9802 5.5 16.4201 5.5 15.3 5.5H7.7C6.57989 5.5 6.01984 5.5 5.59202 5.71799C5.21569 5.90973 4.90973 6.21569 4.71799 6.59202C4.5 7.01984 4.5 7.57989 4.5 8.7V12.3C4.5 13.4201 4.5 13.9802 4.71799 14.408C4.90973 14.7843 5.21569 15.0903 5.59202 15.282C6.01984 15.5 6.57989 15.5 7.7 15.5H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M7.5 12.5H11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M7.5 8.5H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="17.5" cy="13.5" r="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M19.5 18.5C19.5 18.5 19 17.5 17.5 17.5C16 17.5 15.5 18.5 15.5 18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>Profile</span>
+            </a>
+
+            <button type="button"
+                    class="nav-item nav-item-toggle"
+                    data-page="team"
+                    aria-expanded="false"
+                    aria-controls="team-submenu">
+        <span class="nav-item-main">
+          <svg class="nav-icon nav-icon-lg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M15.701 8.25C15.8999 7.90547 16.2275 7.65408 16.6118 7.55111C16.996 7.44815 17.4055 7.50205 17.75 7.70096C18.0945 7.89987 18.3459 8.2275 18.4489 8.61177C18.5519 8.99604 18.498 9.40547 18.299 9.75C18.1001 10.0945 17.7725 10.3459 17.3882 10.4489C17.004 10.5519 16.5945 10.498 16.25 10.299C15.9055 10.1001 15.6541 9.7725 15.5511 9.38823C15.4481 9.00396 15.502 8.59453 15.701 8.25L15.701 8.25Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M5.70096 8.25C5.89987 7.90547 6.2275 7.65408 6.61177 7.55111C6.99604 7.44815 7.40547 7.50205 7.75 7.70096C8.09453 7.89987 8.34592 8.2275 8.44889 8.61177C8.55185 8.99604 8.49795 9.40547 8.29904 9.75C8.10013 10.0945 7.7725 10.3459 7.38823 10.4489C7.00396 10.5519 6.59453 10.498 6.25 10.299C5.90547 10.1001 5.65408 9.7725 5.55111 9.38823C5.44815 9.00396 5.50205 8.59453 5.70096 8.25L5.70096 8.25Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M16.5004 12.5L16.5004 12H16.5004V12.5ZM20.3637 15.5127L20.85 15.3964L20.8499 15.3962L20.3637 15.5127ZM19.5004 16.5V17H19.5006L19.5004 16.5ZM14.5004 16.5L14.5002 16L14.5004 17V16.5ZM15.3803 15.5098L15.8696 15.407L15.8696 15.4069L15.3803 15.5098ZM14.1 13.1855L13.8093 12.7787L13.277 13.159L13.7838 13.5728L14.1 13.1855ZM16.5004 12.5L16.5004 13C17.7262 13.0001 18.4896 13.4089 18.9821 13.912C19.4882 14.429 19.7473 15.0863 19.8774 15.6292L20.3637 15.5127L20.8499 15.3962C20.6962 14.7546 20.3754 13.9057 19.6967 13.2125C19.0045 12.5054 17.9781 12.0001 16.5004 12L16.5004 12.5ZM20.3637 15.5127L19.8774 15.629C19.9009 15.7274 19.8754 15.807 19.8167 15.8718C19.7527 15.9424 19.6413 15.9999 19.5002 16L19.5004 16.5L19.5006 17C20.3 16.9997 21.0702 16.3171 20.85 15.3964L20.3637 15.5127ZM19.5004 16.5V16H14.5004V16.5V17H19.5004V16.5ZM14.5004 16.5L14.5006 17C15.3043 16.9997 16.0613 16.3192 15.8696 15.407L15.3803 15.5098L14.891 15.6126C14.9126 15.7156 14.8842 15.8011 14.8215 15.8694C14.7543 15.9427 14.6412 15.9999 14.5002 16L14.5004 16.5ZM15.3803 15.5098L15.8696 15.4069C15.7084 14.6399 15.3299 13.5443 14.4162 12.7983L14.1 13.1855L13.7838 13.5728C14.4368 14.106 14.7483 14.9337 14.891 15.6126L15.3803 15.5098ZM14.1 13.1855L14.3907 13.5924C14.8686 13.2509 15.5404 13 16.5004 13V12.5V12C15.3548 12 14.4745 12.3035 13.8093 12.7787L14.1 13.1855Z" fill="currentColor"/>
+            <path d="M7.50027 12.5L7.5003 12H7.50027V12.5ZM9.89969 13.1865L10.216 13.5737L10.7225 13.16L10.1904 12.7797L9.89969 13.1865ZM8.61942 15.5098L8.13011 15.4069L8.13009 15.407L8.61942 15.5098ZM3.63602 15.5127L3.14979 15.3962L3.14972 15.3964L3.63602 15.5127ZM7.50027 12.5L7.50025 13C8.45979 13 9.13077 13.2516 9.60898 13.5933L9.89969 13.1865L10.1904 12.7797C9.52558 12.3046 8.64644 12.0001 7.5003 12L7.50027 12.5ZM9.89969 13.1865L9.58334 12.7993C8.67041 13.5452 8.29136 14.6397 8.13011 15.4069L8.61942 15.5098L9.10872 15.6126C9.25131 14.9342 9.56321 14.1071 10.216 13.5737L9.89969 13.1865ZM8.61942 15.5098L8.13009 15.407C7.93837 16.3198 8.69681 17 9.50027 17V16.5V16C9.35926 16 9.24584 15.9427 9.17839 15.8693C9.1155 15.8008 9.08715 15.7153 9.10874 15.6125L8.61942 15.5098ZM9.50027 16.5V16H4.50027V16.5V17H9.50027V16.5ZM4.50027 16.5V16C4.35905 16 4.24747 15.9424 4.18323 15.8717C4.12435 15.8068 4.09884 15.7271 4.12231 15.629L3.63602 15.5127L3.14972 15.3964C2.92946 16.3177 3.70107 17 4.50027 17V16.5ZM3.63602 15.5127L4.12225 15.6292C4.25236 15.0864 4.5116 14.429 5.0179 13.912C5.51066 13.4088 6.27428 13 7.50027 13V12.5V12C6.02242 12 4.99586 12.5053 4.30344 13.2123C3.62454 13.9056 3.30357 14.7545 3.14979 15.3962L3.63602 15.5127Z" fill="currentColor"/>
+            <path d="M12 12.5C14.3642 12.5 15.1314 14.3251 15.3804 15.5097C15.494 16.0501 15.0523 16.5 14.5 16.5H9.5C8.94772 16.5 8.50601 16.0501 8.61961 15.5097C8.86859 14.3251 9.63581 12.5 12 12.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M18.5 21.5H20C20.8284 21.5 21.5 20.8284 21.5 20V18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M18.5 2.5H20C20.8284 2.5 21.5 3.17157 21.5 4V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M5.5 21.5H4C3.17157 21.5 2.5 20.8284 2.5 20V18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M5.5 2.5H4C3.17157 2.5 2.5 3.17157 2.5 4V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Team</span>
+        </span>
+                <svg class="nav-icon-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <div class="submenu" id="team-submenu">
+                <a href="/team" class="submenu-item" data-page="team-list">
+                    <span>모든 팀 보기</span>
+                </a>
+                <a href="/team-info/1" class="submenu-item" data-page="team-info">
+                    <span>Team Info</span>
+                </a>
+                <a href="/team-members/1" class="submenu-item" data-page="team-members">
+                    <span>Members</span>
+                </a>
+                <a href="/buildings" class="submenu-item" data-page="buildings">
+                    <span>Buildings</span>
+                </a>
+                <a href="/classroom" class="submenu-item" data-page="classroom">
+                    <span>Classrooms</span>
+                </a>
+            </div>
+
+            <a href="/flow" class="nav-item" data-page="flow">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="39.6555" y="19.8278" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 19.8278)" stroke="currentColor" stroke-width="2.46447"/>
+                    <rect x="39.6555" y="37.4524" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 37.4524)" stroke="currentColor" stroke-width="2.46447"/>
+                    <rect x="6.60938" y="15.4215" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(-90 6.60938 15.4215)" stroke="currentColor" stroke-width="2.46447"/>
+                    <path d="M11.0156 17.6246V38.6882C11.0156 40.1827 11.0156 40.93 11.4799 41.3943C11.9442 41.8586 12.6915 41.8586 14.1861 41.8586H30.8434" stroke="currentColor" stroke-width="2.46447"/>
+                    <path d="M11.0156 15.4215V21.0634C11.0156 22.558 11.0156 23.3053 11.4799 23.7696C11.9442 24.2339 12.6915 24.2339 14.1861 24.2339H30.8434" stroke="currentColor" stroke-width="2.46447"/>
+                </svg>
+                <span>Flow</span>
+            </a>
+
+            <a href="/subscribe" class="nav-item" data-page="subscribe">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M4 10h16" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                <span>Subscribe</span>
+            </a>
+
+            <a href="/settings" class="nav-item" data-page="settings">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="/" class="nav-item" data-page="home">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.9167 32.9623C12.9167 29.4547 12.9167 27.701 13.6258 26.1594C14.3348 24.6178 15.6664 23.4765 18.3295 21.1938L20.9128 18.9795C25.7264 14.8536 28.1332 12.7906 31.0001 12.7906C33.867 12.7906 36.2738 14.8536 41.0873 18.9795L43.6707 21.1938C46.3338 23.4765 47.6654 24.6178 48.3744 26.1594C49.0834 27.701 49.0834 29.4547 49.0834 32.9623V43.9166C49.0834 48.7878 49.0834 51.2234 47.5701 52.7367C46.0569 54.25 43.6213 54.25 38.7501 54.25H23.2501C18.3789 54.25 15.9433 54.25 14.43 52.7367C12.9167 51.2234 12.9167 48.7878 12.9167 43.9166V32.9623Z" stroke="currentColor" stroke-width="2.87396"/>
+                    <path d="M37.4582 54.25V41.624C37.4582 40.0367 36.1715 38.75 34.5842 38.75H27.4155C25.8282 38.75 24.5415 40.0367 24.5415 41.624V54.25" stroke="currentColor" stroke-width="2.87396" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Home</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <div class="main-wrap">
+
+        <div class="preview-header">결제 관리</div>
+
+        <main class="main-content">
+            <div class="page">
+                <div class="container">
+
+                    <!-- Breadcrumb -->
+                    <div class="breadcrumb">
+                        <span>Settings</span>
+                        <span class="breadcrumb-arrow">›</span>
+                        <span class="breadcrumb-current">결제 관리</span>
+                    </div>
+
+                    <header class="page-header">
+                        <h1 class="page-title">결제 관리</h1>
+                        <p class="page-desc">현재 이용 중인 요금제와 결제 정보를 확인하고 관리할 수 있습니다.</p>
+                    </header>
+
+                    <!-- 01. Current Plan -->
+                    <section class="section">
+                        <p class="section-label">구독 정보</p>
+
+                        <div class="card plan-card">
+                            <div class="card-header">
+                                <div class="card-title-wrap">
+                                    <div class="card-icon">
+                                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                            <line x1="3" y1="10" x2="21" y2="10"/>
+                                        </svg>
+                                    </div>
+                                    <h2 class="card-title">현재 이용 중인 요금제</h2>
+                                </div>
+                            </div>
+
+                            <div class="card-content">
+                                <div class="plan-main">
+                                    <div class="plan-info">
+                                        <div class="plan-badge"><span>●</span> 현재 이용 중</div>
+                                        <h3 class="plan-name">
+                                            <span>Premium</span>
+                                        </h3>
+                                        <p class="plan-desc">실시간 환경 데이터 확인 및 알림 서비스를 이용하고 있습니다.</p>
+                                    </div>
+
+                                    <div class="plan-price">
+                                        <div>
+                                            <span class="price">29,000원</span>
+                                            <span class="price-unit">/ 월</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <div class="info-label">최근 결제일</div>
+                                        <div class="info-value">2026.07.28</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">결제 주기</div>
+                                        <div class="info-value">월간 결제</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">구독 상태</div>
+                                        <div class="info-value">정상 이용 중</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 02. Payment Method -->
+                    <section class="section">
+                        <p class="section-label">결제 정보</p>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title-wrap">
+                                    <div class="card-icon">
+                                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                            <line x1="3" y1="10" x2="21" y2="10"/>
+                                        </svg>
+                                    </div>
+                                    <h2 class="card-title">결제 수단 변경</h2>
+                                </div>
+                            </div>
+
+                            <div class="card-content">
+                                <p class="modal-desc" style="margin-bottom:20px;">
+                                    변경한 결제수단은 다음 결제일부터 적용됩니다. 현재 이용 중인 결제수단으로는 계속 정상 청구됩니다.
+                                </p>
+
+                                <div class="pg-buttons">
+                                    <button type="button" class="pg-button pg-toss" onclick="alert('토스 결제창으로 이동합니다.')">토스로 변경</button>
+                                    <button type="button" class="pg-button pg-kakao" onclick="alert('카카오페이 결제창으로 이동합니다.')">카카오페이로 변경</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 03. Payment History -->
+                    <section class="section">
+                        <p class="section-label">결제 내역</p>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title-wrap">
+                                    <div class="card-icon">
+                                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 4h16v16H4z"/>
+                                            <line x1="8" y1="9" x2="16" y2="9"/>
+                                            <line x1="8" y1="13" x2="16" y2="13"/>
+                                            <line x1="8" y1="17" x2="13" y2="17"/>
+                                        </svg>
+                                    </div>
+                                    <h2 class="card-title">최근 결제 내역</h2>
+                                </div>
+                            </div>
+
+                            <div class="table-wrap">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>결제일시</th>
+                                        <th>결제 금액</th>
+                                        <th>상태</th>
+                                        <th>실패사유</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="payment-date">2026.08.28 09:00</td>
+                                        <td class="amount">₩ 29,000</td>
+                                        <td>
+                                            <span class="status-badge status-done"><span class="status-dot"></span>결제 완료</span>
+                                        </td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="payment-date">2026.07.28 09:00</td>
+                                        <td class="amount">₩ 29,000</td>
+                                        <td>
+                                            <span class="status-badge status-done"><span class="status-dot"></span>결제 완료</span>
+                                        </td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="payment-date">2026.06.28 09:00</td>
+                                        <td class="amount">₩ 29,000</td>
+                                        <td>
+                                            <span class="status-badge status-failed"><span class="status-dot"></span>결제 실패</span>
+                                        </td>
+                                        <td>한도 초과</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 04. Danger Zone (구독 해지) -->
+                    <section>
+                        <div class="card danger-card">
+                            <div class="card-header">
+                                <div class="card-title-wrap">
+                                    <div class="card-icon">
+                                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 9v4"/>
+                                            <path d="M12 17h.01"/>
+                                            <path d="M10.3 3.6 2.8 17a2 2 0 0 0 1.75 3h14.9a2 2 0 0 0 1.75-3L13.7 3.6a2 2 0 0 0-3.4 0z"/>
+                                        </svg>
+                                    </div>
+                                    <h2 class="card-title danger-title">구독 관리</h2>
+                                </div>
+                            </div>
+
+                            <div class="danger-content">
+                                <div class="danger-text">
+                                    <h3 class="danger-heading">구독을 해지하시겠습니까?</h3>
+                                    <p class="danger-desc">
+                                        해지하더라도 다음 결제일까지는 서비스를 계속 이용할 수 있습니다.<br>
+                                        다음 결제일부터 자동 결제가 중단됩니다.
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-danger" id="openCancelModalBtn">구독 해지하기</button>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- 구독 해지 확인 모달 -->
+<div id="cancelModalOverlay" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">구독 해지</h3>
+            <button type="button" class="modal-close" id="closeCancelModalBtn">&times;</button>
+        </div>
+
+        <form method="post" onsubmit="event.preventDefault(); alert('구독 해지 요청이 전송되었습니다.'); closeCancelModal();">
+            <div class="modal-body">
+                <div class="warning-box">
+                    현재 구독을 해지하면 다음 결제일 이후 서비스가 자동으로 종료됩니다.
+                    <br><br>
+                    해지 전까지는 현재 이용 중인 서비스를 정상적으로 사용할 수 있습니다.
+                </div>
+                <p class="modal-desc">정말 구독을 해지하시겠습니까?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelModalKeepBtn">계속 이용하기</button>
+                <button type="submit" class="btn btn-danger">구독 해지</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 1) 사이드바 Team 하위 메뉴 토글
+    const teamToggle = document.querySelector('.nav-item-toggle[data-page="team"]');
+    const submenu = document.getElementById('team-submenu');
+
+    if (teamToggle && submenu) {
+        const toggleSubmenu = function () {
+            const isOpen = submenu.classList.toggle('open');
+            teamToggle.classList.toggle('expanded', isOpen);
+            teamToggle.setAttribute('aria-expanded', String(isOpen));
+        };
+
+        teamToggle.addEventListener('click', toggleSubmenu);
+        teamToggle.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleSubmenu();
+            }
+        });
+    }
+
+    // 2) 모달 열기/닫기 스크립트
+    const openCancelModalBtn = document.getElementById('openCancelModalBtn');
+    const cancelModalOverlay = document.getElementById('cancelModalOverlay');
+    const closeCancelModalBtn = document.getElementById('closeCancelModalBtn');
+    const cancelModalKeepBtn = document.getElementById('cancelModalKeepBtn');
+
+    function openCancelModal() {
+        cancelModalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCancelModal() {
+        cancelModalOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    openCancelModalBtn.addEventListener('click', openCancelModal);
+    closeCancelModalBtn.addEventListener('click', closeCancelModal);
+    cancelModalKeepBtn.addEventListener('click', closeCancelModal);
+
+    cancelModalOverlay.addEventListener('click', (e) => {
+        if (e.target === cancelModalOverlay) closeCancelModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeCancelModal();
+    });
+</script>
+
+</body>
+</html>
