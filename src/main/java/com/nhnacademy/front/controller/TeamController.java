@@ -16,7 +16,8 @@ public class TeamController {
     @GetMapping("/team-info/{teamId}")
     public String teamInfoPage(@PathVariable Long teamId, Model model) {
         model.addAttribute("team", teamService.getTeam(teamId));
-        return "team/admin/team-info";
+        // 파일 위치: templates/sidebar-menu/team/admin/team-info.html
+        return "sidebar-menu/team/admin/team-info";
     }
 
     @GetMapping("/team-info")
@@ -27,7 +28,8 @@ public class TeamController {
     @GetMapping("/team-members/{teamId}")
     public String teamMembersPage(@PathVariable Long teamId, Model model) {
         model.addAttribute("team", teamService.getTeam(teamId));
-        return "team/admin/team-members";
+        // 파일 위치: templates/sidebar-menu/team/team-members.html
+        return "sidebar-menu/team/team-members";
     }
 
     @GetMapping("/team-members")

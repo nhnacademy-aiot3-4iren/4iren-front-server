@@ -35,7 +35,8 @@ public class BuildingController {
         model.addAttribute("size", size);
         model.addAttribute("sort", sort);
 
-        return "mypage/buildings";
+        // 파일 위치: templates/sidebar-menu/team/buildings/buildings.html
+        return "sidebar-menu/team/buildings/buildings";
     }
 
     @GetMapping("/teams/{teamId}/buildings/{buildingId}")
@@ -50,6 +51,7 @@ public class BuildingController {
         model.addAttribute("team", team);
         model.addAttribute("building", building);
 
-        return "mypage/building-info";
+        // 파일 위치: templates/sidebar-menu/team/buildings/building-info.html
+        return "sidebar-menu/team/buildings/building-info";
     }
 }

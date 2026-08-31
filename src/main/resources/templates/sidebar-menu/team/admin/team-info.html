@@ -2,12 +2,9 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Info</title>
-
     <link rel="stylesheet" href="/fonts/font.css">
     <link rel="stylesheet" th:href="@{/css/myteams.css}">
-    <!-- 공통 CSS -->
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
     <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
@@ -15,84 +12,42 @@
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
 </head>
 <body>
-
 <div class="layout">
-
-    <!-- 사이드바 -->
     <div th:replace="~{basic/sidebar :: sidebar}"></div>
-
     <div class="main-wrap">
-
-        <!-- 헤더 -->
         <div th:replace="~{basic/header :: header('Team Info')}"></div>
-
-        <!-- 메인 컨텐츠 -->
         <div class="main-content">
-
-            <!-- 하얀색 메인 둥근 배경 박스 -->
-            <div class="info-card-container">
-
-                <!-- ============================================== -->
-                <!-- 왼쪽: 팀 정보 수정 영역 -->
-                <!-- ============================================== -->
-                <div class="info-left-panel">
+            <div class="info-cards-row">
+                <div class="info-card info-left-panel">
                     <div class="info-header">
                         <h2>Team Info</h2>
                         <span class="role-admin" th:text="${team.myRole}">Admin</span>
                     </div>
-
                     <div class="input-section">
                         <div class="form-group">
-                            <label>TEAM NAME</label>
+                            <label for="editTeamName">TEAM NAME</label>
                             <div class="input-wrapper">
-                                <input type="text" id="editTeamName" th:value="${team.teamName}">
-                                <button type="button" class="clear-btn" id="clearNameBtn">
+                                <input type="text" id="editTeamName" th:value="${team.teamName}"
+                                       th:readonly="${team.myRole == null || !team.myRole.isManager()}">
+                                <button type="button" class="clear-btn" id="clearNameBtn"
+                                        th:if="${team.myRole != null && team.myRole.isManager()}">
                                     <img src="/photo/icon/remove-icon.png" alt="clear" id="clearIcon">
                                 </button>
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <label>DESCRIPTION</label>
-                            <textarea id="editTeamDesc" placeholder="Enter about space ..." th:text="${team.description}"></textarea>
+                            <label for="editTeamDesc">DESCRIPTION</label>
+                            <!-- 변경 후 -->
+                            <textarea id="editTeamDesc"
+                                      placeholder="Enter about space ..."
+                                      th:text="${team.description}"
+                                      th:readonly="${team.myRole == null || !team.myRole.isManager()}"></textarea>
                         </div>
                     </div>
-
                     <button class="btn-save" id="saveTeamInfoBtn"
                             th:if="${team.myRole != null && team.myRole.isManager()}">Team Info Save</button>
-                </div>
-
-                <!-- ============================================== -->
-                <!-- 오른쪽: 통계 및 구성원 정보 영역 (백엔드 데이터) -->
-                <!-- ============================================== -->
-                <div class="info-right-panel">
-
-                    <!-- 소속 공간 박스 -->
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div>
-                                <h3>belonging</h3>
-                                <span class="sub-text">Space 소속 공간</span>
-                            </div>
-                            <a class="btn-building-list" th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId})}">
-                                <img src="/photo/icon/arrow-icon.png" alt="go"> Building List
-                            </a>
-                        </div>
-
-                        <div class="stat-boxes">
-                            <div class="stat-box">
-                                <span class="stat-label">Buildings</span>
-                                <div class="stat-value" th:text="|총 ${team.buildingCount}개|">총 0개</div>
-                            </div>
-                            <div class="stat-box">
-                                <span class="stat-label">Classroom</span>
-                                <div class="stat-value" th:text="|총 ${team.roomCount}개|">총 0개</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 구성원 박스 -->
-                    <div class="stat-card">
+                    <div class="info-section-divider"></div>
+                    <div class="stat-card stat-card-flat">
                         <div class="stat-header">
                             <div>
                                 <h3>Team Member</h3>
@@ -109,78 +64,324 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
-                </div> <!-- <info-right-panel -->
-            </div> <!-- < info-card-container -->
+                <!-- Building/Classroom split -->
+                <div class="info-card info-lists-panel"
+                     th:data-team-id="${team.teamId}"
+                     th:data-can-manage="${team.myRole != null && team.myRole.isManager()}">
+                    <div class="lists-split">
+                        <div class="list-half">
+                            <div class="list-half-header">
+                                <h3>Building List</h3>
+                                <span class="sub-text">Team에 소속된 건물 리스트</span>
+                            </div>
+                            <ul class="entity-list" id="buildingList">
+                                <li class="entity-list-empty">불러오는 중입니다...</li>
+                            </ul>
+                            <div class="list-actions" th:if="${team.myRole != null && team.myRole.isManager()}">
+                                <button type="button" class="btn-outline-sm" id="addBuildingBtn">+ 추가</button>
+                                <button type="button" class="btn-outline-sm btn-danger-outline" id="deleteBuildingBtn" disabled>삭제</button>
+                            </div>
+                        </div>
+                        <div class="list-divider"></div>
+                        <div class="list-half">
+                            <div class="list-half-header">
+                                <h3 id="classroomListTitle">Classroom List</h3>
+                                <span class="sub-text" id="classroomListSubtitle">건물을 선택하면 강의실 목록이 표시됩니다</span>
+                            </div>
+                            <ul class="entity-list" id="classroomList">
+                                <li class="entity-list-empty">왼쪽에서 건물을 선택하세요.</li>
+                            </ul>
+                            <div class="list-actions" id="classroomActions" style="display:none;">
+                                <button type="button" class="btn-outline-sm" id="addRoomBtn">+ 추가</button>
+                                <button type="button" class="btn-outline-sm btn-danger-outline" id="deleteRoomBtn" disabled>삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        </div> <!-- <main-content -->
-    </div> <!-- < main-wrap -->
-</div> <!-- < layout -->
+<dialog class="modal" id="addBuildingModal">
+    <div class="modal-header">
+        <h2>건물 추가</h2>
+        <button type="button" class="modal-close" id="addBuildingModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+        <label class="modal-field-label">건물 이름</label>
+        <input type="text" id="newBuildingName" placeholder="예) 본관">
+        <label class="modal-field-label">설명</label>
+        <input type="text" id="newBuildingDesc" placeholder="선택 입력">
+        <label class="modal-field-label">지역명</label>
+        <input type="text" id="newBuildingRegion" placeholder="예) 광주광역시">
+        <label class="modal-field-label">도로명 주소</label>
+        <input type="text" id="newBuildingRoadAddress" placeholder="선택 입력">
+        <label class="modal-field-label">상세 주소</label>
+        <input type="text" id="newBuildingDetailAddress" placeholder="선택 입력">
+        <p class="form-error" id="addBuildingError"></p>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-outline" id="addBuildingCancelBtn">취소</button>
+            <button type="button" class="btn-primary" id="addBuildingSubmitBtn">추가</button>
+        </div>
+    </div>
+</dialog>
 
+<dialog class="modal" id="addRoomModal">
+    <div class="modal-header">
+        <h2>강의실 추가</h2>
+        <button type="button" class="modal-close" id="addRoomModalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+        <label class="modal-field-label">강의실 이름</label>
+        <input type="text" id="newRoomName" placeholder="예) 301호">
+        <label class="modal-field-label">설명</label>
+        <input type="text" id="newRoomDesc" placeholder="선택 입력">
+        <p class="form-error" id="addRoomError"></p>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-outline" id="addRoomCancelBtn">취소</button>
+            <button type="button" class="btn-primary" id="addRoomSubmitBtn">추가</button>
+        </div>
+    </div>
+</dialog>
 
-<!-- Js-->
+<div th:replace="~{basic/footer :: footer}"></div>
+
 <script th:inline="javascript">
     const teamId = /*[[${team.teamId}]]*/ null;
+    const canManage = /*[[${team.myRole != null && team.myRole.isManager()}]]*/ false;
+
     const editTeamName = document.getElementById('editTeamName');
     const clearNameBtn = document.getElementById('clearNameBtn');
     const saveTeamInfoBtn = document.getElementById('saveTeamInfoBtn');
     const editTeamDesc = document.getElementById('editTeamDesc');
 
-    // 입력창에 내용이 있을 때만 X 버튼 보이기
-    function toggleClearButton() {
-        if (editTeamName.value.length > 0) {
-            clearNameBtn.style.display = 'block';
-        } else {
-            clearNameBtn.style.display = 'none';
+    if (clearNameBtn) {
+        function toggleClearButton() {
+            clearNameBtn.style.display = editTeamName.value.length > 0 ? 'block' : 'none';
         }
-    }
-
-    // 첫 로드 시 버튼 표시 여부 확인
-    toggleClearButton();
-
-    // 입력창에 글자를 칠 때마다 확인
-    editTeamName.addEventListener('input', toggleClearButton);
-
-    // X 버튼 클릭 시 텍스트 모두 지우기
-    clearNameBtn.addEventListener('click', () => {
-        editTeamName.value = '';
         toggleClearButton();
-        editTeamName.focus(); // 지운 후 다시 입력할 수 있게 커서 활성화
-    });
+        editTeamName.addEventListener('input', toggleClearButton);
+        clearNameBtn.addEventListener('click', () => {
+            editTeamName.value = '';
+            toggleClearButton();
+            editTeamName.focus();
+        });
+    }
 
     if (saveTeamInfoBtn) {
-    saveTeamInfoBtn.addEventListener('click', async () => {
-        const updatedName = editTeamName.value.trim();
-        const updatedDesc = editTeamDesc.value.trim();
+        saveTeamInfoBtn.addEventListener('click', async () => {
+            const updatedName = editTeamName.value.trim();
+            const updatedDesc = editTeamDesc.value.trim();
+            if (!updatedName) { alert("팀 이름을 입력해주세요."); return; }
+            try {
+                const response = await fetch(`/api/front/teams/${teamId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ teamName: updatedName, description: updatedDesc })
+                });
+                if (!response.ok) throw new Error(await response.text());
+                alert("팀 정보가 성공적으로 수정되었습니다!");
+                window.location.reload();
+            } catch (error) {
+                alert(error.message || "팀 정보 수정에 실패했습니다.");
+            }
+        });
+    }
 
-        if (!updatedName) {
-            alert("팀 이름을 입력해주세요.");
+    const buildingListEl = document.getElementById('buildingList');
+    const classroomListEl = document.getElementById('classroomList');
+    const classroomListTitle = document.getElementById('classroomListTitle');
+    const classroomListSubtitle = document.getElementById('classroomListSubtitle');
+    const classroomActions = document.getElementById('classroomActions');
+    const addBuildingBtn = document.getElementById('addBuildingBtn');
+    const deleteBuildingBtn = document.getElementById('deleteBuildingBtn');
+    const addRoomBtn = document.getElementById('addRoomBtn');
+    const deleteRoomBtn = document.getElementById('deleteRoomBtn');
+
+    let selectedBuildingId = null;
+    let selectedRoomId = null;
+
+    async function requestJson(url, options = {}) {
+        const response = await fetch(url, {
+            headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+            ...options
+        });
+        if (!response.ok) throw new Error((await response.text()) || `요청 실패 (${response.status})`);
+        if (response.status === 204) return null;
+        return response.json();
+    }
+
+    async function loadBuildings() {
+        buildingListEl.innerHTML = '<li class="entity-list-empty">불러오는 중입니다...</li>';
+        try {
+            const result = await requestJson(`/api/front/teams/${teamId}/buildings?size=100&sort=id,ASC`);
+            renderBuildings(result.content || []);
+        } catch (error) {
+            buildingListEl.innerHTML = `<li class="entity-list-empty">${error.message || '건물 목록을 불러오지 못했습니다.'}</li>`;
+        }
+    }
+
+    function renderBuildings(buildings) {
+        if (buildings.length === 0) {
+            buildingListEl.innerHTML = '<li class="entity-list-empty">등록된 건물이 없습니다.</li>';
             return;
         }
+        buildingListEl.innerHTML = buildings.map(b => `
+            <li class="entity-list-item" data-building-id="${b.buildingId}">
+                <span class="entity-name">${escapeHtml(b.buildingName)}</span>
+            </li>`).join('');
+        buildingListEl.querySelectorAll('.entity-list-item').forEach(li => {
+            li.addEventListener('click', () => selectBuilding(Number(li.dataset.buildingId), li));
+        });
+    }
 
+    function selectBuilding(buildingId, liEl) {
+        selectedBuildingId = buildingId;
+        selectedRoomId = null;
+        buildingListEl.querySelectorAll('.entity-list-item').forEach(li => li.classList.remove('selected'));
+        liEl.classList.add('selected');
+        if (deleteBuildingBtn) deleteBuildingBtn.disabled = false;
+        if (deleteRoomBtn) deleteRoomBtn.disabled = true;
+        loadRooms(buildingId);
+    }
+
+    async function loadRooms(buildingId) {
+        const selectedName = buildingListEl.querySelector('.entity-list-item.selected .entity-name')?.textContent || '';
+        classroomListTitle.textContent = 'Classroom List';
+        classroomListSubtitle.textContent = `${selectedName}에 소속된 강의실 리스트`;
+        classroomListEl.innerHTML = '<li class="entity-list-empty">불러오는 중입니다...</li>';
+        if (canManage) classroomActions.style.display = 'flex';
         try {
-            const response = await fetch(`/api/front/teams/${teamId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+            const result = await requestJson(`/api/front/teams/${teamId}/buildings/${buildingId}/rooms?size=100&sort=id,ASC`);
+            renderRooms(result.content || []);
+        } catch (error) {
+            classroomListEl.innerHTML = `<li class="entity-list-empty">${error.message || '강의실 목록을 불러오지 못했습니다.'}</li>`;
+        }
+    }
+
+    function renderRooms(rooms) {
+        if (rooms.length === 0) {
+            classroomListEl.innerHTML = '<li class="entity-list-empty">등록된 강의실이 없습니다.</li>';
+            return;
+        }
+        classroomListEl.innerHTML = rooms.map(r => `
+            <li class="entity-list-item" data-room-id="${r.roomId}">
+                <span class="entity-name">${escapeHtml(r.roomName)}</span>
+            </li>`).join('');
+        classroomListEl.querySelectorAll('.entity-list-item').forEach(li => {
+            li.addEventListener('click', () => {
+                classroomListEl.querySelectorAll('.entity-list-item').forEach(el => el.classList.remove('selected'));
+                li.classList.add('selected');
+                selectedRoomId = Number(li.dataset.roomId);
+                if (deleteRoomBtn) deleteRoomBtn.disabled = false;
+            });
+        });
+    }
+
+    const addBuildingModal = document.getElementById('addBuildingModal');
+    if (addBuildingBtn) addBuildingBtn.addEventListener('click', () => addBuildingModal.showModal());
+    document.getElementById('addBuildingModalCloseBtn')?.addEventListener('click', () => addBuildingModal.close());
+    document.getElementById('addBuildingCancelBtn')?.addEventListener('click', () => addBuildingModal.close());
+
+    document.getElementById('addBuildingSubmitBtn')?.addEventListener('click', async () => {
+        const errorEl = document.getElementById('addBuildingError');
+        const buildingName = document.getElementById('newBuildingName').value.trim();
+        if (!buildingName) { errorEl.textContent = '건물 이름을 입력해주세요.'; return; }
+        try {
+            await requestJson(`/api/front/teams/${teamId}/buildings`, {
+                method: 'POST',
                 body: JSON.stringify({
-                    teamName: updatedName,
-                    description: updatedDesc
+                    buildingName,
+                    description: document.getElementById('newBuildingDesc').value.trim(),
+                    regionName: document.getElementById('newBuildingRegion').value.trim(),
+                    roadAddress: document.getElementById('newBuildingRoadAddress').value.trim(),
+                    detailAddress: document.getElementById('newBuildingDetailAddress').value.trim()
                 })
             });
-
-            if (!response.ok) {
-                throw new Error(await response.text());
-            }
-
-            alert("팀 정보가 성공적으로 수정되었습니다!");
-            window.location.href = '/team';
+            addBuildingModal.close();
+            errorEl.textContent = '';
+            await loadBuildings();
         } catch (error) {
-            alert(error.message || "팀 정보 수정에 실패했습니다.");
+            errorEl.textContent = error.message || '건물 추가에 실패했습니다.';
         }
     });
-    }
-</script>
 
-<div th:replace="~{basic/footer :: footer}"></div>
+    if (deleteBuildingBtn) {
+        deleteBuildingBtn.addEventListener('click', async () => {
+            if (!selectedBuildingId) return;
+            if (!confirm('선택한 건물을 삭제하시겠습니까? 강의실이 있는 건물은 삭제할 수 없습니다.')) return;
+            try {
+                await requestJson(`/api/front/teams/${teamId}/buildings/${selectedBuildingId}`, { method: 'DELETE' });
+                selectedBuildingId = null;
+                deleteBuildingBtn.disabled = true;
+                classroomListEl.innerHTML = '<li class="entity-list-empty">왼쪽에서 건물을 선택하세요.</li>';
+                classroomListSubtitle.textContent = '건물을 선택하면 강의실 목록이 표시됩니다';
+                classroomActions.style.display = 'none';
+                await loadBuildings();
+            } catch (error) {
+                alert(error.message || '건물 삭제에 실패했습니다. (강의실이 남아있지 않은지 확인해주세요)');
+            }
+        });
+    }
+
+    const addRoomModal = document.getElementById('addRoomModal');
+    if (addRoomBtn) {
+        addRoomBtn.addEventListener('click', () => {
+            if (!selectedBuildingId) { alert('먼저 왼쪽에서 건물을 선택해주세요.'); return; }
+            addRoomModal.showModal();
+        });
+    }
+    document.getElementById('addRoomModalCloseBtn')?.addEventListener('click', () => addRoomModal.close());
+    document.getElementById('addRoomCancelBtn')?.addEventListener('click', () => addRoomModal.close());
+
+    document.getElementById('addRoomSubmitBtn')?.addEventListener('click', async () => {
+        const errorEl = document.getElementById('addRoomError');
+        const roomName = document.getElementById('newRoomName').value.trim();
+        if (!roomName) { errorEl.textContent = '강의실 이름을 입력해주세요.'; return; }
+        try {
+            await requestJson(`/api/front/teams/${teamId}/buildings/${selectedBuildingId}/rooms`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    roomName,
+                    description: document.getElementById('newRoomDesc').value.trim()
+                })
+            });
+            addRoomModal.close();
+            errorEl.textContent = '';
+            await loadRooms(selectedBuildingId);
+        } catch (error) {
+            errorEl.textContent = error.message || '강의실 추가에 실패했습니다.';
+        }
+    });
+
+    if (deleteRoomBtn) {
+        deleteRoomBtn.addEventListener('click', async () => {
+            if (!selectedRoomId) return;
+            if (!confirm('선택한 강의실을 삭제하시겠습니까?')) return;
+            try {
+                await requestJson(`/api/front/teams/${teamId}/buildings/${selectedBuildingId}/rooms/${selectedRoomId}`, { method: 'DELETE' });
+                selectedRoomId = null;
+                deleteRoomBtn.disabled = true;
+                await loadRooms(selectedBuildingId);
+            } catch (error) {
+                alert(error.message || '강의실 삭제에 실패했습니다.');
+            }
+        });
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
+    document.addEventListener('DOMContentLoaded', loadBuildings);
+</script>
 </body>
 </html>

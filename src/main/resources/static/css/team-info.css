@@ -1,280 +1,242 @@
-/* =========================================================
-   팀 상세 정보 (Team Info)
-   ========================================================= */
+/* ================================================================
+   team-info.css 에 추가할 스타일
+   (기존 .info-card-container, .stat-card 등은 그대로 두고 아래만 추가)
+   ================================================================ */
 
-/* 전체 하얀색 컨테이너 */
-.info-card-container {
-    background-color: #ffffff;
+.info-cards-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.info-card {
+    background: #fff;
     border-radius: 20px;
-    padding: 50px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-    display: flex;
-    gap: 60px; /* 좌측 수정 영역과 우측 통계 영역 사이 간격 */
-    min-height: 600px;
+    padding: 32px 36px;
+    box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.06);
 }
 
-/* ================== 왼쪽 영역 (입력 폼) ================== */
 .info-left-panel {
-    flex: 1; /* 남은 공간 모두 차지 */
-    display: flex;
-    flex-direction: column;
+    flex: 1;
+    min-width: 0;
 }
 
-.info-header {
-    margin-bottom: 40px;
+.info-lists-panel {
+    flex: 1.4;
+    min-width: 0;
+    padding: 32px;
 }
 
-.info-header h2 {
-    font-size: 24px;
-    font-weight: 900;
-    color: #111;
-    margin: 0 0 5px 0;
-}
-
-.role-admin {
-    color: #16C098; /* Admin 텍스트 색상 */
-    font-size: 13px;
-    font-weight: bold;
-}
-
-/* 폼 그룹 */
-.input-section {
-    display: flex;
-    flex-direction: column;
-    gap: 40px; /* 팀 이름과 설명 사이 간격 */
-    margin-bottom: auto; /* 저장 버튼을 맨 밑으로 밀어냄 */
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    font-size: 12px;
-    font-weight: bold;
-    color: #111;
-    margin-bottom: 15px;
-    letter-spacing: 0.5px;
-}
-
-/* 입력창 공통 (아래선만) */
-.form-group input,
-.form-group textarea {
-    border: none;
-    border-bottom: 2px solid #CDCDD0; /* 클릭 안 했을 때 회색 선 */
-    background: transparent;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-
-    outline: none;
+.stat-card-flat {
     box-shadow: none;
-    border-radius: 0;
-    -webkit-appearance: none;
+    border: 1px solid #f0f0f0;
+    padding: 20px;
+    border-radius: 14px;
+}
 
-    transition: border-bottom-color 0.3s ease;
-    font-family: inherit;
+#editTeamName[readonly],
+#editTeamDesc[readonly] {
+    background: #f7f7f7;
+    color: #888;
+    cursor: default;
+}
+
+/* ---------------- Building / Classroom 좌우 분할 ---------------- */
+.lists-split {
+    display: flex;
+    gap: 0;
+    min-height: 360px;
+}
+
+.list-half {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-divider {
+    width: 1px;
+    background: #f0f0f0;
+    margin: 0 24px;
+}
+
+.list-half-header h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+}
+
+.list-half-header .sub-text {
+    font-size: 12.5px;
+    color: #999;
+}
+
+.entity-list {
+    list-style: none;
+    margin: 16px 0;
+    padding: 0;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 320px;
+}
+
+.entity-list-item {
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    color: #444;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.entity-list-item:hover {
+    background: #FFF8F0;
+}
+
+.entity-list-item.selected {
+    background: #FFF3E8;
+    color: #FF9800;
+    font-weight: 600;
+}
+
+.entity-list-empty {
+    padding: 24px 0;
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+    list-style: none;
+}
+
+.list-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btn-outline-sm {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12.5px;
+    color: #555;
+    cursor: pointer;
+}
+
+.btn-outline-sm:hover {
+    background: #f7f7f7;
+}
+
+.btn-danger-outline {
+    color: #E5484D;
+    border-color: #f1abab;
+}
+
+.btn-danger-outline:hover {
+    background: #FFF7F7;
+}
+
+.btn-danger-outline:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ---------------- 추가 모달 (건물/강의실 공용) ---------------- */
+dialog.modal {
+    border: none;
+    border-radius: 16px;
+    padding: 0;
+    width: 420px;
+    max-width: 90vw;
+}
+
+dialog.modal::backdrop {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.modal-close {
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #999;
+}
+
+.modal-body {
+    padding: 20px 24px 24px;
+}
+
+.modal-field-label {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    margin: 12px 0 6px;
+}
+
+.modal-field-label:first-child {
+    margin-top: 0;
+}
+
+.modal-body input[type="text"] {
     width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
     box-sizing: border-box;
 }
 
-/* 클릭(포커스) 되었을 때 초록색 선으로 변경 */
-.form-group input:focus,
-.form-group textarea:focus {
-    border-bottom-color: #33C09C;
-}
-
-/* X 버튼을 품기 위한 래퍼 */
-.input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.input-wrapper input {
-    width: 100%;
-    padding-right: 30px;
-}
-
-/* X 지우기 버튼 */
-.clear-btn {
-    position: absolute;
-    right: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
-    display: none; /* JS로 */
-}
-
-.clear-btn img {
-    width: 18px;
-    height: 18px;
-    opacity: 0.5;
-}
-
-.clear-btn:hover img {
-    opacity: 1;
-}
-
-/* 설명창 텍스트에어리어 추가 설정 */
-.form-group textarea {
-    resize: none;
-    height: 600px;
-    font-size: 15px;
-    font-weight: 500;
-}
-
-.form-group textarea::placeholder {
-    color: #b5b5b5;
-}
-
-/* 저장 버튼 */
-.btn-save {
-    background-color: #4a7dff;
-    color: #fff;
-    border: none;
-    border-radius: 25px;
-    padding: 16px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 200px;
-    margin-top: 60px;
-    align-self: center;
-    transition: background-color 0.2s;
-}
-
-.btn-save:hover {
-    background-color: #3864d6;
-}
-
-
-/* ================== 오른쪽 영역 (통계 카드) ================== */
-.info-right-panel {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-/* 각각의 하얀색 카드 박스 */
-.stat-card {
-    background-color: #ffffff;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-}
-
-.stat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 25px;
-}
-
-.stat-header h3 {
-    margin: 0 0 5px 0;
-    font-size: 18px;
-    font-weight: 900;
-    color: #111;
-}
-
-.sub-text {
-    font-size: 13px;
-    color: #888;
-}
-
-/* 빌딩 리스트로 가는 파란색 둥근 버튼 */
-.btn-building-list {
-    background-color: #4a7dff;
-    color: #fff;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-}
-
-.btn-building-list img {
-    width: 14px;
-    height: 14px;
-}
-
-/* 건물/강의실 개수 박스 */
-.stat-boxes {
-    display: flex;
-    gap: 20px;
-}
-
-.stat-box {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-label {
-    font-size: 13px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.stat-value {
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: #111;
-}
-
-/* 멤버 정보 영역 */
-.member-info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+.form-error {
+    color: #E5484D;
+    font-size: 12.5px;
     margin-top: 10px;
+    min-height: 16px;
 }
 
-.member-icon-circle {
-    width: 80px;
-    height: 80px;
-    background-color: #D3FFE7;
-    border-radius: 50%;
+.modal-actions {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
 }
 
-.member-icon-circle img {
-    width: 35px;
-    height: 35px;
+.btn-primary {
+    background: #FF9800;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
 }
 
-.member-count-box {
-    display: flex;
-    flex-direction: column;
+.btn-primary:hover {
+    background: #F08700;
 }
 
-.member-label {
-    font-size: 15px;
-    color: #888;
-    margin-bottom: 5px;
-}
-
-.member-number {
-    font-size: 36px;
-    font-weight: 900;
-    color: #111;
-    line-height: 1;
+.btn-outline {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    color: #555;
+    cursor: pointer;
 }
