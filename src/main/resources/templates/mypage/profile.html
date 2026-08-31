@@ -18,11 +18,11 @@
 <body>
 <div class="layout">
 
-  <div th:replace="~{basic/sidebar :: sidebar}"></div>
+  <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
   <div class="main-content-area">
 
-    <div th:replace="~{basic/header :: header('마이페이지')}"></div>
+    <div th:replace="~{layout/header :: header('마이페이지')}"></div>
 
     <main class="content">
 
@@ -62,21 +62,65 @@
 
       </section>
 
-      <!-- 오른쪽 hover 박스 -->
-      <div class="banner-stack">
-        <div class="box profile-hover-box">
-          <span></span>
-          <div class="box-content">
-            <a><h2>&nbsp; &nbsp; &nbsp; Go to Subscribe</h2></a>
+      <!-- 결제 카드 + 틸트 카드를 세로로 묶는 래퍼 -->
+      <div class="promo-stack">
+
+        <!-- 결제 카드 -->
+        <div class="card">
+          <div class="wrapper">
+            <div class="card-image">❑</div>
+            <div class="promo-content">
+              <p class="title"> 공간을 관리하고, &nbsp;<br> 팀을 만드세요</p>
+              <p class="title price">&nbsp; ￦3</p>
+              <p class="title price old-price">&nbsp;￦6</p>
+            </div>
+            <button class="card-btn">Subscribe</button>
+          </div>
+          <p class="tag">-50%</p>
+        </div>
+
+        <!-- 틸트 카드 -->
+        <div class="tilt-container noselect">
+          <div class="tilt-canvas">
+            <div class="tilt-tracker tr-1"></div>
+            <div class="tilt-tracker tr-2"></div>
+            <div class="tilt-tracker tr-3"></div>
+            <div class="tilt-tracker tr-4"></div>
+            <div class="tilt-tracker tr-5"></div>
+            <div class="tilt-tracker tr-6"></div>
+            <div class="tilt-tracker tr-7"></div>
+            <div class="tilt-tracker tr-8"></div>
+            <div class="tilt-tracker tr-9"></div>
+            <div class="tilt-tracker tr-10"></div>
+            <div class="tilt-tracker tr-11"></div>
+            <div class="tilt-tracker tr-12"></div>
+            <div class="tilt-tracker tr-13"></div>
+            <div class="tilt-tracker tr-14"></div>
+            <div class="tilt-tracker tr-15"></div>
+            <div class="tilt-tracker tr-16"></div>
+            <div class="tilt-tracker tr-17"></div>
+            <div class="tilt-tracker tr-18"></div>
+            <div class="tilt-tracker tr-19"></div>
+            <div class="tilt-tracker tr-20"></div>
+            <div class="tilt-tracker tr-21"></div>
+            <div class="tilt-tracker tr-22"></div>
+            <div class="tilt-tracker tr-23"></div>
+            <div class="tilt-tracker tr-24"></div>
+            <div class="tilt-tracker tr-25"></div>
+            <div class="tilt-card">
+              <p class="tilt-prompt">Do You want<br>Make a Team?</p>
+              <div class="tilt-title">&nbsp;&nbsp;관리자가<br>되어보세요!</div>
+            </div>
           </div>
         </div>
+
       </div>
 
     </main>
   </div>
 </div>
 
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 <!-- ===================== 프로필 수정 팝업 ===================== -->
 <!-- 네이티브 <dialog> 사용: focus trap / ESC 닫기 / 배경 inert 처리를 브라우저가 자동으로 처리 -->

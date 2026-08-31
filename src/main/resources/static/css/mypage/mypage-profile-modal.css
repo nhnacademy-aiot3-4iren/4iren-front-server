@@ -1,105 +1,248 @@
-/* ================================================
-   mypage-profile-modal.css
-   기존 mypage-content.css / font.css 위에 얹는 추가 스타일.
-   이 파일은 profile.html(프로필 페이지)에서만 불러오므로,
-   .content 같은 공용 클래스를 여기서 조정해도 다른 mypage 하위
-   페이지(Team/Classroom 등)에는 영향 없음.
-================================================= */
-
-/* ---- 읽기 전용 필드 표시 ---- */
-/* 프로필 카드 안의 아이디/사용자 이름/e-mail 은 readonly 속성이 있어
-   실제로 입력은 안 되지만, 시각적으로도 "수정 가능한 입력창"처럼
-   보이지 않도록 살짝 톤을 낮춥니다. (기존 상태 유지) */
-.profile-form input[readonly] {
-    background: #f5f6f8;
-    color: #4b4b4b;
-    cursor: default;
-    pointer-events: none; /* 클릭/포커스 자체를 막음 */
+/* 드래그 방지 유틸 */
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-.profile-form input[readonly]:focus {
-    outline: none;
-    box-shadow: none;
+/* ================================================================
+   프로모션 스택 (결제 카드 + 틸트 카드)
+================================================================ */
+.promo-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-/* ---- 오른쪽 hover 박스 높이를 프로필 카드 높이에 맞춤 + 카드 사이 여백 ---- */
-/* mypage-layout.css의 .content는 기본 align-items: flex-start라서
-   내용이 짧은 쪽은 남는 높이가 안 채워짐. 이 페이지에서만 stretch로
-   바꿔서 오른쪽 박스가 프로필 카드와 같은 높이로 늘어나게 함.
-   gap도 24px -> 56px로 넓혀서 hover 박스 그라데이션 번짐과
-   카드 사이에 여유를 둠. */
-.content {
-    align-items: stretch;
-    gap: 56px;
+/* 결제 배너 카드 */
+.card {
+    width: 190px;
+    height: 254px;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s;
+    position: relative;
 }
 
-/* ---- profile-card 안쪽 내용(폼 + 버튼) 가운데 정렬 ---- */
-/* .profile-card가 flex:1이라 넓게 늘어나는데, 안의 .profile-form(400px 제한)과
-   .edit-profile-btn은 왼쪽 정렬 상태였음 -> 가운데로 옮김 */
-.profile-body {
+.wrapper {
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    gap: 15px;
 }
 
-/* ---- Edit Profile 버튼 ---- */
-/* 원래 코드가 button 태그 전체를 지정하고 있어서(팝업 안 취소/저장
-   버튼까지 영향받음) .edit-profile-btn 이라는 전용 클래스로 옮김.
-   원래 스펙(500px/70px/font 32px)은 실제로 보니 너무 커서 축소함.
-   너비는 위 .profile-form과 맞춰서 400px로, margin auto로 가운데 정렬. */
-.edit-profile-btn {
+.card-image {
+    width: 100%;
+    height: 170px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    max-width: 400px;
-    height: 52px;
-    margin: 32px auto 0;
-    background-color: #f3f7fe;
-    color: #f6803b;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
+    font-size: 150px;
+    font-weight: 900;
+    transition: all 0.3s;
+    color: rgb(219, 94, 5);
+}
+
+.promo-content {
+    height: fit-content;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.title {
+    font-size: 0.72em;
+    text-transform: uppercase;
     font-weight: 500;
-    transition: 0.3s;
+    color: #4d4d4d;
 }
 
-.edit-profile-btn:hover {
-    background-color: #f6803b;
-    box-shadow: 0 0 0 5px #f6803b5f;
-    color: #fff;
+.price {
+    margin-right: 2px;
+    font-size: 1em;
+    font-weight: 500;
+    color: rgb(251, 115, 18);
 }
 
-.edit-profile-btn:focus-visible {
-    outline: 3px solid #f6803b;
-    outline-offset: 3px;
+.old-price {
+    font-size: 0.7em;
+    text-decoration: line-through;
+    color: #adadad;
 }
 
-/* ---- 오른쪽 hover 박스 (기존 .box/.box-content 재사용) ---- */
-/* .box, .box::before/after, .box span, .box-content, @keyframes animate 는
-   전부 mypage-layout.css에 이미 정의돼 있어서(원래 "Go to Subscribe" 배너용)
-   그대로 재사용. 여기서는 이 인스턴스에만:
-   1) 프로필 카드 높이에 맞게 늘어나도록 height: 100% */
-.banner-stack {
-    margin-top: 30%;
+.card-btn {
+    margin-top: 10px;
+    width: 100%;
+    height: 40px;
+    background-color: rgb(24, 24, 24);
+    border: none;
+    border-radius: 40px;
+    color: white;
+    transition: all 0.3s;
+    cursor: pointer;
+    font-weight: 500;
 }
 
-.profile-hover-box.box {
-    height: 70%;
-    width: 220px;
+.card:hover .card-image {
+    height: 120px;
 }
 
-.profile-hover-box.box::before,
-.profile-hover-box.box::after {
-    background: linear-gradient(315deg, #ffbc00, #e85b3b) !important;
-    width: 50% !important; /* 또는 inset 값을 좁혀서 기울어진 띠의 두께 자체를 얇게 축소 */
+.card:hover .card-btn {
+    margin-top: 0;
 }
 
-.profile-hover-box .box-content {
-    height: 80%;
+.card-btn:hover {
+    background-color: rgb(255, 169, 83);
+    color: rgb(35, 35, 35);
 }
 
-/* ===================== 수정 팝업 (Modal, native <dialog>) ===================== */
+.tag {
+    position: absolute;
+    background-color: rgb(255, 169, 83);
+    color: rgb(0, 0, 0);
+    left: 12px;
+    top: 12px;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.75em;
+    font-weight: 500;
+}
 
+/* 3D 틸트 카드 */
+.tilt-container {
+    position: relative;
+    width: 190px;
+    height: 350px;
+    transition: 200ms;
+}
+
+.tilt-container:active {
+    width: 182px;
+    height: 160px;
+}
+
+.tilt-canvas {
+    perspective: 800px;
+    inset: 0;
+    z-index: 200;
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-areas:
+    "tr-1 tr-2 tr-3 tr-4 tr-5"
+    "tr-6 tr-7 tr-8 tr-9 tr-10"
+    "tr-11 tr-12 tr-13 tr-14 tr-15"
+    "tr-16 tr-17 tr-18 tr-19 tr-20"
+    "tr-21 tr-22 tr-23 tr-24 tr-25";
+}
+
+.tilt-card {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 14px;
+    transition: 700ms;
+    background: linear-gradient(43deg, rgb(235, 208, 74) 0%, rgb(255, 203, 107) 46%, rgb(255, 112, 112) 100%);
+}
+
+.tilt-card::before {
+    content: '';
+    background: linear-gradient(43deg, rgb(208, 182, 65) 0%, rgb(241, 76, 104) 46%, rgb(255, 217, 146) 100%);
+    filter: blur(1.4rem);
+    opacity: 0.3;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    transition: 200ms;
+}
+
+.tilt-container:hover .tilt-card::before {
+    opacity: 0.8;
+}
+
+.tilt-title {
+    opacity: 0;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+    transition-delay: 100ms;
+    position: absolute;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+.tilt-prompt {
+    bottom: 40px;
+    left: 16px;
+    z-index: 20;
+    font-size: 20px;
+    font-weight: bold;
+    transition: 300ms ease-in-out;
+    position: absolute;
+    max-width: 90px;
+    color: rgb(255, 255, 255);
+}
+
+.tilt-tracker:hover ~ .tilt-card .tilt-title { opacity: 1; }
+.tilt-tracker:hover ~ .tilt-card .tilt-prompt { opacity: 0; }
+.tilt-tracker:hover ~ .tilt-card { transition: 300ms; filter: brightness(1.1); }
+
+.tilt-tracker {
+    position: absolute;
+    z-index: 200;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.tr-1 { grid-area: tr-1; } .tr-2 { grid-area: tr-2; } .tr-3 { grid-area: tr-3; } .tr-4 { grid-area: tr-4; } .tr-5 { grid-area: tr-5; }
+.tr-6 { grid-area: tr-6; } .tr-7 { grid-area: tr-7; } .tr-8 { grid-area: tr-8; } .tr-9 { grid-area: tr-9; } .tr-10 { grid-area: tr-10; }
+.tr-11 { grid-area: tr-11; } .tr-12 { grid-area: tr-12; } .tr-13 { grid-area: tr-13; } .tr-14 { grid-area: tr-14; } .tr-15 { grid-area: tr-15; }
+.tr-16 { grid-area: tr-16; } .tr-17 { grid-area: tr-17; } .tr-18 { grid-area: tr-18; } .tr-19 { grid-area: tr-19; } .tr-20 { grid-area: tr-20; }
+.tr-21 { grid-area: tr-21; } .tr-22 { grid-area: tr-22; } .tr-23 { grid-area: tr-23; } .tr-24 { grid-area: tr-24; } .tr-25 { grid-area: tr-25; }
+
+.tr-1:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(-10deg); }
+.tr-2:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(-5deg); }
+.tr-3:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(0deg); }
+.tr-4:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(5deg); }
+.tr-5:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(10deg); }
+.tr-6:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(-10deg); }
+.tr-7:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(-5deg); }
+.tr-8:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(0deg); }
+.tr-9:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(5deg); }
+.tr-10:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(10deg); }
+.tr-11:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(-10deg); }
+.tr-12:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(-5deg); }
+.tr-13:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(0deg); }
+.tr-14:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(5deg); }
+.tr-15:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(10deg); }
+.tr-16:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(-10deg); }
+.tr-17:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(-5deg); }
+.tr-18:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(0deg); }
+.tr-19:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(5deg); }
+.tr-20:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(10deg); }
+.tr-21:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(-10deg); }
+.tr-22:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(-5deg); }
+.tr-23:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(0deg); }
+.tr-24:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(5deg); }
+.tr-25:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(10deg); }
+
+/* ================================================================
+   프로필 수정 모달 (<dialog>)
+================================================================ */
 .modal {
     background: #fff;
     width: 100%;
@@ -110,7 +253,7 @@
     padding: 28px 28px 24px;
     max-height: 90vh;
     overflow-y: auto;
-    margin: auto; /* dialog 기본 위치를 중앙 정렬로 */
+    margin: auto;
 }
 
 .modal::backdrop {
@@ -151,7 +294,7 @@
 .modal-body .form-group label {
     display: block;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: #6b7280;
     margin-bottom: 6px;
 }
@@ -186,6 +329,10 @@
     opacity: 0.6;
 }
 
+.modal-body .password-field .eye-icon:hover {
+    opacity: 1;
+}
+
 .form-divider {
     height: 1px;
     background: #e9ebee;
@@ -201,25 +348,55 @@
 
 .modal-actions {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     gap: 10px;
     margin-top: 8px;
 }
 
-/* 취소 버튼은 setting-btn과 다르게 아웃라인만 */
 .modal-actions .btn-outline {
-    padding: 10px 20px;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 20%;
     cursor: pointer;
     background: #fff;
     border: 1px solid #e9ebee;
     color: #6b7280;
 }
 
+.modal-actions .btn-outline img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
 .modal-actions .btn-outline:hover {
     border-color: #6b7280;
+}
+
+.modal-actions .setting-btn {
+    height: 48px;
+    width: 100%;
+    max-width: 120px;
+    background-color: #EF8924;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.modal-actions .setting-btn:hover {
+    background-color: #d67a20;
 }
 
 .modal-actions .setting-btn:disabled {
