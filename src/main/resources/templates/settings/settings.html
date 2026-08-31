@@ -1,32 +1,34 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Settings</title>
 
+  <link rel="stylesheet" href="/fonts/font.css">
+  <link rel="stylesheet" th:href="@{/css/settings.css}">
   <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
   <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
   <link rel="stylesheet" th:href="@{/css/basic/header.css}">
   <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
-  <link rel="stylesheet" th:href="@{/css/settings.css}">
-  <!-- Payment 탭 안에서 실제 payment/billing.html의 status-badge, pg-buttons 등을
-       그대로 재사용하기 위해 payment.css도 같이 로드 -->
-  <link rel="stylesheet" th:href="@{/css/payment.css}">
-</head>
-<body>
 
+</head>
+
+<body>
 <div class="layout">
 
   <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
-  <div class="main-wrap">
+  <div class="main-content-area">
 
-    <div th:replace="~{layout/header :: header('Settings')}"></div>
+    <div th:replace="~{layout/header :: header('설정')}"></div>
 
-    <main class="main-content">
+    <main class="content">
 
-      <div class="settings-card">
+      <!-- ============================================== -->
+      <!-- 설정 카드: 왼쪽 탭 목록 + 오른쪽 탭별 컨텐츠 패널 -->
+      <!-- ============================================== -->
+      <section class="settings-card">
 
         <!-- ============================================== -->
         <!-- 왼쪽: 세로 탭 목록 -->
@@ -107,8 +109,7 @@
               구독 중인 공간이 많아지면 이 목록도 함께 길어지므로,
               별도 페이지에서 검색/페이지네이션과 함께 관리합니다.
             </p>
-            <!-- TODO: 별도 페이지(가칭 /settings/notifications/rooms)로 분리 예정.
-                 해당 페이지에 구독 공간 수 조회 API 연동 필요 -->
+
             <a href="/settings/notifications/rooms" class="btn-outline" style="display:inline-block; text-decoration:none;">
               공간별 알림 관리 →
             </a>
@@ -135,7 +136,7 @@
 
         </div> <!-- /settings-content -->
 
-      </div> <!-- /settings-card -->
+      </section> <!-- /settings-card -->
 
     </main>
   </div>
@@ -160,6 +161,5 @@
     });
   });
 </script>
-
 </body>
 </html>

@@ -1,8 +1,4 @@
 .sidebar {
-    width: 250px;
-    flex-shrink: 0;
-    /* 맑은 유리 패널: 알파 있는 흰색 + 원본 베젤 하이라이트 그대로 유지 */
-    background: rgba(255, 255, 255, 0.3);
     box-shadow:
             0px 0px 2px rgba(0, 0, 0, 0.1),
             0px 1px 8px rgba(0, 0, 0, 0.1),
@@ -18,6 +14,11 @@
     padding: 30px 0;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    width: 250px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.3);
+
 }
 
 .sidebar-logo {
@@ -109,6 +110,12 @@
 
 .nav-item-toggle.expanded .nav-icon-chevron {
     transform: rotate(180deg);
+}
+
+.nav-item-toggle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.4);
+    border-radius: 8px;
 }
 
 .nav-icon {
@@ -245,7 +252,7 @@
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border-radius: 100px;
-    color: #000;
+    color: #958a87;
     font-weight: 500;
 }
 

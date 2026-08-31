@@ -1,6 +1,11 @@
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
 .main-content-area {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0; /* 내부 콘텐츠 오버플로우 방지 */
+    min-width: 0;
 }
