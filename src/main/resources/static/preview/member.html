@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Members 미리보기</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+      background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2000&auto=format&fit=crop');
+      background-size: cover;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .main-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 20px 25px 0;
+      min-width: 0;
+    }
+
+    .preview-header {
+      padding: 15px 10px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .main-content {
+      flex: 1;
+    }
+
+    /* ================================================================
+       사이드바 스타일 (sidebar.css)
+       ================================================================ */
+    .sidebar {
+      width: 250px;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow:
+              0px 0px 2px rgba(0, 0, 0, 0.1),
+              0px 1px 8px rgba(0, 0, 0, 0.1),
+              inset 3px 3px 0.5px -3.5px #FFFFFF,
+              inset 2px 2px 0.5px -2px #262626,
+              inset -2px -2px 0.5px -2px #262626,
+              inset 0px 0px 0px 1px #A6A6A6,
+              inset 0px 0px 8px #F2F2F2;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 21px;
+      margin: 10px 20px 25px 10px;
+      padding: 30px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-logo img {
+      width: 130px;
+      height: auto;
+      margin-left: -15px;
+    }
+
+    .user-info-block {
+      padding: 0 24px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(102, 90, 80, 0.12);
+      padding-bottom: 20px;
+    }
+
+    .user-role {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    .user-role[data-role="admin"]  { color: #4A90D9; }
+    .user-role[data-role="normal"] { color: #999999; }
+
+    .user-name {
+      margin: 4px 0 0;
+      font-size: 15px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 0 15px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border-radius: 8px;
+      color: #666;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 14px;
+      transition: background-color 0.15s, color 0.15s;
+    }
+
+    .nav-item-toggle {
+      width: 100%;
+      background: none;
+      border: none;
+      font: inherit;
+      text-align: left;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .nav-item-main {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .nav-icon-chevron {
+      flex-shrink: 0;
+      margin-left: 8px;
+      color: inherit;
+      transition: transform 0.15s ease;
+    }
+
+    .nav-item-toggle.expanded .nav-icon-chevron {
+      transform: rotate(180deg);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+      flex-shrink: 0;
+      color: inherit;
+    }
+
+    .nav-icon-lg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .nav-icon-profile {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-item:hover,
+    .nav-item-toggle:hover {
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      color: #444;
+    }
+
+    .nav-item.active,
+    .nav-item-toggle.expanded {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow:
+              0px 0px 2px rgba(0, 0, 0, 0.1),
+              0px 1px 8px rgba(0, 0, 0, 0.1),
+              inset 3px 3px 0.5px -3.5px #FFFFFF,
+              inset 2px 2px 0.5px -2px #262626,
+              inset -2px -2px 0.5px -2px #262626,
+              inset 0px 0px 0px 1px #A6A6A6,
+              inset 0px 0px 8px #F2F2F2;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 100px;
+      color: #000;
+      font-weight: 500;
+    }
+
+    .submenu {
+      position: relative;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      padding-left: 34px;
+      margin: 0 0 2px 0;
+    }
+
+    .submenu.open {
+      display: flex;
+    }
+
+    .submenu-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 8px;
+      color: #666;
+      text-decoration: none;
+      font-size: 13.5px;
+      transition: background-color 0.15s, color 0.15s;
+    }
+
+    .submenu-item::before {
+      content: '';
+      position: absolute;
+      left: -16px;
+      top: -21px;
+      width: 16px;
+      height: 40px;
+      border-left: 1.5px solid #b3a89c;
+      border-bottom: 1.5px solid #b3a89c;
+      border-bottom-left-radius: 8px;
+    }
+
+    .submenu-item:first-child::before {
+      top: 0;
+      height: 19px;
+    }
+
+    .submenu-item[data-page="team-list"] {
+      margin-bottom: 6px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(102, 90, 80, 0.08);
+    }
+
+    .submenu-item:hover {
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      color: #444;
+    }
+
+    .submenu-item.active {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow:
+              0px 0px 2px rgba(0, 0, 0, 0.1),
+              0px 1px 8px rgba(0, 0, 0, 0.1),
+              inset 3px 3px 0.5px -3.5px #FFFFFF,
+              inset 2px 2px 0.5px -2px #262626,
+              inset -2px -2px 0.5px -2px #262626,
+              inset 0px 0px 0px 1px #A6A6A6,
+              inset 0px 0px 8px #F2F2F2;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 100px;
+      color: #000;
+      font-weight: 500;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .sidebar-bottom .nav-item {
+      color: #666;
+    }
+
+    .sidebar-bottom .nav-item:hover {
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      color: #666;
+    }
+
+    /* ================================================================
+       Team Members 및 카드 공통 스타일 (team-info.css + team-members.css)
+       ================================================================ */
+    .info-card-container {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .members-page .members-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px 36px;
+      width: 100%;
+      box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .members-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .members-card-header h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+      color: #222;
+    }
+
+    .members-card-header .sub-text {
+      margin: 0;
+      font-size: 13px;
+      color: #999;
+    }
+
+    .panel-subtitle {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin: 0 0 12px;
+    }
+
+    .info-section-divider {
+      height: 1px;
+      background: #f0f0f0;
+      margin: 24px 0;
+    }
+
+    /* 설정 행 (초대 코드 발급 행) */
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+    }
+
+    .setting-row-text strong {
+      display: block;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .setting-row-text p {
+      margin: 0;
+      font-size: 12.5px;
+      color: #999;
+    }
+
+    /* 8칸 초대 코드 */
+    .code-squares {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0 12px;
+    }
+
+    .code-square {
+      width: 40px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFF8F0;
+      border: 1px solid #FFE0B2;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #FF9800;
+    }
+
+    /* 팀원 테이블 */
+    .members-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    .members-table thead th {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 2px solid #eee;
+      color: #999;
+      font-weight: 600;
+    }
+
+    .members-table tbody td {
+      padding: 12px 8px;
+      border-bottom: 1px solid #f5f5f5;
+      color: #333;
+    }
+
+    .members-table .empty-row td {
+      text-align: center;
+      color: #999;
+      padding: 32px 0;
+    }
+
+    /* 역할 뱃지 */
+    .role-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.02em;
+    }
+
+    .role-badge.role-owner { background: #FFF3E8; color: #FF9800; }
+    .role-badge.role-admin { background: #E8F1FC; color: #4A90D9; }
+    .role-badge.role-normal { background: #F2F2F2; color: #888; }
+
+    /* 버튼 */
+    .btn-outline-sm {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      color: #555;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-outline-sm:hover {
+      background: #f7f7f7;
+    }
+
+    .btn-primary {
+      background: #FF9800;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover {
+      background: #F08700;
+    }
+
+    .btn-primary:disabled {
+      background: #ffcf94;
+      cursor: not-allowed;
+    }
+
+    /* 페이지네이션 */
+    .building-pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 24px;
+      font-size: 13px;
+    }
+
+    .building-pagination a {
+      color: #555;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .building-pagination a:hover:not(.disabled) {
+      background: #f0f0f0;
+    }
+
+    .building-pagination a.disabled {
+      color: #ccc;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a href="/">
+        <img src="/photo/logo.png" alt="Logo">
+      </a>
+    </div>
+
+    <div class="user-info-block">
+      <span class="user-role" data-role="admin">ADMIN</span>
+      <p class="user-name">jae na</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/mypage" class="nav-item" data-page="profile">
+        <svg class="nav-icon nav-icon-profile" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.5 9.5V8.7C18.5 7.57989 18.5 7.01984 18.282 6.59202C18.0903 6.21569 17.7843 5.90973 17.408 5.71799C16.9802 5.5 16.4201 5.5 15.3 5.5H7.7C6.57989 5.5 6.01984 5.5 5.59202 5.71799C5.21569 5.90973 4.90973 6.21569 4.71799 6.59202C4.5 7.01984 4.5 7.57989 4.5 8.7V12.3C4.5 13.4201 4.5 13.9802 4.71799 14.408C4.90973 14.7843 5.21569 15.0903 5.59202 15.282C6.01984 15.5 6.57989 15.5 7.7 15.5H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M7.5 12.5H11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M7.5 8.5H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="17.5" cy="13.5" r="2" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M19.5 18.5C19.5 18.5 19 17.5 17.5 17.5C16 17.5 15.5 18.5 15.5 18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Profile</span>
+      </a>
+
+      <!-- Team 토글 버튼 (확장된 상태) -->
+      <button type="button"
+              class="nav-item nav-item-toggle expanded"
+              data-page="team"
+              aria-expanded="true"
+              aria-controls="team-submenu">
+                <span class="nav-item-main">
+                    <svg class="nav-icon nav-icon-lg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M15.701 8.25C15.8999 7.90547 16.2275 7.65408 16.6118 7.55111C16.996 7.44815 17.4055 7.50205 17.75 7.70096C18.0945 7.89987 18.3459 8.2275 18.4489 8.61177C18.5519 8.99604 18.498 9.40547 18.299 9.75C18.1001 10.0945 17.7725 10.3459 17.3882 10.4489C17.004 10.5519 16.5945 10.498 16.25 10.299C15.9055 10.1001 15.6541 9.7725 15.5511 9.38823C15.4481 9.00396 15.502 8.59453 15.701 8.25L15.701 8.25Z" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M5.70096 8.25C5.89987 7.90547 6.2275 7.65408 6.61177 7.55111C6.99604 7.44815 7.40547 7.50205 7.75 7.70096C8.09453 7.89987 8.34592 8.2275 8.44889 8.61177C8.55185 8.99604 8.49795 9.40547 8.29904 9.75C8.10013 10.0945 7.7725 10.3459 7.38823 10.4489C7.00396 10.5519 6.59453 10.498 6.25 10.299C5.90547 10.1001 5.65408 9.7725 5.55111 9.38823C5.44815 9.00396 5.50205 8.59453 5.70096 8.25L5.70096 8.25Z" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M16.5004 12.5L16.5004 12H16.5004V12.5ZM20.3637 15.5127L20.85 15.3964L20.8499 15.3962L20.3637 15.5127ZM19.5004 16.5V17H19.5006L19.5004 16.5ZM14.5004 16.5L14.5002 16L14.5004 17V16.5ZM15.3803 15.5098L15.8696 15.407L15.8696 15.4069L15.3803 15.5098ZM14.1 13.1855L13.8093 12.7787L13.277 13.159L13.7838 13.5728L14.1 13.1855ZM16.5004 12.5L16.5004 13C17.7262 13.0001 18.4896 13.4089 18.9821 13.912C19.4882 14.429 19.7473 15.0863 19.8774 15.6292L20.3637 15.5127L20.8499 15.3962C20.6962 14.7546 20.3754 13.9057 19.6967 13.2125C19.0045 12.5054 17.9781 12.0001 16.5004 12L16.5004 12.5ZM20.3637 15.5127L19.8774 15.629C19.9009 15.7274 19.8754 15.807 19.8167 15.8718C19.7527 15.9424 19.6413 15.9999 19.5002 16L19.5004 16.5L19.5006 17C20.3 16.9997 21.0702 16.3171 20.85 15.3964L20.3637 15.5127ZM19.5004 16.5V16H14.5004V16.5V17H19.5004V16.5ZM14.5004 16.5L14.5006 17C15.3043 16.9997 16.0613 16.3192 15.8696 15.407L15.3803 15.5098L14.891 15.6126C14.9126 15.7156 14.8842 15.8011 14.8215 15.8694C14.7543 15.9427 14.6412 15.9999 14.5002 16L14.5004 16.5ZM15.3803 15.5098L15.8696 15.4069C15.7084 14.6399 15.3299 13.5443 14.4162 12.7983L14.1 13.1855L13.7838 13.5728C14.4368 14.106 14.7483 14.9337 14.891 15.6126L15.3803 15.5098ZM14.1 13.1855L14.3907 13.5924C14.8686 13.2509 15.5404 13 16.5004 13V12.5V12C15.3548 12 14.4745 12.3035 13.8093 12.7787L14.1 13.1855Z" fill="currentColor"/>
+                        <path d="M7.50027 12.5L7.5003 12H7.50027V12.5ZM9.89969 13.1865L10.216 13.5737L10.7225 13.16L10.1904 12.7797L9.89969 13.1865ZM8.61942 15.5098L8.13011 15.4069L8.13009 15.407L8.61942 15.5098ZM3.63602 15.5127L3.14979 15.3962L3.14972 15.3964L3.63602 15.5127ZM7.50027 12.5L7.50025 13C8.45979 13 9.13077 13.2516 9.60898 13.5933L9.89969 13.1865L10.1904 12.7797C9.52558 12.3046 8.64644 12.0001 7.5003 12L7.50027 12.5ZM9.89969 13.1865L9.58334 12.7993C8.67041 13.5452 8.29136 14.6397 8.13011 15.4069L8.61942 15.5098L9.10872 15.6126C9.25131 14.9342 9.56321 14.1071 10.216 13.5737L9.89969 13.1865ZM8.61942 15.5098L8.13009 15.407C7.93837 16.3198 8.69681 17 9.50027 17V16.5V16C9.35926 16 9.24584 15.9427 9.17839 15.8693C9.1155 15.8008 9.08715 15.7153 9.10874 15.6125L8.61942 15.5098ZM9.50027 16.5V16H4.50027V16.5V17H9.50027V16.5ZM4.50027 16.5V16C4.35905 16 4.24747 15.9424 4.18323 15.8717C4.12435 15.8068 4.09884 15.7271 4.12231 15.629L3.63602 15.5127L3.14972 15.3964C2.92946 16.3177 3.70107 17 4.50027 17V16.5ZM3.63602 15.5127L4.12225 15.6292C4.25236 15.0864 4.5116 14.429 5.0179 13.912C5.51066 13.4088 6.27428 13 7.50027 13V12.5V12C6.02242 12 4.99586 12.5053 4.30344 13.2123C3.62454 13.9056 3.30357 14.7545 3.14979 15.3962L3.63602 15.5127Z" fill="currentColor"/>
+                        <path d="M12 12.5C14.3642 12.5 15.1314 14.3251 15.3804 15.5097C15.494 16.0501 15.0523 16.5 14.5 16.5H9.5C8.94772 16.5 8.50601 16.0501 8.61961 15.5097C8.86859 14.3251 9.63581 12.5 12 12.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M18.5 21.5H20C20.8284 21.5 21.5 20.8284 21.5 20V18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M18.5 2.5H20C20.8284 2.5 21.5 3.17157 21.5 4V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M5.5 21.5H4C3.17157 21.5 2.5 20.8284 2.5 20V18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M5.5 2.5H4C3.17157 2.5 2.5 3.17157 2.5 4V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Team</span>
+                </span>
+        <svg class="nav-icon-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <!-- 서브메뉴: Members active 상태 -->
+      <div class="submenu open" id="team-submenu">
+        <a href="/team" class="submenu-item" data-page="team-list">
+          <span>모든 팀 보기</span>
+        </a>
+        <a href="/team-info/1" class="submenu-item" data-page="team-info">
+          <span>Team Info</span>
+        </a>
+        <a href="/team-members/1" class="submenu-item active" data-page="team-members">
+          <span>Members</span>
+        </a>
+        <a href="/buildings" class="submenu-item" data-page="buildings">
+          <span>Buildings</span>
+        </a>
+        <a href="/classroom" class="submenu-item" data-page="classroom">
+          <span>Classrooms</span>
+        </a>
+      </div>
+
+      <a href="/flow" class="nav-item" data-page="flow">
+        <svg class="nav-icon" width="24" height="24" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="39.6555" y="19.8278" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 19.8278)" stroke="currentColor" stroke-width="2.46447"/>
+          <rect x="39.6555" y="37.4524" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 37.4524)" stroke="currentColor" stroke-width="2.46447"/>
+          <rect x="6.60938" y="15.4215" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(-90 6.60938 15.4215)" stroke="currentColor" stroke-width="2.46447"/>
+          <path d="M11.0156 17.6246V38.6882C11.0156 40.1827 11.0156 40.93 11.4799 41.3943C11.9442 41.8586 12.6915 41.8586 14.1861 41.8586H30.8434" stroke="currentColor" stroke-width="2.46447"/>
+          <path d="M11.0156 15.4215V21.0634C11.0156 22.558 11.0156 23.3053 11.4799 23.7696C11.9442 24.2339 12.6915 24.2339 14.1861 24.2339H30.8434" stroke="currentColor" stroke-width="2.46447"/>
+        </svg>
+        <span>Flow</span>
+      </a>
+
+      <a href="/subscribe" class="nav-item" data-page="subscribe">
+        <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M4 10h16" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <span>Subscribe</span>
+      </a>
+
+      <a href="/settings" class="nav-item" data-page="settings">
+        <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="/" class="nav-item" data-page="home">
+        <svg class="nav-icon" width="24" height="24" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.9167 32.9623C12.9167 29.4547 12.9167 27.701 13.6258 26.1594C14.3348 24.6178 15.6664 23.4765 18.3295 21.1938L20.9128 18.9795C25.7264 14.8536 28.1332 12.7906 31.0001 12.7906C33.867 12.7906 36.2738 14.8536 41.0873 18.9795L43.6707 21.1938C46.3338 23.4765 47.6654 24.6178 48.3744 26.1594C49.0834 27.701 49.0834 29.4547 49.0834 32.9623V43.9166C49.0834 48.7878 49.0834 51.2234 47.5701 52.7367C46.0569 54.25 43.6213 54.25 38.7501 54.25H23.2501C18.3789 54.25 15.9433 54.25 14.43 52.7367C12.9167 51.2234 12.9167 48.7878 12.9167 43.9166V32.9623Z" stroke="currentColor" stroke-width="2.87396"/>
+          <path d="M37.4582 54.25V41.624C37.4582 40.0367 36.1715 38.75 34.5842 38.75H27.4155C25.8282 38.75 24.5415 40.0367 24.5415 41.624V54.25" stroke="currentColor" stroke-width="2.87396" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Home</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- 메인 컨텐츠 영역 -->
+  <div class="main-wrap">
+
+    <div class="preview-header">Team Members</div>
+
+    <main class="main-content">
+      <div class="info-card-container members-page">
+
+        <section class="members-card">
+          <div class="members-card-header">
+            <div>
+              <h2>Members</h2>
+              <p class="sub-text">팀 포이렌 (4iren)</p>
+            </div>
+          </div>
+
+          <!-- 초대 코드 발급 영역 -->
+          <div class="setting-row">
+            <div class="setting-row-text">
+              <strong>초대 코드</strong>
+              <p>새로운 8자리 초대 코드를 발급합니다. (활성 팀에서만 가능)</p>
+            </div>
+            <button type="button" class="btn-primary" id="createInviteCodeBtn">코드 생성</button>
+          </div>
+
+          <!-- 8칸 사각 박스 UI -->
+          <div class="code-squares" id="codeSquaresContainer" hidden>
+            <div class="code-square"></div>
+            <div class="code-square"></div>
+            <div class="code-square"></div>
+            <div class="code-square"></div>
+            <div class="code-square"></div>
+            <div class="code-square"></div>
+            <div class="code-square"></div>
+            <div class="code-square"></div>
+          </div>
+          <button type="button" class="btn-outline-sm" id="copyInviteCodeBtn" hidden>복사</button>
+
+          <div class="info-section-divider"></div>
+
+          <!-- 팀원 목록 테이블 -->
+          <h3 class="panel-subtitle">팀원 목록</h3>
+          <table class="members-table">
+            <thead>
+            <tr>
+              <th>User ID</th>
+              <th>역할</th>
+              <th>관리</th>
+            </tr>
+            </thead>
+            <tbody id="membersTableBody">
+            <tr class="empty-row">
+              <td colspan="3">팀원 목록을 불러오는 중입니다.</td>
+            </tr>
+            </tbody>
+          </table>
+
+          <!-- 페이지네이션 -->
+          <nav class="building-pagination" id="membersPagination" hidden>
+            <a href="#" id="membersPrevBtn">Previous</a>
+            <span id="membersPageIndicator">1 / 1</span>
+            <a href="#" id="membersNextBtn">Next</a>
+          </nav>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  // 1) 가상 더미 데이터 및 팀원 목록 렌더링 로직
+  // ==========================================
+  const dummyMembers = [
+    { teamMemberId: 101, userId: 12, teamRole: 'OWNER' },
+    { teamMemberId: 102, userId: 45, teamRole: 'ADMIN' },
+    { teamMemberId: 103, userId: 78, teamRole: 'NORMAL' },
+    { teamMemberId: 104, userId: 91, teamRole: 'NORMAL' },
+    { teamMemberId: 105, userId: 104, teamRole: 'NORMAL' }
+  ];
+
+  let currentPage = 0;
+  const pageSize = 5;
+
+  function loadMembers(page = 0) {
+    const tbody = document.getElementById('membersTableBody');
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="3">팀원 목록을 불러오는 중입니다.</td></tr>';
+
+    setTimeout(() => {
+      const totalPages = Math.ceil(dummyMembers.length / pageSize) || 1;
+      const start = page * pageSize;
+      const content = dummyMembers.slice(start, start + pageSize);
+
+      renderMembers(content);
+      renderPagination({
+        page: page,
+        totalPages: totalPages,
+        first: page === 0,
+        last: page >= totalPages - 1
+      });
+    }, 200);
+  }
+
+  function renderMembers(members) {
+    const tbody = document.getElementById('membersTableBody');
+
+    if (members.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="3">팀원이 없습니다.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = members.map(member => `
+            <tr>
+                <td>User #${member.userId}</td>
+                <td><span class="role-badge role-${member.teamRole.toLowerCase()}">${member.teamRole}</span></td>
+                <td>
+                    ${member.teamRole !== 'OWNER'
+            ? `<button type="button" class="btn-outline-sm remove-member-btn" data-member-id="${member.teamMemberId}">내보내기</button>`
+            : '-'}
+                </td>
+            </tr>
+        `).join('');
+
+    tbody.querySelectorAll('.remove-member-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        alert('팀원 내보내기 기능은 아직 준비 중입니다.');
+      });
+    });
+  }
+
+  function renderPagination(pageResult) {
+    const pagination = document.getElementById('membersPagination');
+    const indicator = document.getElementById('membersPageIndicator');
+    const prevBtn = document.getElementById('membersPrevBtn');
+    const nextBtn = document.getElementById('membersNextBtn');
+
+    if (pageResult.totalPages <= 1) {
+      pagination.hidden = true;
+      return;
+    }
+
+    pagination.hidden = false;
+    indicator.textContent = `${pageResult.page + 1} / ${pageResult.totalPages}`;
+
+    prevBtn.classList.toggle('disabled', pageResult.first);
+    nextBtn.classList.toggle('disabled', pageResult.last);
+
+    prevBtn.onclick = (e) => {
+      e.preventDefault();
+      if (!pageResult.first) loadMembers(pageResult.page - 1);
+    };
+    nextBtn.onclick = (e) => {
+      e.preventDefault();
+      if (!pageResult.last) loadMembers(pageResult.page + 1);
+    };
+  }
+
+  // ==========================================
+  // 2) 초대 코드 생성 & 복사 로직
+  // ==========================================
+  const createInviteCodeBtn = document.getElementById('createInviteCodeBtn');
+  const codeSquares = document.querySelectorAll('#codeSquaresContainer .code-square');
+  const codeSquaresContainer = document.getElementById('codeSquaresContainer');
+  const copyInviteCodeBtn = document.getElementById('copyInviteCodeBtn');
+  let currentInviteCode = '';
+
+  if (createInviteCodeBtn) {
+    createInviteCodeBtn.addEventListener('click', () => {
+      createInviteCodeBtn.disabled = true;
+      createInviteCodeBtn.textContent = '생성 중...';
+      currentInviteCode = '';
+      codeSquares.forEach(sq => sq.textContent = '');
+
+      setTimeout(() => {
+        currentInviteCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+
+        for (let i = 0; i < codeSquares.length; i += 1) {
+          codeSquares[i].textContent = currentInviteCode[i] || '';
+        }
+
+        codeSquaresContainer.hidden = false;
+        copyInviteCodeBtn.hidden = false;
+
+        createInviteCodeBtn.disabled = false;
+        createInviteCodeBtn.textContent = '코드 생성';
+      }, 300);
+    });
+  }
+
+  if (copyInviteCodeBtn) {
+    copyInviteCodeBtn.addEventListener('click', () => {
+      if (!currentInviteCode) {
+        alert('아직 코드가 발급되지 않았습니다.');
+        return;
+      }
+      navigator.clipboard.writeText(currentInviteCode)
+              .then(() => alert('초대 코드가 복사되었습니다!'))
+              .catch(() => alert('복사에 실패했습니다.'));
+    });
+  }
+
+  // ==========================================
+  // 3) 사이드바 Team 하위 메뉴 토글
+  // ==========================================
+  const teamToggle = document.querySelector('.nav-item-toggle[data-page="team"]');
+  const submenu = document.getElementById('team-submenu');
+
+  if (teamToggle && submenu) {
+    const toggleSubmenu = function () {
+      const isOpen = submenu.classList.toggle('open');
+      teamToggle.classList.toggle('expanded', isOpen);
+      teamToggle.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    teamToggle.addEventListener('click', toggleSubmenu);
+    teamToggle.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleSubmenu();
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => loadMembers(0));
+</script>
+
+</body>
+</html>

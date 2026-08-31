@@ -23,4 +23,15 @@ public class TeamController {
     public String teamInfoPageWithoutId() {
         return "redirect:/team";
     }
+
+    @GetMapping("/team-members/{teamId}")
+    public String teamMembersPage(@PathVariable Long teamId, Model model) {
+        model.addAttribute("team", teamService.getTeam(teamId));
+        return "team/admin/team-members";
+    }
+
+    @GetMapping("/team-members")
+    public String teamMembersPageWithoutId() {
+        return "redirect:/team";
+    }
 }

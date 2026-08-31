@@ -1,0 +1,626 @@
+/* ================================================================
+   payment-billing.css
+   결제 관리 페이지 전용 스타일 (기존 디자인 시안의 CSS를 재사용,
+   카드 프리뷰 관련 스타일만 제거함 - 신용카드 대신 토스/카카오 버튼 방식으로 변경됨)
+   ================================================================ */
+
+:root {
+    --primary: #ff9800;
+    --primary-dark: #eb8700;
+    --primary-light: #fff4e5;
+
+    --text-main: #17191f;
+    --text-sub: #737791;
+    --text-light: #9ca3af;
+
+    --border: #eceef2;
+    --background: #f6f7f9;
+    --white: #ffffff;
+
+    --success: #22b78b;
+    --success-bg: #eafaf5;
+
+    --danger: #e23c3c;
+    --danger-bg: #fff5f5;
+    --danger-border: #ffd1d1;
+
+    --shadow-sm: 0 2px 8px rgba(25, 30, 40, 0.04);
+    --shadow-md: 0 8px 24px rgba(25, 30, 40, 0.06);
+
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+}
+
+.page {
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ---------------- Breadcrumb / Header ---------------- */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+.breadcrumb-current {
+    color: var(--text-sub);
+    font-weight: 500;
+}
+
+.breadcrumb-arrow {
+    color: #c5c8cf;
+}
+
+.page-header {
+    margin-bottom: 32px;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 30px;
+    line-height: 1.3;
+    letter-spacing: -0.7px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.page-desc {
+    margin: 9px 0 0;
+    font-size: 14px;
+    color: var(--text-sub);
+    line-height: 1.6;
+}
+
+/* ---------------- 알림 메시지 (successMessage / errorMessage) ---------------- */
+.notice-inline {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.notice-success {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.notice-danger {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+/* ---------------- Section / Card ---------------- */
+.section {
+    margin-bottom: 20px;
+}
+
+.section-label {
+    margin: 0 0 10px 2px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-sub);
+}
+
+.card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.card-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.card-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.card-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--text-main);
+}
+
+.card-content {
+    padding: 24px;
+}
+
+/* ---------------- Current Plan ---------------- */
+.plan-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.plan-card::after {
+    content: "";
+    position: absolute;
+    top: -70px;
+    right: -70px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255, 152, 0, 0.07);
+    pointer-events: none;
+}
+
+.plan-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.plan-info {
+    flex: 1;
+}
+
+.plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 12px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.plan-name {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.plan-name span {
+    color: var(--primary);
+}
+
+.plan-desc {
+    margin: 8px 0 0;
+    color: var(--text-sub);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.plan-price {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.price {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    color: var(--text-main);
+}
+
+.price-unit {
+    margin-left: 3px;
+    color: var(--text-sub);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border);
+    margin-top: 24px;
+    padding-top: 20px;
+}
+
+.info-item {
+    padding: 0 20px;
+    border-right: 1px solid var(--border);
+}
+
+.info-item:first-child {
+    padding-left: 0;
+}
+
+.info-item:last-child {
+    padding-right: 0;
+    border-right: none;
+}
+
+.info-label {
+    margin-bottom: 7px;
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.info-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.empty-inline {
+    padding: 20px 0;
+    color: var(--text-light);
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ---------------- 결제 수단 변경 (토스/카카오 버튼) ---------------- */
+.pg-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.pg-button {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.pg-button:hover {
+    opacity: 0.85;
+}
+
+.pg-toss {
+    background-color: #0064FF;
+    color: #fff;
+}
+
+.pg-kakao {
+    background-color: #FEE500;
+    color: #191919;
+}
+
+/* ---------------- Buttons (공통) ---------------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 40px;
+    padding: 0 15px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    transform 0.15s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn-outline {
+    background: #fff;
+    color: var(--text-main);
+    border-color: #dfe2e8;
+}
+
+.btn-outline:hover {
+    background: #f9fafb;
+    border-color: #cfd3da;
+}
+
+/* ---------------- Payment History Table ---------------- */
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+.table th {
+    padding: 13px 24px;
+    background: #fafbfc;
+    color: var(--text-light);
+    font-size: 11px;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border);
+}
+
+.table td {
+    padding: 17px 24px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-main);
+    white-space: nowrap;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background: #fcfcfd;
+}
+
+.payment-date {
+    font-weight: 600;
+}
+
+.amount {
+    font-weight: 700;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.status-done {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.status-failed {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+.status-ready {
+    background: #FFF8E1;
+    color: #F57F17;
+}
+
+.status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* ---------------- Danger Zone ---------------- */
+.danger-card {
+    margin-top: 20px;
+    border: 1px solid var(--danger-border);
+    background: var(--danger-bg);
+}
+
+.danger-card .card-header {
+    border-bottom-color: var(--danger-border);
+}
+
+.danger-card .card-icon {
+    background: #ffe5e5;
+    color: var(--danger);
+}
+
+.danger-title {
+    color: var(--danger);
+}
+
+.danger-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 22px 24px;
+}
+
+.danger-text {
+    flex: 1;
+}
+
+.danger-heading {
+    margin: 0 0 7px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2b2b2f;
+}
+
+.danger-desc {
+    margin: 0;
+    font-size: 12px;
+    color: #777;
+    line-height: 1.6;
+}
+
+.btn-danger {
+    flex-shrink: 0;
+    background: #fff;
+    color: var(--danger);
+    border-color: #f1abab;
+}
+
+.btn-danger:hover {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+}
+
+/* ---------------- Modal (구독 해지 확인) ---------------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(20, 22, 27, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    width: 100%;
+    max-width: 430px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    animation: modalOpen 0.2s ease;
+}
+
+@keyframes modalOpen {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    background: #f5f6f8;
+    color: var(--text-sub);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    background: #eceef1;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-desc {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.6;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 18px 24px;
+    border-top: 1px solid var(--border);
+}
+
+.warning-box {
+    padding: 14px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    background: #fff7f7;
+    color: #8a4a4a;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 700px) {
+    .page-title {
+        font-size: 26px;
+    }
+
+    .plan-main {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .plan-price {
+        width: 100%;
+        text-align: left;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 17px;
+    }
+
+    .info-item,
+    .info-item:first-child,
+    .info-item:last-child {
+        padding: 0;
+        border-right: none;
+    }
+
+    .info-item:not(:last-child) {
+        padding-bottom: 17px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .pg-buttons {
+        flex-direction: column;
+    }
+
+    .card-header {
+        padding: 18px;
+    }
+
+    .card-content {
+        padding: 20px 18px;
+    }
+
+    .danger-content {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px 18px;
+    }
+
+    .danger-content .btn {
+        width: 100%;
+    }
+}

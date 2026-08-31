@@ -1,0 +1,126 @@
+/* ================================================================
+   team-members.css
+   ================================================================ */
+
+.members-page .members-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 36px;
+    width: 100%;
+}
+
+.members-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.members-card-header h2 {
+    margin: 0 0 4px;
+    font-size: 20px;
+}
+
+.members-card-header .sub-text {
+    font-size: 13px;
+    color: #999;
+}
+
+.panel-subtitle {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 12px;
+}
+
+/* ---------------- 팀원 테이블 ---------------- */
+.members-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+}
+
+.members-table thead th {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 2px solid #eee;
+    color: #999;
+    font-weight: 600;
+}
+
+.members-table tbody td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #f5f5f5;
+    color: #333;
+}
+
+.members-table .empty-row td {
+    text-align: center;
+    color: #999;
+    padding: 32px 0;
+}
+
+/* ---------------- 역할 뱃지 ---------------- */
+.role-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+}
+
+.role-badge.role-owner { background: #FFF3E8; color: #FF9800; }
+.role-badge.role-admin { background: #E8F1FC; color: #4A90D9; }
+.role-badge.role-normal { background: #F2F2F2; color: #888; }
+
+/* ---------------- 관리(내보내기) 버튼 ---------------- */
+.btn-outline-sm {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: #555;
+    cursor: pointer;
+}
+
+.btn-outline-sm:hover {
+    background: #f7f7f7;
+}
+
+.btn-primary {
+    background: #FF9800;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-primary:hover {
+    background: #F08700;
+}
+
+/* ---------------- 페이지네이션 (buildings.html 톤 재사용) ---------------- */
+.building-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+.building-pagination a {
+    color: #555;
+    text-decoration: none;
+}
+
+.building-pagination a.disabled {
+    color: #ccc;
+    pointer-events: none;
+}
