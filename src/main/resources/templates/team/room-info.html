@@ -11,7 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
 
-    <link rel="stylesheet" th:href="@{/css/sidebarmenu/Team/bulidings/buildings.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebarmenu/team/bulidings/buildings.css}">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -21,10 +21,10 @@
 </head>
 <body>
 <div class="layout">
-    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
     <div class="main-wrap">
-        <div th:replace="~{basic/header :: header('Room Info')}"></div>
+        <div th:replace="~{layout/header :: header('Room Info')}"></div>
 
         <main class="main-content">
             <div class="building-page-header">
@@ -166,7 +166,7 @@
     </div>
 </div>
 
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 <script th:inline="javascript">
     const teamId = /*[[${team.teamId}]]*/ null;
     const buildingId = /*[[${building.buildingId}]]*/ null;

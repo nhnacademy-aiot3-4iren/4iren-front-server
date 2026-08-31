@@ -4,25 +4,26 @@
     <meta charset="UTF-8">
     <title>Team Info</title>
     <link rel="stylesheet" href="/fonts/font.css">
-    <link rel="stylesheet" th:href="@{/css/myteams.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
     <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
-    <link rel="stylesheet" th:href="@{/css/team-info.css}">
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/team-info.css}">
 </head>
 <body>
 <div class="layout">
-    <div th:replace="~{basic/sidebar :: sidebar}"></div>
-    <div class="main-wrap">
-        <div th:replace="~{basic/header :: header('Team Info')}"></div>
-        <div class="main-content">
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+    <div class="main-content-area">
+        <div th:replace="~{layout/header :: header('Team Info')}"></div>
+        <main class="content">
             <div class="info-cards-row">
                 <div class="info-card info-left-panel">
                     <div class="info-header">
                         <h2>Team Info</h2>
                         <span class="role-admin" th:text="${team.myRole}">Admin</span>
                     </div>
+
                     <div class="input-section">
                         <div class="form-group">
                             <label for="editTeamName">TEAM NAME</label>
@@ -31,28 +32,26 @@
                                        th:readonly="${team.myRole == null || !team.myRole.isManager()}">
                                 <button type="button" class="clear-btn" id="clearNameBtn"
                                         th:if="${team.myRole != null && team.myRole.isManager()}">
-                                    <img src="/photo/icon/remove-icon.png" alt="clear" id="clearIcon">
+                                    <img src="/photo/icon/signout-icon.png" alt="clear" id="clearIcon">
                                 </button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="editTeamDesc">DESCRIPTION</label>
-                            <!-- 변경 후 -->
-                            <textarea id="editTeamDesc"
-                                      placeholder="Enter about space ..."
-                                      th:text="${team.description}"
+                            <textarea id="editTeamDesc" placeholder="Enter about space ..." th:text="${team.description}"
                                       th:readonly="${team.myRole == null || !team.myRole.isManager()}"></textarea>
                         </div>
                     </div>
+
                     <button class="btn-save" id="saveTeamInfoBtn"
                             th:if="${team.myRole != null && team.myRole.isManager()}">Team Info Save</button>
+
                     <div class="info-section-divider"></div>
+
                     <div class="stat-card stat-card-flat">
                         <div class="stat-header">
-                            <div>
-                                <h3>Team Member</h3>
-                                <span class="sub-text">구성원</span>
-                            </div>
+                            <h3>Team Member</h3>
+                            <span class="sub-text">구성원</span>
                         </div>
                         <div class="member-info">
                             <div class="member-icon-circle">
@@ -101,7 +100,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 </div>
 
@@ -111,19 +110,19 @@
         <button type="button" class="modal-close" id="addBuildingModalCloseBtn">&times;</button>
     </div>
     <div class="modal-body">
-        <label class="modal-field-label">건물 이름</label>
+        <label class="modal-field-label" for="newBuildingName">건물 이름</label>
         <input type="text" id="newBuildingName" placeholder="예) 본관">
-        <label class="modal-field-label">설명</label>
+        <label class="modal-field-label" for="newBuildingDesc">설명</label>
         <input type="text" id="newBuildingDesc" placeholder="선택 입력">
-        <label class="modal-field-label">지역명</label>
+        <label class="modal-field-label" for="newBuildingRegion">지역명</label>
         <input type="text" id="newBuildingRegion" placeholder="예) 광주광역시">
-        <label class="modal-field-label">도로명 주소</label>
+        <label class="modal-field-label" for="newBuildingRoadAddress">도로명 주소</label>
         <input type="text" id="newBuildingRoadAddress" placeholder="선택 입력">
-        <label class="modal-field-label">상세 주소</label>
+        <label class="modal-field-label" for="newBuildingDetailAddress">상세 주소</label>
         <input type="text" id="newBuildingDetailAddress" placeholder="선택 입력">
         <p class="form-error" id="addBuildingError"></p>
         <div class="modal-actions">
-            <button type="button" class="btn btn-outline" id="addBuildingCancelBtn">취소</button>
+            <button type="button" class="btn-outline" id="addBuildingCancelBtn">취소</button>
             <button type="button" class="btn-primary" id="addBuildingSubmitBtn">추가</button>
         </div>
     </div>
@@ -135,19 +134,19 @@
         <button type="button" class="modal-close" id="addRoomModalCloseBtn">&times;</button>
     </div>
     <div class="modal-body">
-        <label class="modal-field-label">강의실 이름</label>
+        <label class="modal-field-label" for="newRoomName">강의실 이름</label>
         <input type="text" id="newRoomName" placeholder="예) 301호">
-        <label class="modal-field-label">설명</label>
+        <label class="modal-field-label" for="newRoomDesc">설명</label>
         <input type="text" id="newRoomDesc" placeholder="선택 입력">
         <p class="form-error" id="addRoomError"></p>
         <div class="modal-actions">
-            <button type="button" class="btn btn-outline" id="addRoomCancelBtn">취소</button>
+            <button type="button" class="btn-outline" id="addRoomCancelBtn">취소</button>
             <button type="button" class="btn-primary" id="addRoomSubmitBtn">추가</button>
         </div>
     </div>
 </dialog>
 
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 <script th:inline="javascript">
     const teamId = /*[[${team.teamId}]]*/ null;
@@ -160,7 +159,7 @@
 
     if (clearNameBtn) {
         function toggleClearButton() {
-            clearNameBtn.style.display = editTeamName.value.length > 0 ? 'block' : 'none';
+            clearNameBtn.style.display = editTeamName.value.length > 0 ? 'flex' : 'none';
         }
         toggleClearButton();
         editTeamName.addEventListener('input', toggleClearButton);

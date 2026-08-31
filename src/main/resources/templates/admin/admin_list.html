@@ -6,7 +6,7 @@
     <title>최고관리자 대시보드 - Re I New</title>
 
     <!-- 공통 헤더/사이드바/푸터 CSS -->
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
     <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
@@ -24,11 +24,11 @@
 
 <div class="layout">
     <!-- 좌측 사이드바 (공통) -->
-    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
     <div class="main-wrap">
         <!-- 상단 헤더 (공통) -->
-        <div th:replace="~{basic/header :: header('관리자 대시보드')}"></div>
+        <div th:replace="~{layout/header :: header('관리자 대시보드')}"></div>
 
         <!-- 본문 영역 -->
         <div class="main-content">
@@ -127,7 +127,7 @@
 </div>
 
 <!-- 하단 푸터 (공통) -->
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 </body>
 </html>

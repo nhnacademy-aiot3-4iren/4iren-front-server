@@ -115,9 +115,8 @@
 }
 
 /* 역할별 색상 */
-.user-role[data-role="owner"] { color: #FF9800; }
-.user-role[data-role="admin"] { color: #4A90D9; }
-.user-role[data-role="user"]  { color: #999999; }
+.user-role[data-role="admin"]  { color: #4A90D9; }
+.user-role[data-role="normal"] { color: #999999; }
 
 .user-toggle {
     width: 12px;

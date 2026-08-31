@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/myteams.css}">
     <link rel="stylesheet" th:href="@{/css/basic/header-sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/sidebarmenu/Team/bulidings/buildings.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebarmenu/team/bulidings/buildings.css}">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -18,10 +18,10 @@
 </head>
 <body>
 <div class="layout">
-    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
     <div class="main-wrap">
-        <div th:replace="~{basic/header :: header('Building-Info')}"></div>
+        <div th:replace="~{layout/header :: header('Building-Info')}"></div>
 
         <main class="main-content">
             <div class="building-page-header">
@@ -94,6 +94,6 @@
     </div>
 </div>
 
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

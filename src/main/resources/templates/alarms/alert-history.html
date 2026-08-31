@@ -6,7 +6,7 @@
 
     <!-- 공통 헤더/사이드바/푸터 CSS (header-sidebar.css는 .layout에 padding이 있어서 안 씀 -> 사이드바/헤더가 화면에 딱 붙어야 함) -->
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
     <!--
    <div th:replace="~{basic/header-sidebar :: layout(~{::section})}">
  -->
@@ -23,11 +23,11 @@
 
 <div class="layout">
     <!-- 좌측 사이드바 (공통) -->
-    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
     <div class="main-wrap">
         <!-- 상단 헤더 (공통) -->
-        <div th:replace="~{basic/header :: header}"></div>
+        <div th:replace="~{layout/header :: header}"></div>
 
         <!-- 본문 영역 -->
         <div class="main-content">
@@ -167,7 +167,7 @@
 </div>
 
 <!-- 하단 푸터 (공통) -->
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 <script>
     document.querySelectorAll('tr.clickable-row').forEach(function (row) {

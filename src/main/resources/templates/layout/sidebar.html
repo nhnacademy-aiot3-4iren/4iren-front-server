@@ -16,11 +16,14 @@
           팀 스코프 기능이라 Settings가 아니라 여기로 위치를 확정함.
           Settings에는 이제 팀 스코프 기능이 없고, Payment(결제)만 계정 전체
           설정으로 남음.
+       4) Team 서브메뉴에서 Buildings / Classrooms 삭제. Building/Classroom
+          관리는 Team Info 페이지 안(좌우 분할 리스트)으로 통합되어 별도
+          사이드바 진입점이 필요 없어짐.
      ================================================================ -->
 <aside xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar" class="sidebar">
 
     <div class="sidebar-logo">
-        <a th:href="@{/}">
+        <a th:href="@{/static}">
             <img src="/photo/logo.png" alt="Logo">
         </a>
     </div>
@@ -47,7 +50,7 @@
             <span>Profile</span>
         </a>
 
-        <!-- Team: 더 이상 이동 링크가 아니라, 하위 메뉴(Team Info/Members/Buildings/Classrooms)를 여닫는 토글 버튼 -->
+        <!-- Team: 더 이상 이동 링크가 아니라, 하위 메뉴(Team Info/Members)를 여닫는 토글 버튼 -->
         <div class="nav-item nav-item-toggle"
              data-page="team"
              role="button"
@@ -95,22 +98,6 @@
                th:if="${role == 'ADMIN'}">
                 <span>Members</span>
             </a>
-            <!-- Buildings: 팀 하나(teamId)를 대상으로 하는 화면이라 currentTeamId 사용.
-                 파일 위치는 sidebar-menu/team/buildings 로 옮겨졌지만 URL 자체는
-                 기존 BuildingController 라우팅을 그대로 사용한다는 전제. -->
-            <a th:href="@{/teams/{teamId}/buildings(teamId=${currentTeamId})}" class="submenu-item" data-page="buildings">
-                <span>Buildings</span>
-            </a>
-            <!--
-                URL(/teams/{teamId}/buildings/{buildingId}/rooms)이라, sidebar에서
-                고정 링크를 만들 수가 없음 - 어느 건물의 강의실인지 정할 방법이 없음.
-                지금은 일단 Buildings 목록으로 보내서, 거기서 건물을 골라 들어가면
-                자연스럽게 Classroom 목록으로 이어지게 함.
-                나중에 "내 모든 강의실 통합 조회" API가 생기면 그 경로로 교체 예정.
-            -->
-            <a th:href="@{/teams/{teamId}/buildings(teamId=${currentTeamId})}" class="submenu-item" data-page="classroom">
-                <span>Classrooms</span>
-            </a>
         </div>
 
         <!-- Flow: 룰 엔진 관리 화면이라 admin/owner 전용. 일반 유저는 항목 자체가 안 보임.
@@ -152,7 +139,7 @@
     </nav>
 
     <div class="sidebar-bottom">
-        <a th:href="@{/}" class="nav-item" data-page="home">
+        <a th:href="@{/static}" class="nav-item" data-page="home">
             <svg class="nav-icon" width="24" height="24" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12.9167 32.9623C12.9167 29.4547 12.9167 27.701 13.6258 26.1594C14.3348 24.6178 15.6664 23.4765 18.3295 21.1938L20.9128 18.9795C25.7264 14.8536 28.1332 12.7906 31.0001 12.7906C33.867 12.7906 36.2738 14.8536 41.0873 18.9795L43.6707 21.1938C46.3338 23.4765 47.6654 24.6178 48.3744 26.1594C49.0834 27.701 49.0834 29.4547 49.0834 32.9623V43.9166C49.0834 48.7878 49.0834 51.2234 47.5701 52.7367C46.0569 54.25 43.6213 54.25 38.7501 54.25H23.2501C18.3789 54.25 15.9433 54.25 14.43 52.7367C12.9167 51.2234 12.9167 48.7878 12.9167 43.9166V32.9623Z" stroke="currentColor" stroke-width="2.87396"/>
                 <path d="M37.4582 54.25V41.624C37.4582 40.0367 36.1715 38.75 34.5842 38.75H27.4155C25.8282 38.75 24.5415 40.0367 24.5415 41.624V54.25" stroke="currentColor" stroke-width="2.87396" stroke-linecap="round" stroke-linejoin="round"/>

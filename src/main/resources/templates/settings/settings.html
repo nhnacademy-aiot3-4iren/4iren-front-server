@@ -18,11 +18,11 @@
 
 <div class="layout">
 
-  <div th:replace="~{basic/sidebar :: sidebar}"></div>
+  <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
   <div class="main-wrap">
 
-    <div th:replace="~{basic/header :: header('Settings')}"></div>
+    <div th:replace="~{layout/header :: header('Settings')}"></div>
 
     <main class="main-content">
 
@@ -141,7 +141,7 @@
   </div>
 </div>
 
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {

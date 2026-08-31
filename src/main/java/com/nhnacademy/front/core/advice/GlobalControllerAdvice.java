@@ -46,7 +46,6 @@ public class GlobalControllerAdvice {
      * sidebar의 Team Info / Members / Buildings / Classrooms 링크가 사용할 기본 teamId.
      * 유저가 여러 팀에 속할 수 있어서 "어느 팀을 기본으로 보여줄지"가 애매한데,
      * 지금은 내 팀 목록(getTeams) 중 정렬 기준 첫 번째 팀을 임시로 사용함.
-     *
      * 개선할 수 있음. 지금은 로그인 안 했거나 소속 팀이 없는 경우(회원가입 직후 등)
      * null을 반환하고, sidebar 쪽 링크는 TeamController가 teamId 없이 들어오면
      * /team으로 리다이렉트하도록 이미 처리되어 있어서 에러 없이 넘어감.
