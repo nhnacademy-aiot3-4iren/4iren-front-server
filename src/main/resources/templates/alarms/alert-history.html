@@ -6,10 +6,8 @@
 
     <!-- 공통 헤더/사이드바/푸터 CSS (header-sidebar.css는 .layout에 padding이 있어서 안 씀 -> 사이드바/헤더가 화면에 딱 붙어야 함) -->
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
-    <!--
-   <div th:replace="~{basic/header-sidebar :: layout(~{::section})}">
- -->
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
 
     <link rel="stylesheet" href="/css/alert-history.css">
     <link rel="icon" href="/favicon.ico" sizes="any">
@@ -27,15 +25,14 @@
 
     <div class="main-wrap">
         <!-- 상단 헤더 (공통) -->
-        <div th:replace="~{layout/header :: header}"></div>
+        <div th:replace="~{layout/header :: header('알림 이력 조회')}"></div>
 
         <!-- 본문 영역 -->
         <div class="main-content">
-            <h2 class="page-title">알림 이력 조회</h2>
 
             <div class="maincontainer">
                 <!-- ================= 필터 폼 ================= -->
-                <form class="filter-box" method="get" th:action="@{/admin/alert-histories}">
+                <form class="filter-box" method="get" th:action="@{/alert-histories}">
 
                     <div class="filter-field">
                         <label for="roomId">room</label>
@@ -111,7 +108,7 @@
                     </tr>
 
                     <tr th:each="item : ${alertHistories?.content}"
-                        th:with="detailUrl=@{/admin/alert-histories/{id}(id=${item.alertHistoryId})}"
+                        th:with="detailUrl=@{/alert-histories/{id}(id=${item.alertHistoryId})}"
                         th:attr="data-href=${detailUrl}"
                         class="clickable-row">
                         <td>
@@ -136,24 +133,25 @@
                 <div class="pagination" th:if="${alertHistories != null and alertHistories.totalPages > 0}">
 
                     <a th:if="${!alertHistories.first}"
-                       th:href="@{/admin/alert-histories(page=${alertHistories.page - 1}, size=${size}, sort=${sort},
+                       th:href="@{/alert-histories(page=${alertHistories.page - 1}, size=${size}, sort=${sort},
                                  roomId=${selRoomId}, botType=${selBotType}, alertType=${selAlertType}, from=${selFrom}, to=${selTo})}">
                         ← 이전
                     </a>
                     <span th:if="${alertHistories.first}" class="disabled">〈</span>
 
-                    <th:block th:each="i : ${#numbers.sequence(0, alertHistories.totalPages - 1)}">
-                        <span th:if="${i == alertHistories.page}" class="current" th:text="${i + 1}">1</span>
-                        <a th:if="${i != alertHistories.page}"
+                    <th:block th:each="i : ${pageWindow}">
+                        <span th:if="${i == null}" class="ellipsis">...</span>
+                        <span th:if="${i != null and i == alertHistories.page}" class="current" th:text="${i + 1}">1</span>
+                        <a th:if="${i != null and i != alertHistories.page}"
                            th:text="${i + 1}"
-                           th:href="@{/admin/alert-histories(page=${i}, size=${size}, sort=${sort},
+                           th:href="@{/alert-histories(page=${i}, size=${size}, sort=${sort},
                                      roomId=${selRoomId}, botType=${selBotType}, alertType=${selAlertType}, from=${selFrom}, to=${selTo})}">
                             2
                         </a>
                     </th:block>
 
                     <a th:if="${!alertHistories.last}"
-                       th:href="@{/admin/alert-histories(page=${alertHistories.page + 1}, size=${size}, sort=${sort},
+                       th:href="@{/alert-histories(page=${alertHistories.page + 1}, size=${size}, sort=${sort},
                                  roomId=${selRoomId}, botType=${selBotType}, alertType=${selAlertType}, from=${selFrom}, to=${selTo})}">
                         〉
                     </a>

@@ -8,6 +8,7 @@ import com.nhnacademy.front.core.dto.team.invitation.TeamInvitationCodeResponse;
 import com.nhnacademy.front.core.dto.team.member.TeamJoinRequest;
 import com.nhnacademy.front.core.dto.team.member.TeamMemberResponse;
 import com.nhnacademy.front.core.service.TeamService;
+import com.nhnacademy.front.payment.client.PaymentClient;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,10 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/front/teams")
 public class CoreTeamRestController {
 
+    private static final String NORMAL = "NORMAL";
+
     private final TeamService teamService;
+    private final PaymentClient paymentClient;
 
     @GetMapping
     public ResponseEntity<PageResponse<TeamDetailResponse>> getTeams(
@@ -33,7 +37,14 @@ public class CoreTeamRestController {
     }
 
     @PostMapping
-    public ResponseEntity<TeamResponse> createTeam(@Valid @RequestBody TeamCreateRequest request) {
+    public ResponseEntity<TeamResponse> createTeam(
+            @Valid @RequestBody TeamCreateRequest request,
+            @ModelAttribute("role") String role
+    ) {
+        if (NORMAL.equals(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(teamService.createTeam(request));
     }
 

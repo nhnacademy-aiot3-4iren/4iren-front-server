@@ -1,0 +1,87 @@
+/* ================================================================
+   notification-rooms.css
+   설정 > 공간별 알림 관리 페이지 전용 (팀 > 건물 > 공간 아코디언 트리)
+   ================================================================ */
+
+.notif-room-card {
+    display: block;
+}
+
+.notif-team summary,
+.notif-building summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.notif-team summary::-webkit-details-marker,
+.notif-building summary::-webkit-details-marker {
+    display: none;
+}
+
+/* 펼침/접힘을 나타내는 화살표: 닫힘 = 오른쪽, 열림 = 아래쪽 */
+.notif-team-summary::after,
+.notif-building-summary::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    border-color: currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+details[open] > .notif-team-summary::after,
+details[open] > .notif-building-summary::after {
+    transform: rotate(45deg);
+}
+
+.notif-team {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+}
+
+.notif-team-summary {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.notif-building {
+    margin: 12px 0 0 16px;
+}
+
+.notif-building-summary {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-sub);
+    padding: 4px 0;
+}
+
+.notif-room-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0 10px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.notif-room-row:last-child {
+    border-bottom: none;
+}
+
+.notif-room-name {
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.notif-empty {
+    margin: 4px 0 0 16px;
+}

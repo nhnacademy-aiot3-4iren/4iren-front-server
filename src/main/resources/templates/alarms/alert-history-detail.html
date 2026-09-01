@@ -6,70 +6,11 @@
 
   <!-- 공통 헤더/사이드바/푸터 CSS (header-sidebar.css는 .layout에 padding이 있어서 안 씀 -> 사이드바/헤더가 화면에 딱 붙어야 함) -->
   <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/header.css}">
   <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+  <link rel="stylesheet" th:href="@{/css/alert-history-detail.css}">
 
-  <style>
-    * { box-sizing: border-box; }
-    .maincontainer {
-      display: flex;
-      justify-content: center;
-    }
-    .detail-card-wrap {
-      width: 100%;
-      max-width: 960px;
-      margin-top: 120px;
-    }
-    h1 {
-      font-size: 20px;
-      margin: 0 0 20px;
-    }
-    .detail-card {
-      background: #fff;
-      border: 1px solid #e5e5e5;
-      border-radius: 12px;
-      padding: 24px 56px;
-    }
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 26px 0;
-      border-bottom: 1px solid #f0f0f0;
-      font-size: 18px;
-    }
-    .detail-row:last-child { border-bottom: none; }
-    .detail-row .label {
-      color: #888;
-      font-size: 14px;
-      min-width: 150px;
-    }
-    .detail-row .value {
-      text-align: right;
-      word-break: break-word;
-    }
-    .detail-row.message .value {
-      text-align: left;
-      flex: 1;
-      line-height: 1.6;
-    }
-
-    .btn-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 24px;
-      height: 40px;
-      padding: 0 20px;
-      background: #fff;
-      border: 1px solid #d9d9d9;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #444;
-      text-decoration: none;
-    }
-    .btn-back:hover { background: #f5f5f5; }
-  </style>
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -81,15 +22,14 @@
 
 <div class="layout">
   <!-- 좌측 사이드바 (공통) -->
-  <div th:replace="~{basic/sidebar :: sidebar}"></div>
+  <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
   <div class="main-wrap">
     <!-- 상단 헤더 (공통) -->
-    <div th:replace="~{basic/header :: header}"></div>
+    <div th:replace="~{layout/header :: header('알림 이력 상세')}"></div>
 
     <!-- 본문 영역 -->
     <div class="main-content">
-      <h2 class="page-title" style="margin-bottom: 20px;">알림 이력 상세</h2>
 
       <div class="maincontainer">
         <div class="detail-card-wrap">
@@ -127,7 +67,7 @@
             아래 링크에 다시 실어주는 방식이 필요 (백엔드와 라우팅 협의 필요)
             우선은 필터 없이 목록 첫 페이지로 돌아가는 링크로 작성
           -->
-          <a class="btn-back" th:href="@{/admin/alert-histories}">← 목록으로</a>
+          <a class="btn-back" th:href="@{/alert-histories}">← 목록으로</a>
         </div>
       </div>
     </div>
@@ -136,7 +76,7 @@
 </div>
 
 <!-- 하단 푸터 (공통) -->
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 </body>
 </html>

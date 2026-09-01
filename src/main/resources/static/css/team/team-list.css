@@ -5,10 +5,11 @@
     box-sizing: border-box;
     font-family: 'Poppins', 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+/* body 배경색은 basic/sidebar.css에서 전체 페이지 공통으로 잡음
+   (반투명 사이드바 패널이 페이지마다 다른 색으로 비치는 문제 방지) */
 body {
     margin: 0;
     font-family: sans-serif;
-    background-color: #fcfcfc;
 }
 
 /* 전체 레이아웃 */
