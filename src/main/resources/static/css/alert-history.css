@@ -1,5 +1,36 @@
 * { box-sizing: border-box; }
 
+/* ================================================================
+   Page layout
+   basic/sidebar.css, header.css, footer.css는 .sidebar/.header/.footer만
+   정의하고 .layout/.main-wrap/.main-content/.maincontainer는 어디에도
+   정의돼 있지 않아서(레거시 layout.css에만 있었음, 여기서는 로드 안 함)
+   이 페이지 전용으로 최소한만 채움. (settings.css와 동일한 패턴)
+   ================================================================ */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.maincontainer {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
 .filter-box {
     display: flex;
     flex-wrap: wrap;
@@ -9,7 +40,7 @@
     border: 1px solid #e5e5e5;
     border-radius: 10px;
     padding: 18px 20px;
-    margin-top: 32px;
+    margin-top: 0;
     margin-bottom: 20px;
 }
 .filter-field {
@@ -92,6 +123,10 @@ tbody tr:last-child td { border-bottom: none; }
     color: #444;
 }
 .pagination a.disabled {
+    color: #ccc;
+    pointer-events: none;
+}
+.pagination .ellipsis {
     color: #ccc;
     pointer-events: none;
 }

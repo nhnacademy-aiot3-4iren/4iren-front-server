@@ -11,17 +11,17 @@
   <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
   <link rel="stylesheet" th:href="@{/css/basic/header.css}">
   <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
-  <link rel="stylesheet" th:href="@{/css/payment.css}">
+  <link rel="stylesheet" th:href="@{/css/payment/plan-select.css}">
 </head>
 
 <body>
 <div class="layout">
 
-  <div th:replace="~{basic/sidebar :: sidebar}"></div>
+  <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
   <div class="main-content-area">
 
-    <div th:replace="~{basic/header :: header('플랜 선택')}"></div>
+    <div th:replace="~{layout/header :: header('플랜 선택')}"></div>
 
     <main class="content">
 
@@ -67,7 +67,7 @@
   </div>
 </div>
 
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 <script th:src="@{/js/payment.js}"></script>
 </body>

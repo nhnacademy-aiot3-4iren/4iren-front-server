@@ -1,3 +1,14 @@
+/* .sidebar가 반투명 유리 패널(backdrop-filter)이라 뒤에 비치는 body 배경색이
+   페이지마다 다르면 사이드바 색/느낌이 페이지마다 달라 보인다. 사이드바를 쓰는
+   모든 페이지가 basic/sidebar.css는 공통으로 로드하므로 여기서 기준값을 잡는다.
+   margin:0도 여기서 같이 리셋 - 안 하면 브라우저 기본 body 마진(8px)만큼
+   .layout 전체가 화면보다 좁게 눌려 보임(페이지별로 자체 리셋 여부가 달라서
+   사이드바 폭/느낌이 페이지마다 다르게 보이던 원인). */
+body {
+    margin: 0;
+    background-color: #fcfcfc;
+}
+
 .sidebar {
     box-shadow:
             0px 0px 2px rgba(0, 0, 0, 0.1),

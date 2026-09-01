@@ -100,6 +100,18 @@
     color: var(--text-main);
 }
 
+/* settings.html의 Notifications 패널 헤더(제목 + 바로가기 버튼)가 씀 */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 0 24px;
+}
+
+.panel-header .panel-title {
+    margin: 0;
+}
+
 .panel-subtitle {
     margin: 4px 0 8px;
     font-size: 1rem;

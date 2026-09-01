@@ -24,7 +24,13 @@ let currentInviteCode = '';
 
 document.addEventListener('DOMContentLoaded', loadTeams);
 
-openBtn.addEventListener('click', () => modalOverlay.classList.add('active'));
+openBtn.addEventListener('click', () => {
+    if (openBtn.dataset.role === 'NORMAL') {
+        window.location.href = '/payment/plans';
+        return;
+    }
+    modalOverlay.classList.add('active');
+});
 
 openJoinTeamBtn.addEventListener('click', () => {
     joinTeamModal.classList.add('active');
@@ -62,6 +68,10 @@ closeBtn.addEventListener('click', async () => {
         teamDescInput.value = '';
         await loadTeams();
     } catch (error) {
+        if (error.status === 403) {
+            window.location.href = '/payment/plans';
+            return;
+        }
         alert(error.message || '팀 생성에 실패했습니다.');
     }
 });
@@ -214,7 +224,9 @@ async function requestJson(url, options = {}) {
 
     if (!response.ok) {
         const text = await response.text();
-        throw new Error(text || `요청 실패 (${response.status})`);
+        const error = new Error(text || `요청 실패 (${response.status})`);
+        error.status = response.status;
+        throw error;
     }
 
     if (response.status === 204) {
