@@ -12,6 +12,14 @@ public class MqttBrokerService {
 
     private final ProcessingMqttClient processingMqttClient;
 
+    public MqttBrokerInfoDto getBrokerByBuilding(Long buildingId) {
+        try {
+            return processingMqttClient.getBrokerByBuilding(buildingId);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public MqttBrokerInfoDto registerBroker(MqttBrokerCreateRequest request) {
         return processingMqttClient.registerBroker(request);
     }

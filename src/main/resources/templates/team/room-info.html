@@ -11,6 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
     <link rel="stylesheet" th:href="@{/css/team/buildings.css}">
 
     <link rel="icon" href="/favicon.ico" sizes="any">
@@ -21,16 +22,17 @@
     <meta name="application-name" content="4iren">
 </head>
 <body>
+<!-- 전체 레이아웃: 사이드바(좌측) + 메인 작업 영역(우측) -->
 <div class="layout">
-    <!-- 좌측 사이드바 -->
+    <!-- 1. 사이드바 프래그먼트 -->
     <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
-    <!-- 메인 콘텐츠 영역 -->
+    <!-- 2. 우측 메인 콘텐츠 영역 -->
     <div class="main-content-area">
         <div th:replace="~{layout/header :: header('Room Info')}"></div>
         <main class="content">
 
-            <!-- 상단 네비게이션 및 강의실 식별자 -->
+            <!-- 상단 네비게이션 및 강의실 식별자 / 외부 날씨 정책 버튼 -->
             <div class="building-page-header">
                 <div>
                     <!-- 상위 강의실 목록 화면으로 복귀하는 링크 -->
@@ -50,6 +52,7 @@
                         <span>Classroom ID</span>
                         <strong th:text="${room.roomId}">0</strong>
                     </div>
+                    <!-- 외부 날씨 정책 모달 열기 버튼 (ADMIN/OWNER 전용) -->
                     <button class="weather-policy-open-btn" type="button" id="openWeatherPolicyBtn"
                             th:if="${team.myRole != null && (team.myRole.name() == 'OWNER' || team.myRole.name() == 'ADMIN')}"
                             aria-haspopup="dialog" aria-controls="weatherPolicyDialog">
@@ -58,7 +61,7 @@
                 </div>
             </div>
 
-            <!-- 알림 구독 관리 패널: 일반 사용자(NORMAL)의 구독 신청/해제 및 알림 토글 -->
+            <!-- 알림 구독 관리 패널 -->
             <section class="subscription-panel">
                 <div>
                     <h3>Subscription</h3>
@@ -68,7 +71,6 @@
                     </p>
                 </div>
                 <div class="subscription-actions">
-                    <!-- 미구독 상태일 경우 토글 스위치 비활성화 클래스/속성 부여 -->
                     <label class="notification-toggle"
                            th:classappend="${!subscriptionStatus.subscribed} ? 'disabled'">
                         <input type="checkbox" id="notificationToggle"
@@ -78,7 +80,7 @@
                         <strong>알림</strong>
                     </label>
 
-                    <!-- 일반 사용자 전용 구독/해제 버튼 (구독 상태에 따라 토글 표시) -->
+                    <!-- 일반 사용자(NORMAL) 전용 구독/해제 버튼 -->
                     <button class="subscription-btn subscribe" type="button" id="subscribeBtn"
                             th:if="${team.myRole != null && team.myRole.name() == 'NORMAL'}"
                             th:style="${subscriptionStatus.subscribed} ? 'display:none' : ''">
@@ -92,11 +94,11 @@
                 </div>
             </section>
 
-            <!-- AI 추천 브리핑 섹션 (입실 브리핑 / 일일 요약 데이터가 존재할 때만 렌더링) -->
+            <!-- AI 추천 브리핑 섹션 (데이터가 있을 때만 렌더링) -->
             <section class="room-briefing-grid"
                      th:if="${welcomeBriefing != null || dailySummary != null}">
 
-                <!-- 1) 실시간 입실 브리핑 카드 -->
+                <!-- 1) 실시간 입실 브리핑 -->
                 <article class="room-briefing-panel" th:if="${welcomeBriefing != null}">
                     <div class="room-briefing-header">
                         <span>Welcome Briefing</span>
@@ -116,7 +118,7 @@
                     </ul>
                 </article>
 
-                <!-- 2) 일일 종합 브리핑 카드 -->
+                <!-- 2) 일일 종합 브리핑 -->
                 <article class="room-briefing-panel" th:if="${dailySummary != null}">
                     <div class="room-briefing-header">
                         <span>Daily Summary</span>
@@ -139,7 +141,7 @@
                 </article>
             </section>
 
-            <!-- 강의실 상세 메타데이터 및 하위 자산 통계 링크 -->
+            <!-- 강의실 메타 정보 패널 -->
             <section class="building-info-panel">
                 <div class="building-info-main">
                     <div class="building-info-title">
@@ -163,31 +165,88 @@
                         </div>
                     </dl>
                 </div>
-
-                <!-- 하위 센서 목록 및 제어 디바이스 목록 화면 이동 링크 -->
-                <div class="building-info-stats">
-                    <div>
-                        <span>Sensors</span>
-                        <strong th:text="${room.sensorCount}">0</strong>
-                        <a class="stat-link"
-                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/sensor-locations(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
-                            Sensor List
-                        </a>
-                    </div>
-                    <div>
-                        <span>Devices</span>
-                        <strong th:text="${room.deviceCount}">0</strong>
-                        <a class="stat-link"
-                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
-                            Device List
-                        </a>
-                    </div>
-                </div>
             </section>
+
+            <!-- ======================================================= -->
+            <!-- 하단 2단 그리드: 강의실 Sensor 목록 & Device 목록 -->
+            <!-- ======================================================= -->
+            <div class="building-sub-grid">
+
+                <!-- [좌측 카드] 해당 강의실에 설치된 Sensor 목록 -->
+                <section class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div>
+                            <h3>Installed Sensors</h3>
+                            <span class="sub-text" th:text="|총 ${#lists.size(sensorLocations)}개의 센서|">총 0개의 센서</span>
+                        </div>
+                        <a class="btn-sub-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/sensor-locations(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
+                            센서 관리 →
+                        </a>
+                    </div>
+                    <div class="sub-list-wrap">
+                        <ul class="sub-entity-list" th:if="${!#lists.isEmpty(sensorLocations)}">
+                            <li class="sub-entity-item" th:each="s : ${sensorLocations}">
+                                <div class="sub-entity-main">
+                                    <div class="sub-icon sensor-icon">
+                                        <img src="/photo/icon/connection-icon.png" alt="sensor">
+                                    </div>
+                                    <div class="sub-entity-text">
+                                        <strong th:text="${s.devEui}">24e124785c389010</strong>
+                                        <p th:text="${#strings.defaultString(s.locationDetail, '위치 상세 정보 없음')}">위치 상세</p>
+                                    </div>
+                                </div>
+                                <span class="badge-deveui" th:text="|ID ${s.sensorLocationId}|">ID 1</span>
+                            </li>
+                        </ul>
+                        <div class="empty-sub-list" th:if="${#lists.isEmpty(sensorLocations)}">
+                            <p>강의실에 등록된 센서가 없습니다.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- [우측 카드] 해당 강의실에 설치된 Device 목록 -->
+                <section class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div>
+                            <h3>Installed Devices</h3>
+                            <span class="sub-text" th:text="|총 ${#lists.size(devices)}개의 디바이스|">총 0개의 디바이스</span>
+                        </div>
+                        <a class="btn-sub-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
+                            디바이스 관리 →
+                        </a>
+                    </div>
+                    <div class="sub-list-wrap">
+                        <ul class="sub-entity-list" th:if="${!#lists.isEmpty(devices)}">
+                            <li class="sub-entity-item" th:each="d : ${devices}">
+                                <div class="sub-entity-main">
+                                    <div class="sub-icon asset-icon">
+                                        <img src="/photo/icon/node-icon.png" alt="device">
+                                    </div>
+                                    <div class="sub-entity-text">
+                                        <strong th:text="${d.deviceName}">에어컨</strong>
+                                        <p th:text="|Device ID ${d.deviceId}|">Device ID 1</p>
+                                    </div>
+                                </div>
+                                <span class="badge-mini">Device</span>
+                            </li>
+                        </ul>
+                        <div class="empty-sub-list" th:if="${#lists.isEmpty(devices)}">
+                            <p>강의실에 등록된 디바이스가 없습니다.</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
         </main>
     </div>
 </div>
 
+<!-- ======================================================= -->
+<!-- 모달: 외부 날씨 판단 기준 설정 다이얼로그 -->
+<!-- ======================================================= -->
 <dialog class="weather-policy-dialog" id="weatherPolicyDialog" aria-labelledby="weatherPolicyTitle">
     <form class="weather-policy-form" id="weatherPolicyForm">
         <div class="weather-policy-header">
@@ -278,9 +337,10 @@
     </form>
 </dialog>
 
+<!-- 하단 푸터 -->
 <div th:replace="~{layout/footer :: footer}"></div>
 
-<!-- 외부 JS 파일(room-info.js)에서 사용할 변수 바인딩 -->
+<!-- 외부 JS 파일에서 사용할 변수 바인딩 -->
 <script th:inline="javascript">
     const teamId = /*[[${team.teamId}]]*/ null;
     const buildingId = /*[[${building.buildingId}]]*/ null;

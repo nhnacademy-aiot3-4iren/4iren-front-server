@@ -11,6 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
     <link rel="stylesheet" th:href="@{/css/team/buildings.css}">
 
     <link rel="icon" href="/favicon.ico" sizes="any">
@@ -21,35 +22,31 @@
     <meta name="application-name" content="4iren">
 </head>
 <body>
-<!-- 전체 레이아웃: 사이드바(좌측) + 메인 콘텐츠 영역(우측) -->
 <div class="layout">
-    <!-- 공통 좌측 사이드바 템플릿 프래그먼트 삽입 -->
+    <!-- 1. 사이드바 프래그먼트 -->
     <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
-    <!-- 우측 메인 작업 영역 -->
+    <!-- 2. 우측 메인 콘텐츠 영역 -->
     <div class="main-content-area">
-        <!-- 상단 헤더 프래그먼트 (페이지 타이틀을 매개변수로 전달) -->
+        <!-- 상단 헤더 프래그먼트 -->
         <div th:replace="~{layout/header :: header('Building-Info')}"></div>
 
-        <!-- 본문 메인 콘텐츠 -->
         <main class="content">
-            <!-- 상단 헤더 섹션: 뒤로가기 링크, 건물 이름, MQTT 등록 버튼, 건물 ID 요약 -->
+            <!-- 상단 헤더 섹션: 뒤로가기 링크, 건물 이름, MQTT 모달 열기 버튼, 건물 ID 요약 -->
             <div class="building-page-header">
                 <div>
-                    <!-- 이전 건물 목록 페이지로 이동하는 동적 링크 -->
                     <a class="back-link" th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId})}">Building List</a>
                     <h2>Building Info</h2>
-                    <!-- 컨트롤러에서 전달받은 팀 이름 표시 -->
                     <p th:text="${team.teamName}">Team Name</p>
                 </div>
                 <div class="building-header-actions">
-                    <!-- 매니저(ADMIN/OWNER) 권한이 있는 경우에만 MQTT 설정 페이지 이동 버튼 렌더링 -->
-                    <a class="building-create-btn mqtt-register-link"
-                       th:if="${team.myRole != null && team.myRole.isManager()}"
-                       th:href="@{/teams/{teamId}/buildings/{buildingId}/mqtt(teamId=${team.teamId}, buildingId=${building.buildingId})}">
-                        MQTT 등록
-                    </a>
-                    <!-- 건물 식별자(ID) 표시 카드 -->
+                    <!-- 매니저(ADMIN/OWNER) 전용: 팝업 모달을 띄우는 버튼 -->
+                    <button class="building-create-btn"
+                            type="button"
+                            id="openMqttModalBtn"
+                            th:if="${team.myRole != null && team.myRole.isManager()}">
+                        MQTT 설정
+                    </button>
                     <div class="building-summary">
                         <span>Building ID</span>
                         <strong th:text="${building.buildingId}">0</strong>
@@ -57,7 +54,7 @@
                 </div>
             </div>
 
-            <!-- 건물 상세 정보 패널 (주소 및 통계 수치) -->
+            <!-- 건물 상세 정보 패널 (좌: 건물 주소 메타정보 / 우: 소속 강의실별 디바이스 목록) -->
             <section class="building-info-panel">
                 <div class="building-info-main">
                     <div class="building-info-title">
@@ -65,13 +62,10 @@
                             <img src="/photo/icon/buidling-icon.png" alt="building">
                         </div>
                         <div>
-                            <!-- 건물 이름 출력 -->
                             <h3 th:text="${building.buildingName}">Building Name</h3>
-                            <!-- 건물 설명 (null 또는 공백 시 기본 안내문 대체) -->
                             <p th:text="${#strings.defaultString(building.description, '등록된 설명이 없습니다.')}">Description</p>
                         </div>
                     </div>
-                    <!-- 주소 상세 목록 -->
                     <dl class="building-detail-list">
                         <div>
                             <dt>Road Address</dt>
@@ -88,31 +82,260 @@
                     </dl>
                 </div>
 
-                <!-- 건물이 보유한 하위 자산 통계 (강의실 수, 센서 수, 디바이스 수) -->
-                <div class="building-info-stats">
-                    <div>
-                        <span>Rooms</span>
-                        <strong th:text="${building.roomCount}">0</strong>
-                        <!-- 해당 건물의 하위 강의실 목록 화면으로 이동 -->
-                        <a class="stat-link"
-                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId})}">
-                            Classroom List
-                        </a>
-                    </div>
-                    <div>
-                        <span>Sensors</span>
-                        <strong th:text="${building.sensorCount}">0</strong>
-                    </div>
-                    <div>
+                <!-- [우측 패널] 건물 내 등록된 디바이스 상세 목록 ([강의실명] 디바이스명) -->
+                <div class="building-info-devices-panel">
+                    <div class="device-panel-header">
                         <span>Devices</span>
-                        <strong th:text="${building.deviceCount}">0</strong>
+                        <strong th:text="|총 ${#lists.size(buildingDevices)}개|">총 0개</strong>
+                    </div>
+                    <div class="building-device-list-wrap">
+                        <ul class="building-device-list" th:if="${!#lists.isEmpty(buildingDevices)}">
+                            <li class="building-device-item" th:each="d : ${buildingDevices}">
+                                <div class="device-item-left">
+                                    <!-- 소속 강의실 이름 뱃지 -->
+                                    <span class="device-room-badge" th:text="${d.roomName}">E.Space</span>
+                                    <!-- 디바이스 이름 -->
+                                    <strong class="device-name-text" th:text="${d.deviceName}">에어컨 제어기</strong>
+                                </div>
+                                <!-- 해당 강의실의 디바이스 관리 페이지로 바로가기 -->
+                                <a class="device-link-btn"
+                                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${d.roomId})}">
+                                    이동
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- 등록된 디바이스가 없을 때 -->
+                        <div class="empty-device-list" th:if="${#lists.isEmpty(buildingDevices)}">
+                            <p>등록된 디바이스가 없습니다.</p>
+                        </div>
                     </div>
                 </div>
             </section>
+
+            <!-- 하단 2단 섹션: 하위 Classroom 목록 & 설치된 Sensor 목록 -->
+            <div class="building-sub-grid">
+
+                <!-- [좌측 카드] 하위 Classroom 목록 -->
+                <section class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div>
+                            <h3>Classroom List</h3>
+                            <span class="sub-text" th:text="|총 ${#lists.size(rooms)}개의 강의실|">총 0개의 강의실</span>
+                        </div>
+                        <a class="btn-sub-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                            강의실 관리 →
+                        </a>
+                    </div>
+                    <div class="sub-list-wrap">
+                        <ul class="sub-entity-list" th:if="${!#lists.isEmpty(rooms)}">
+                            <li class="sub-entity-item" th:each="r : ${rooms}">
+                                <div class="sub-entity-main">
+                                    <div class="sub-icon room-icon">
+                                        <img src="/photo/icon/door-icon.png" alt="classroom">
+                                    </div>
+                                    <div class="sub-entity-text">
+                                        <strong th:text="${r.roomName}">301호</strong>
+                                        <p th:text="${#strings.defaultString(r.description, '등록된 설명이 없습니다.')}">설명</p>
+                                    </div>
+                                </div>
+                                <div class="sub-entity-badges">
+                                    <span class="badge-mini" th:text="|센서 ${r.sensorCount}개|">센서 0개</span>
+                                    <a class="btn-detail-sm"
+                                       th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${r.roomId})}">
+                                        상세보기
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="empty-sub-list" th:if="${#lists.isEmpty(rooms)}">
+                            <p>등록된 강의실이 없습니다.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- [우측 카드] 현재 빌딩에 설치된 Sensor 목록 (devEui, location, point) -->
+                <section class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div>
+                            <h3>Installed Sensors</h3>
+                            <span class="sub-text" th:text="|총 ${#lists.size(sensors)}개의 센서|">총 0개의 센서</span>
+                        </div>
+                    </div>
+                    <div class="sub-list-wrap">
+                        <ul class="sub-entity-list" th:if="${!#lists.isEmpty(sensors)}">
+                            <li class="sub-entity-item" th:each="s : ${sensors}">
+                                <div class="sub-entity-main">
+                                    <div class="sub-icon sensor-icon">
+                                        <img src="/photo/icon/connection-icon.png" alt="sensor">
+                                    </div>
+                                    <div class="sub-entity-text">
+                                        <strong th:text="${s.devEui}">24e124785c389010</strong>
+                                        <p>
+                                            <span th:text="${#strings.defaultString(s.location, '위치 미지정')}">실습실</span>
+                                            <span class="point-text"
+                                                  th:if="${s.point != null && !s.point.isBlank()}"
+                                                  th:text="|(${s.point})|"> (전방 우측)</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="badge-deveui" th:text="${s.deviceName != null ? s.deviceName : 'Sensor'}">Device</span>
+                            </li>
+                        </ul>
+                        <div class="empty-sub-list" th:if="${#lists.isEmpty(sensors)}">
+                            <p>건물에 등록된 센서가 없습니다.</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
         </main>
     </div>
 </div>
-<!-- 공통 하단 푸터 프래그먼트 -->
+
+<!-- 모달: MQTT 브로커 등록 / 수정 팝업 (<dialog>) -->
+<dialog class="modal" id="mqttModal">
+    <div class="modal-header">
+        <h2 id="mqttModalTitle">MQTT 브로커 설정</h2>
+        <button type="button" class="modal-close" id="closeMqttModalBtn">&times;</button>
+    </div>
+    <form class="modal-body" id="mqttForm">
+        <div class="building-form-group">
+            <label for="mqttServerName">Server Name</label>
+            <input type="text" id="mqttServerName" placeholder="예) main-mqtt" required>
+        </div>
+        <div class="building-form-group">
+            <label for="mqttBrokerUrl">Broker URL</label>
+            <input type="text" id="mqttBrokerUrl" placeholder="예) tcp://broker.emqx.io:1883" required>
+        </div>
+        <div class="form-grid">
+            <div class="building-form-group">
+                <label for="mqttUsername">Username</label>
+                <input type="text" id="mqttUsername" placeholder="선택 사항">
+            </div>
+            <div class="building-form-group">
+                <label for="mqttPassword">Password</label>
+                <input type="password" id="mqttPassword" placeholder="선택 사항">
+            </div>
+        </div>
+        <div class="building-form-group">
+            <label for="mqttTopic">Topic</label>
+            <input type="text" id="mqttTopic" placeholder="예) 4iren/building/1/#" required>
+        </div>
+
+        <p class="form-error" id="mqttError"></p>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-outline" id="cancelMqttModalBtn">취소</button>
+            <button type="submit" class="btn-primary" id="saveMqttBtn">저장</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- 하단 푸터 -->
 <div th:replace="~{layout/footer :: footer}"></div>
+
+<!-- 자바스크립트: MQTT 팝업 제어 및 비동기 통신 -->
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+    const buildingId = /*[[${building.buildingId}]]*/ null;
+
+    const openMqttModalBtn = document.getElementById('openMqttModalBtn');
+    const closeMqttModalBtn = document.getElementById('closeMqttModalBtn');
+    const cancelMqttModalBtn = document.getElementById('cancelMqttModalBtn');
+    const mqttModal = document.getElementById('mqttModal');
+    const mqttModalTitle = document.getElementById('mqttModalTitle');
+    const mqttForm = document.getElementById('mqttForm');
+    const saveMqttBtn = document.getElementById('saveMqttBtn');
+    const mqttError = document.getElementById('mqttError');
+
+    const mqttServerName = document.getElementById('mqttServerName');
+    const mqttBrokerUrl = document.getElementById('mqttBrokerUrl');
+    const mqttUsername = document.getElementById('mqttUsername');
+    const mqttPassword = document.getElementById('mqttPassword');
+    const mqttTopic = document.getElementById('mqttTopic');
+
+    if (openMqttModalBtn) {
+        openMqttModalBtn.addEventListener('click', async () => {
+            mqttError.textContent = '';
+            mqttModalTitle.textContent = 'MQTT 브로커 불러오는 중...';
+            saveMqttBtn.disabled = true;
+
+            mqttModal.showModal();
+
+            try {
+                const res = await fetch(`/api/front/teams/${teamId}/buildings/${buildingId}/mqtt`);
+                const broker = res.ok ? await res.json() : null;
+
+                if (broker && broker.serverName) {
+                    mqttModalTitle.textContent = 'MQTT 브로커 수정';
+                    mqttServerName.value = broker.serverName || '';
+                    mqttBrokerUrl.value = broker.brokerUrl || '';
+                    mqttUsername.value = broker.username || '';
+                    mqttPassword.value = broker.password || '';
+                    mqttTopic.value = broker.topic || '';
+                    saveMqttBtn.textContent = '수정 저장';
+                } else {
+                    mqttModalTitle.textContent = 'MQTT 브로커 신규 등록';
+                    mqttServerName.value = '';
+                    mqttBrokerUrl.value = '';
+                    mqttUsername.value = '';
+                    mqttPassword.value = '';
+                    mqttTopic.value = '';
+                    saveMqttBtn.textContent = '등록';
+                }
+            } catch (err) {
+                mqttModalTitle.textContent = 'MQTT 브로커 설정';
+            } finally {
+                saveMqttBtn.disabled = false;
+            }
+        });
+    }
+
+    const closeModal = () => mqttModal.close();
+    if (closeMqttModalBtn) closeMqttModalBtn.addEventListener('click', closeModal);
+    if (cancelMqttModalBtn) cancelMqttModalBtn.addEventListener('click', closeModal);
+
+    if (mqttForm) {
+        mqttForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            mqttError.textContent = '';
+
+            const payload = {
+                buildingId: Number(buildingId),
+                serverName: mqttServerName.value.trim(),
+                brokerUrl: mqttBrokerUrl.value.trim(),
+                topic: mqttTopic.value.trim(),
+                username: mqttUsername.value.trim() || null,
+                password: mqttPassword.value.trim() || null
+            };
+
+            saveMqttBtn.disabled = true;
+            saveMqttBtn.textContent = '저장 중...';
+
+            try {
+                const res = await fetch(`/api/front/teams/${teamId}/buildings/${buildingId}/mqtt`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(errorText || 'MQTT 브로커 설정 저장에 실패했습니다.');
+                }
+
+                alert('MQTT 브로커 설정이 성공적으로 저장되었습니다.');
+                closeModal();
+                window.location.reload();
+            } catch (err) {
+                mqttError.textContent = err.message || '저장 중 오류가 발생했습니다.';
+                saveMqttBtn.disabled = false;
+                saveMqttBtn.textContent = '저장';
+            }
+        });
+    }
+</script>
 </body>
 </html>

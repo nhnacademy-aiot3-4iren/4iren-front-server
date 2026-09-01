@@ -3,10 +3,7 @@ package com.nhnacademy.front.processing.client;
 import com.nhnacademy.front.processing.dto.mqtt.MqttBrokerCreateRequest;
 import com.nhnacademy.front.processing.dto.mqtt.MqttBrokerInfoDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(
         name = "4iren-gateway",
@@ -15,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 )
 public interface ProcessingMqttClient {
 
+    @GetMapping("/building/{buildingId}")
+    MqttBrokerInfoDto getBrokerByBuilding(@PathVariable("buildingId") Long buildingId);
+
     @PostMapping
     MqttBrokerInfoDto registerBroker(@RequestBody MqttBrokerCreateRequest request);
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     void deleteBroker(@PathVariable("id") Long id);
 }
