@@ -39,7 +39,7 @@ public class RoomAssetController {
                 .ifPresent(briefing -> model.addAttribute("welcomeBriefing", briefing));
         roomBriefingService.getDailySummary(teamId, roomId)
                 .ifPresent(summary -> model.addAttribute("dailySummary", summary));
-        return "mypage/room-info";
+        return "team/room-info";
     }
 
     @GetMapping("/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices")
@@ -59,7 +59,7 @@ public class RoomAssetController {
         model.addAttribute("size", size);
         model.addAttribute("sort", sort);
 
-        return "mypage/devices";
+        return "team/devices";
     }
 
     @GetMapping("/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/sensor-locations")
@@ -80,7 +80,7 @@ public class RoomAssetController {
         model.addAttribute("size", size);
         model.addAttribute("sort", sort);
 
-        return "mypage/sensor-locations";
+        return "team/sensor-locations";
     }
 
     private TeamDetailResponse addRoomContext(Long teamId, Long buildingId, Long roomId, Model model) {

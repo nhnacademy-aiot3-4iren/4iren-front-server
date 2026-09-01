@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
 
     <link rel="stylesheet" th:href="@{/css/team/buildings.css}">
+    <link rel="stylesheet" th:href="@{/css/room-info.css}">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -41,8 +42,15 @@
                     </p>
                 </div>
                 <div class="building-summary">
-                    <span>Classroom ID</span>
-                    <strong th:text="${room.roomId}">0</strong>
+                    <div>
+                        <span>Classroom ID</span>
+                        <strong th:text="${room.roomId}">0</strong>
+                    </div>
+                    <button class="weather-policy-open-btn" type="button" id="openWeatherPolicyBtn"
+                            th:if="${team.myRole != null && (team.myRole.name() == 'OWNER' || team.myRole.name() == 'ADMIN')}"
+                            aria-haspopup="dialog" aria-controls="weatherPolicyDialog">
+                        외부날씨 정책 설정
+                    </button>
                 </div>
             </div>
 
@@ -166,6 +174,96 @@
     </div>
 </div>
 
+<dialog class="weather-policy-dialog" id="weatherPolicyDialog" aria-labelledby="weatherPolicyTitle">
+    <form class="weather-policy-form" id="weatherPolicyForm">
+        <div class="weather-policy-header">
+            <div>
+                <span class="weather-policy-eyebrow">Welcome Briefing</span>
+                <h2 id="weatherPolicyTitle">외부날씨 판단 기준</h2>
+                <p>이 강의실의 웰컴브리핑에 적용할 날씨 판단 기준을 설정합니다.</p>
+            </div>
+            <button type="button" class="weather-policy-close-btn" id="closeWeatherPolicyBtn" aria-label="닫기">&times;</button>
+        </div>
+
+        <div class="weather-policy-loading" id="weatherPolicyLoading" role="status">정책을 불러오는 중입니다.</div>
+
+        <div class="weather-policy-body" id="weatherPolicyBody" hidden>
+            <div class="weather-policy-scope">
+                <span>적용 범위</span>
+                <strong th:text="|${room.roomName} 강의실|">강의실</strong>
+                <small>상위 정책이 적용 중이면 현재 상속된 값을 불러옵니다.</small>
+            </div>
+
+            <div class="weather-policy-fields">
+                <label class="weather-policy-field">
+                    <span>비 가능성 기준</span>
+                    <span class="weather-policy-input-wrap">
+                        <input type="number" id="rainPossibleProbability" min="0" max="100" required>
+                        <em>%</em>
+                    </span>
+                    <small>이 확률 이상이면 비가 올 가능성이 있다고 판단합니다.</small>
+                </label>
+
+                <label class="weather-policy-field">
+                    <span>비 예상 기준</span>
+                    <span class="weather-policy-input-wrap">
+                        <input type="number" id="rainExpectedProbability" min="0" max="100" required>
+                        <em>%</em>
+                    </span>
+                    <small>이 확률 이상이면 비가 예상된다고 판단합니다.</small>
+                </label>
+
+                <label class="weather-policy-field">
+                    <span>강풍 기준</span>
+                    <span class="weather-policy-input-wrap">
+                        <input type="number" id="strongWindSpeed" min="0" step="0.1" required>
+                        <em>m/s</em>
+                    </span>
+                    <small>이 풍속 이상이면 강한 바람으로 판단합니다.</small>
+                </label>
+
+                <label class="weather-policy-field">
+                    <span>고습도 기준</span>
+                    <span class="weather-policy-input-wrap">
+                        <input type="number" id="highHumidityPercent" min="0" max="100" required>
+                        <em>%</em>
+                    </span>
+                    <small>이 습도 이상이면 습도가 높다고 판단합니다.</small>
+                </label>
+            </div>
+
+            <div class="weather-policy-enabled-row">
+                <div>
+                    <strong>외부날씨 판단 활성화</strong>
+                    <p>끄면 이 강의실 전용 정책을 비활성화하고 상위 정책을 사용합니다.</p>
+                </div>
+                <label class="weather-policy-switch">
+                    <input type="checkbox" id="weatherPolicyEnabled">
+                    <span aria-hidden="true"></span>
+                    <span class="sr-only">외부날씨 판단 활성화</span>
+                </label>
+            </div>
+
+            <div class="weather-policy-reactivate-row">
+                <div>
+                    <strong>강의실 전용 정책 다시 활성화</strong>
+                    <p>비활성화된 전용 정책이 있으면 상위 정책 대신 다시 사용합니다.</p>
+                </div>
+                <button type="button" class="weather-policy-reactivate-btn" id="reactivateWeatherPolicyBtn">
+                    다시 활성화
+                </button>
+            </div>
+
+            <p class="weather-policy-message" id="weatherPolicyMessage" role="status" aria-live="polite"></p>
+
+            <div class="weather-policy-actions">
+                <button type="button" class="weather-policy-cancel-btn" id="cancelWeatherPolicyBtn">취소</button>
+                <button type="submit" class="weather-policy-save-btn" id="saveWeatherPolicyBtn">정책 저장</button>
+            </div>
+        </div>
+    </form>
+</dialog>
+
 <div th:replace="~{layout/footer :: footer}"></div>
 <script th:inline="javascript">
     const teamId = /*[[${team.teamId}]]*/ null;
@@ -173,5 +271,6 @@
     const roomId = /*[[${room.roomId}]]*/ null;
 </script>
 <script src="/js/room-info.js"></script>
+<script src="/js/weather-policy.js"></script>
 </body>
 </html>
