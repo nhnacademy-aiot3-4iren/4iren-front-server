@@ -52,6 +52,6 @@ public class RoomController {
         model.addAttribute("sort", sort);
 
         // 파일 위치: templates/sidebar-menu/team/classrooms/rooms.html
-        return "sidebar-menu/team/classrooms/rooms";
+        return "team/rooms";
     }
 }

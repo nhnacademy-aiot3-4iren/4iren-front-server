@@ -1,8 +1,15 @@
+/* .sidebar가 반투명 유리 패널(backdrop-filter)이라 뒤에 비치는 body 배경색이
+   페이지마다 다르면 사이드바 색/느낌이 페이지마다 달라 보인다. 사이드바를 쓰는
+   모든 페이지가 basic/sidebar.css는 공통으로 로드하므로 여기서 기준값을 잡는다.
+   margin:0도 여기서 같이 리셋 - 안 하면 브라우저 기본 body 마진(8px)만큼
+   .layout 전체가 화면보다 좁게 눌려 보임(페이지별로 자체 리셋 여부가 달라서
+   사이드바 폭/느낌이 페이지마다 다르게 보이던 원인). */
+body {
+    margin: 0;
+    background-color: #fcfcfc;
+}
+
 .sidebar {
-    width: 250px;
-    flex-shrink: 0;
-    /* 맑은 유리 패널: 알파 있는 흰색 + 원본 베젤 하이라이트 그대로 유지 */
-    background: rgba(255, 255, 255, 0.3);
     box-shadow:
             0px 0px 2px rgba(0, 0, 0, 0.1),
             0px 1px 8px rgba(0, 0, 0, 0.1),
@@ -18,6 +25,11 @@
     padding: 30px 0;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    width: 250px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.3);
+
 }
 
 .sidebar-logo {
@@ -109,6 +121,12 @@
 
 .nav-item-toggle.expanded .nav-icon-chevron {
     transform: rotate(180deg);
+}
+
+.nav-item-toggle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.4);
+    border-radius: 8px;
 }
 
 .nav-icon {
@@ -245,7 +263,7 @@
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border-radius: 100px;
-    color: #000;
+    color: #958a87;
     font-weight: 500;
 }
 

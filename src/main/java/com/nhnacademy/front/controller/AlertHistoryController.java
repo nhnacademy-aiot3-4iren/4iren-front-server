@@ -13,13 +13,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
+
 /**
- * 알림 이력 조회 페이지 컨트롤러 (admin 전용).
+ * 알림 이력 조회 페이지 컨트롤러. 자기한테 온 알림 이력만 보이므로 role 무관하게 접근 가능.
  */
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/alert-histories")
+@RequestMapping("/alert-histories")
 public class AlertHistoryController {
+
+    // 페이지네이션 바에서 현재 페이지 기준 앞뒤로 보여줄 페이지 수 (첫/끝 페이지는 항상 별도로 보장)
+    private static final int PAGE_WINDOW = 2;
 
     private final NotiAlertHistoryClient notiAlertHistoryClient;
 
@@ -54,8 +61,38 @@ public class AlertHistoryController {
         model.addAttribute("selTo", to);
         model.addAttribute("size", size);
         model.addAttribute("sort", sort);
+        model.addAttribute("pageWindow", buildPageWindow(alertHistories.page(), alertHistories.totalPages()));
 
         return "alarms/alert-history";
+    }
+
+    /**
+     * 페이지네이션 바에 뿌릴 페이지 번호 목록을 계산한다. 전체 페이지를 다 나열하지 않고
+     * 첫/끝 페이지 + 현재 페이지 주변({@value #PAGE_WINDOW}개씩)만 남기고 나머지는 null(생략 표시)로 묶는다.
+     * 추가 조회 없이 이미 응답에 있는 page/totalPages 숫자만으로 계산한다.
+     */
+    private List<Integer> buildPageWindow(int currentPage, int totalPages) {
+        if (totalPages <= 0) {
+            return List.of();
+        }
+
+        TreeSet<Integer> shown = new TreeSet<>();
+        shown.add(0);
+        shown.add(totalPages - 1);
+        for (int i = Math.max(0, currentPage - PAGE_WINDOW); i <= Math.min(totalPages - 1, currentPage + PAGE_WINDOW); i++) {
+            shown.add(i);
+        }
+
+        List<Integer> window = new ArrayList<>();
+        Integer previous = null;
+        for (Integer i : shown) {
+            if (previous != null && i - previous > 1) {
+                window.add(null); // 생략 표시
+            }
+            window.add(i);
+            previous = i;
+        }
+        return window;
     }
 
     /**

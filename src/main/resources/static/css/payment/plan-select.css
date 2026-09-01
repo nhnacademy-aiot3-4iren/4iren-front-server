@@ -83,6 +83,12 @@
     margin: 0;
 }
 
+.notice-card-inline {
+    font-size: 13px;
+    color: #999;
+    margin: 0 0 20px;
+}
+
 .pg-buttons {
     display: flex;
     flex-direction: row;
@@ -124,47 +130,4 @@
 .pg-kakao {
     background-color: #FEE500;
     color: #191919;
-}
-
-.status-pending {
-    background-color: #e2e3e5;
-    color: #41464b;
-}
-
-.notice-card-inline {
-    font-size: 13px;
-    color: #999;
-    margin: 0 0 20px;
-}
-
-.result-card {
-    max-width: 480px;
-    margin: 80px auto 0;
-    text-align: center;
-}
-
-.result-title {
-    font-size: 22px;
-    font-weight: 700;
-    margin: 0 0 12px;
-}
-
-.result-title.result-success {
-    color: rgb(255, 125, 50);
-}
-
-.result-title.result-failure {
-    color: #d33;
-}
-
-.result-desc {
-    font-size: 14px;
-    color: #777;
-    margin: 0 0 32px;
-}
-
-.result-card .setting-btn {
-    display: inline-block;
-    width: auto;
-    text-decoration: none;
 }

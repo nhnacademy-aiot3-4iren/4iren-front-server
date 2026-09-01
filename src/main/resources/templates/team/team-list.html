@@ -6,7 +6,7 @@
   <title>4iren - Team</title>
 
   <!-- 기존 본문 CSS -->
-  <link rel="stylesheet" th:href="@{/css/sidebarmenu/team/team-list.css}">
+  <link rel="stylesheet" th:href="@{/css/team/team-list.css}">
   <link rel="stylesheet" href="/fonts/font.css">
   <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
   <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
@@ -28,7 +28,7 @@
     <div th:replace="~{layout/header :: header('My Teams')}"></div>
 
     <!-- ============ 본문 내용 ============ -->
-    <div class="main-content">
+    <div class="content">
       <h2>My Teams</h2>
 
       <div class="empty-state" id="emptyState">
@@ -42,7 +42,7 @@
 
       <div class="team-floating-actions">
         <button class="join-team-btn" id="openJoinTeamBtn" type="button">초대 코드로 가입</button>
-        <button class="open-modal-btn" id="openBtn" type="button">+ Team 생성</button>
+        <button class="open-modal-btn" id="openBtn" type="button" th:attr="data-role=${role}">+ Team 생성</button>
       </div>
 
       <!-- ========================================== -->

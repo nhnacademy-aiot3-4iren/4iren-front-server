@@ -4,6 +4,7 @@ import com.nhnacademy.front.payment.dto.PaymentHistoryResponse;
 import com.nhnacademy.front.payment.dto.PlanPriceResponse;
 import com.nhnacademy.front.payment.dto.StartRegistrationRequest;
 import com.nhnacademy.front.payment.dto.StartRegistrationResponse;
+import com.nhnacademy.front.payment.dto.SubscriptionResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,9 @@ public interface PaymentClient {
     @GetMapping("/billing-keys/kakao/callback")
     ResponseEntity<Void> relayKakaoCallback(@RequestParam("pg_token") String pgToken,
                                              @RequestParam("orderId") String orderId);
+
+    @GetMapping("/subscriptions")
+    SubscriptionResponse getCurrentSubscription();
 
     @DeleteMapping("/subscriptions")
     void cancelSubscription();

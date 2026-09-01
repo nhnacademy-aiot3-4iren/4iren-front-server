@@ -72,6 +72,6 @@ public class AccountController {
         UserResponse myInfo = accountService.getUser(userId);
         model.addAttribute("myInfo", myInfo);
 
-        return "sidebar-menu/profile/profile";
+        return "mypage/profile";
     }
 }

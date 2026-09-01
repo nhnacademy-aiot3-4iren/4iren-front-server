@@ -1,12 +1,11 @@
-/* ================================================================
-  main-content-area.css (또는 공용 CSS 파일 아무 곳)
-   본문 wrapper 공통 클래스
-   - 사이드바 옆, 헤더+본문을 세로로 감싸는 영역
-   - 모든 페이지(team-list.html, profile.html 등)가 동일하게 사용
-   ================================================================ */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
 .main-content-area {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0; /* flex item 내부 콘텐츠가 넘칠 때 wrapper가 안 밀리도록 방지 */
+    min-width: 0;
 }

@@ -21,6 +21,17 @@
     min-width: 0;
 }
 
+.info-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.info-header h2 {
+    margin: 0;
+}
+
 .info-lists-panel {
     flex: 1.4;
     min-width: 0;

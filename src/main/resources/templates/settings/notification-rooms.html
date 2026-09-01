@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공간별 알림 관리 - Re I New</title>
+
+  <link rel="stylesheet" href="/fonts/font.css">
+  <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+  <link rel="stylesheet" th:href="@{/css/settings.css}">
+  <link rel="stylesheet" th:href="@{/css/settings/notification-rooms.css}">
+</head>
+<body>
+<div class="layout">
+
+  <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
+  <div class="main-content-area">
+
+    <div th:replace="~{layout/header :: header('공간별 알림 관리')}"></div>
+
+    <main class="content">
+
+      <section class="settings-card notif-room-card">
+
+        <div class="panel-header">
+          <h2 class="panel-title">공간별 알림 수신</h2>
+          <a th:href="@{/settings}" class="btn-outline" style="text-decoration:none;">← 설정으로</a>
+        </div>
+
+        <p th:if="${#lists.isEmpty(teamGroups)}" class="panel-desc">소속된 팀이 없습니다.</p>
+
+        <div class="notif-team" th:each="teamGroup : ${teamGroups}">
+          <details open>
+            <summary class="notif-team-summary" th:text="${teamGroup.team().teamName()}">팀 이름</summary>
+
+            <p th:if="${#lists.isEmpty(teamGroup.buildings())}" class="panel-desc notif-empty">등록된 건물이 없습니다.</p>
+
+            <div class="notif-building" th:each="buildingGroup : ${teamGroup.buildings()}">
+              <details>
+                <summary class="notif-building-summary" th:text="${buildingGroup.buildingName()}">건물 이름</summary>
+
+                <p th:if="${#lists.isEmpty(buildingGroup.rooms())}" class="panel-desc notif-empty">등록된 공간이 없습니다.</p>
+
+                <div class="notif-room-row"
+                     th:each="row : ${buildingGroup.rooms()}"
+                     th:attr="data-team-id=${teamGroup.team().teamId()},data-building-id=${buildingGroup.buildingId()},data-room-id=${row.room().roomId()},data-subscribed=${row.status() != null and row.status().subscribed()}">
+                  <span class="notif-room-name" th:text="${row.room().roomName()}">공간 이름</span>
+                  <label class="toggle-switch">
+                    <input type="checkbox" class="notif-toggle"
+                           th:checked="${row.status() != null and row.status().subscribed() and row.status().notificationEnabled()}">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </details>
+            </div>
+          </details>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script th:src="@{/js/notification-rooms.js}"></script>
+</body>
+</html>
