@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collections;
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class RoomAssetController {
@@ -35,10 +38,35 @@ public class RoomAssetController {
     ) {
         addRoomContext(teamId, buildingId, roomId, model);
         model.addAttribute("subscriptionStatus", roomService.getSubscriptionStatus(teamId, roomId));
+
         roomBriefingService.getWelcomeBriefing(teamId, roomId)
                 .ifPresent(briefing -> model.addAttribute("welcomeBriefing", briefing));
         roomBriefingService.getDailySummary(teamId, roomId)
                 .ifPresent(summary -> model.addAttribute("dailySummary", summary));
+
+        // 1. 해당 강의실에 등록된 센서 목록 조회 (최대 100개)
+        List<SensorLocationResponse> sensorLocations = Collections.emptyList();
+        try {
+            PageResponse<SensorLocationResponse> sensorPage =
+                    sensorLocationService.getSensorLocations(teamId, roomId, 0, 100, "id,ASC");
+            if (sensorPage != null && sensorPage.content() != null) {
+                sensorLocations = sensorPage.content();
+            }
+        } catch (Exception ignored) {}
+
+        // 2. 해당 강의실에 등록된 디바이스 목록 조회 (최대 100개)
+        List<DeviceResponse> devices = Collections.emptyList();
+        try {
+            PageResponse<DeviceResponse> devicePage =
+                    deviceService.getDevices(teamId, roomId, 0, 100, "id,ASC");
+            if (devicePage != null && devicePage.content() != null) {
+                devices = devicePage.content();
+            }
+        } catch (Exception ignored) {}
+
+        model.addAttribute("sensorLocations", sensorLocations);
+        model.addAttribute("devices", devices);
+
         return "team/room-info";
     }
 

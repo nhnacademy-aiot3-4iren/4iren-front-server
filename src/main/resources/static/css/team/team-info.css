@@ -1,66 +1,284 @@
 /* ================================================================
-   team-info.css 에 추가할 스타일
-   (기존 .info-card-container, .stat-card 등은 그대로 두고 아래만 추가)
+   Team Info 페이지 전용 스타일시트 (team-info.css)
    ================================================================ */
 
+/* 1. 전체 가로 2단 카드 레이아웃 (좌측 팀정보 / 우측 건물·강의실 분할 리스트) */
 .info-cards-row {
     display: flex;
     gap: 24px;
-    align-items: flex-start;
+    align-items: stretch;
+    width: 100%;
+    box-sizing: border-box;
 }
 
+/* 카드 공통 배경 및 라운딩/그림자 효과 */
 .info-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 32px 36px;
-    box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid #edf0f5;
+    box-sizing: border-box;
 }
 
+/* 좌측 패널 */
 .info-left-panel {
-    flex: 1;
+    flex: 1 1 0; /* flex-grow: 1, 기본 너비를 동일하게 0에서 출발 */
     min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
+/* 우측 패널 */
+.info-lists-panel {
+    flex: 2 1 0; /* flex-grow: 2 */
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. 좌측 패널: 팀 정보 헤더 (제목 + 역할 뱃지) */
 .info-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 16px;
+    align-items: center;
+    margin-bottom: 24px;
 }
 
 .info-header h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
     margin: 0;
 }
 
-.info-lists-panel {
-    flex: 1.4;
-    min-width: 0;
-    padding: 32px;
+/* 관리자/소유자 역할 뱃지 */
+.role-admin {
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
 }
 
-.stat-card-flat {
-    box-shadow: none;
-    border: 1px solid #f0f0f0;
-    padding: 20px;
-    border-radius: 14px;
+/* 3. 입력 폼 영역 (Team Name, Description) */
+.input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 20px;
 }
 
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 12px;
+    font-weight: 800;
+    color: #737791;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 인풋 래퍼 (클리어 버튼 배치를 위한 relative 컨테이너) */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-wrapper input,
+#editTeamName {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 38px 12px 14px;
+    font-size: 14px;
+    color: #1e293b;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-wrapper input:focus,
+#editTeamName:focus {
+    border-color: #ff9d42;
+    box-shadow: 0 0 0 3px rgba(255, 157, 66, 0.15);
+}
+
+/* 읽기 전용(readonly) 인풋 스타일 */
 #editTeamName[readonly],
 #editTeamDesc[readonly] {
-    background: #f7f7f7;
-    color: #888;
+    background: #f8fafc;
+    color: #64748b;
     cursor: default;
+    border-color: #e2e8f0;
 }
 
-/* ---------------- Building / Classroom 좌우 분할 ---------------- */
+/* 텍스트에어리어 (설명란) */
+#editTeamDesc {
+    width: 100%;
+    min-height: 90px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #1e293b;
+    background: #ffffff;
+    outline: none;
+    resize: vertical;
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#editTeamDesc:focus {
+    border-color: #ff9d42;
+    box-shadow: 0 0 0 3px rgba(255, 157, 66, 0.15);
+}
+
+/* 입력창 우측 텍스트 지우기(Clear) 버튼 */
+.clear-btn {
+    position: absolute;
+    right: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clear-btn img {
+    width: 16px;
+    height: 16px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.clear-btn:hover img {
+    opacity: 1;
+}
+
+/* 팀 정보 저장 버튼 */
+.btn-save {
+    width: 100%;
+    background: #ff9d42;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 0;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-save:hover {
+    background: #f38b2a;
+}
+
+.btn-save:active {
+    transform: scale(0.99);
+}
+
+/* 섹션 구분선 */
+.info-section-divider {
+    height: 1px;
+    background: #edf0f5;
+    margin: 24px 0;
+    width: 100%;
+}
+
+/* 4. 팀 멤버 요약 통계 카드 */
+.stat-card-flat {
+    background: #fafbfc;
+    border: 1px solid #edf0f5;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.stat-header h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}
+
+.stat-header .sub-text {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.member-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.member-icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #eef9f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.member-icon-circle img {
+    width: 24px;
+    height: 24px;
+}
+
+.member-count-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.member-label {
+    font-size: 12px;
+    color: #737791;
+    font-weight: 600;
+}
+
+.member-number {
+    font-size: 24px;
+    font-weight: 900;
+    color: #111;
+    line-height: 1;
+}
+
+/* 5. 우측 패널: Building / Classroom 좌우 분할 리스트 */
 .lists-split {
     display: flex;
-    gap: 0;
-    min-height: 360px;
+    gap: 24px;
+    flex: 1;
+    min-height: 380px;
 }
 
 .list-half {
-    flex: 1;
+    flex: 1 1 0;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -68,87 +286,139 @@
 
 .list-divider {
     width: 1px;
-    background: #f0f0f0;
-    margin: 0 24px;
+    background: #edf0f5;
+}
+
+.list-half-header {
+    margin-bottom: 12px;
 }
 
 .list-half-header h3 {
     margin: 0 0 4px 0;
-    font-size: 15px;
-    font-weight: 700;
-    color: #333;
+    font-size: 16px;
+    font-weight: 800;
+    color: #111;
 }
 
 .list-half-header .sub-text {
-    font-size: 12.5px;
-    color: #999;
+    font-size: 12px;
+    color: #94a3b8;
 }
 
 .entity-list {
     list-style: none;
-    margin: 16px 0;
+    margin: 0;
     padding: 0;
     flex: 1;
     overflow-y: auto;
     max-height: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .entity-list-item {
-    padding: 12px 14px;
-    border-radius: 10px;
-    font-size: 13.5px;
-    color: #444;
-    cursor: pointer;
-    transition: background-color 0.15s;
-    border-bottom: 1px solid #f5f5f5;
-    list-style: none;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    padding: 10px 14px !important;
+    border-radius: 8px !important;
+    font-size: 13.5px !important;
+    color: #334155 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease-in-out !important;
+    border: 1px solid #f1f5f9 !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+    list-style: none !important;
 }
 
 .entity-list-item:hover {
-    background: #FFF8F0;
+    background: #fff8f0 !important;
+    border-color: #fed7aa !important;
 }
 
 .entity-list-item.selected {
-    background: #FFF3E8;
-    color: #FF9800;
-    font-weight: 600;
+    background: #fff3e8 !important;
+    border-color: #ff9d42 !important;
+    color: #ea580c !important;
+    font-weight: 700 !important;
+}
+
+.entity-name {
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+/* 상세보기 링크 버튼 (파란색) */
+.btn-detail-blue {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 5px 12px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    background-color: #2563eb !important;
+    border: 1px solid #2563eb !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    transition: background-color 0.15s ease-in-out !important;
+}
+
+.btn-detail-blue:hover {
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+    color: #ffffff !important;
 }
 
 .entity-list-empty {
-    padding: 24px 0;
+    padding: 40px 0;
     text-align: center;
-    color: #999;
+    color: #94a3b8;
     font-size: 13px;
     list-style: none;
+    margin: auto 0;
 }
 
+/* 하단 버튼 액션 바 */
 .list-actions {
     display: flex;
     gap: 8px;
-    margin-top: 8px;
+    margin-top: 14px;
 }
 
 .btn-outline-sm {
-    background: #fff;
-    border: 1px solid #e0e0e0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 6px;
-    padding: 6px 14px;
+    padding: 7px 14px;
     font-size: 12.5px;
-    color: #555;
+    font-weight: 700;
+    color: #475569;
     cursor: pointer;
+    transition: all 0.15s;
 }
 
 .btn-outline-sm:hover {
-    background: #f7f7f7;
+    background: #f8fafc;
+    border-color: #cbd5e1;
 }
 
 .btn-danger-outline {
-    color: #E5484D;
-    border-color: #f1abab;
+    color: #ef4444;
+    border-color: #fecaca;
 }
 
 .btn-danger-outline:hover {
-    background: #FFF7F7;
+    background: #fef2f2;
+    border-color: #fca5a5;
 }
 
 .btn-danger-outline:disabled {
@@ -156,17 +426,28 @@
     cursor: not-allowed;
 }
 
-/* ---------------- 추가 모달 (건물/강의실 공용) ---------------- */
+/* 6. 건물 및 강의실 등록 팝업 모달 (<dialog>) */
 dialog.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
     border: none;
     border-radius: 16px;
     padding: 0;
-    width: 420px;
+    width: 480px;
     max-width: 90vw;
+    background: #ffffff;
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    box-sizing: border-box;
 }
 
+/* 모달 뒷배경 흐림 효과 */
 dialog.modal::backdrop {
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
 }
 
 .modal-header {
@@ -174,30 +455,41 @@ dialog.modal::backdrop {
     justify-content: space-between;
     align-items: center;
     padding: 20px 24px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #edf0f5;
 }
 
 .modal-header h2 {
     margin: 0;
     font-size: 16px;
+    font-weight: 800;
+    color: #111;
 }
 
 .modal-close {
     border: none;
     background: none;
-    font-size: 20px;
+    font-size: 22px;
     cursor: pointer;
-    color: #999;
+    color: #94a3b8;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: #334155;
 }
 
 .modal-body {
     padding: 20px 24px 24px;
+    max-height: 75vh;
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
 .modal-field-label {
     display: block;
     font-size: 12px;
-    color: #888;
+    font-weight: 700;
+    color: #64748b;
     margin: 12px 0 6px 0;
 }
 
@@ -205,17 +497,25 @@ dialog.modal::backdrop {
     margin-top: 0;
 }
 
-.modal-body input[type="text"] {
+.modal-body input[type="text"],
+.modal-body input[type="password"] {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #e0e0e0;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
     font-size: 14px;
     box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.modal-body input[type="text"]:focus,
+.modal-body input[type="password"]:focus {
+    border-color: #ff9d42;
 }
 
 .form-error {
-    color: #E5484D;
+    color: #ef4444;
     font-size: 12.5px;
     margin-top: 10px;
     min-height: 16px;
@@ -225,30 +525,52 @@ dialog.modal::backdrop {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    margin-top: 16px;
+    margin-top: 20px;
 }
 
 .btn-primary {
-    background: #FF9800;
+    background: #ff9d42;
     border: none;
     border-radius: 8px;
-    padding: 9px 18px;
+    padding: 10px 20px;
     font-size: 13px;
-    font-weight: 600;
-    color: #fff;
+    font-weight: 800;
+    color: #ffffff;
     cursor: pointer;
 }
 
 .btn-primary:hover {
-    background: #F08700;
+    background: #f38b2a;
 }
 
 .btn-outline {
-    background: #fff;
-    border: 1px solid #e0e0e0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 9px 18px;
+    padding: 10px 18px;
     font-size: 13px;
-    color: #555;
+    font-weight: 700;
+    color: #475569;
     cursor: pointer;
+}
+
+/* 7. 반응형 디자인 */
+@media (max-width: 1024px) {
+    .info-cards-row {
+        flex-direction: column;
+    }
+    .info-left-panel,
+    .info-lists-panel {
+        max-width: 100%;
+        min-width: 100%;
+    }
+    .lists-split {
+        flex-direction: column;
+        min-height: auto;
+    }
+    .list-divider {
+        height: 1px;
+        width: 100%;
+        margin: 16px 0;
+    }
 }

@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Building List - Re I New</title>
 
-    <link rel="stylesheet" th:href="@{/css/myteams.css}">
-    <link rel="stylesheet" th:href="@{/css/basic/header-sidebar.css}">
+    <link rel="stylesheet" href="/fonts/font.css">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/team/buildings.css}">
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebarmenu/team/bulidings/buildings.css}">
+
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -20,10 +25,11 @@
 <div class="layout">
     <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
-    <div class="main-wrap">
+    <div class="main-content-area">
         <div th:replace="~{layout/header :: header('Building')}"></div>
+        <main class="content">
 
-        <main class="main-content">
+            <!-- 페이지 상단 헤더: 팀 상세 정보 링크 및 건물 추가 모달 버튼 -->
             <div class="building-page-header">
                 <div>
                     <a class="back-link" th:href="@{/team-info/{teamId}(teamId=${team.teamId})}">Team Info</a>
@@ -40,6 +46,7 @@
                 </div>
             </div>
 
+            <!-- 건물 목록 카드 영역 -->
             <section class="building-list-panel" th:if="${!#lists.isEmpty(buildings.content)}">
                 <article class="building-row" th:each="building : ${buildings.content}">
                     <div class="building-main">
@@ -48,15 +55,16 @@
                         </div>
                         <div>
                             <h3 th:text="${building.buildingName}">Building Name</h3>
-                            <p th:text="${#strings.defaultString(building.description, '설명이 없습니다.')}">Description</p>
+                            <p th:text="${#strings.defaultString(building.description, '등록된 설명이 없습니다.')}">Description</p>
                             <address>
-                                <span th:text="${#strings.defaultString(building.roadAddress, '주소 정보 없음')}">Road Address</span>
+                                <span th:text="${#strings.defaultString(building.roadAddress, '도로명 주소 없음')}">Road Address</span>
                                 <span th:if="${building.detailAddress != null && !building.detailAddress.isBlank()}"
                                       th:text="| ${building.detailAddress}|">Detail Address</span>
                             </address>
                         </div>
                     </div>
 
+                    <!-- 건물 통계 -->
                     <div class="building-stats">
                         <div>
                             <span>Rooms</span>
@@ -72,6 +80,7 @@
                         </div>
                     </div>
 
+                    <!-- 건물 동작 버튼 -->
                     <div class="asset-actions">
                         <button class="asset-delete-btn building-delete-btn" type="button"
                                 th:if="${team.myRole != null && team.myRole.isManager()}"
@@ -80,16 +89,18 @@
                         </button>
                         <a class="building-detail-link"
                            th:href="@{/teams/{teamId}/buildings/{buildingId}(teamId=${team.teamId}, buildingId=${building.buildingId})}">
-                            상세 정보
+                            상세보기
                         </a>
                     </div>
                 </article>
             </section>
 
+            <!-- 빈 목록 안내 -->
             <div class="empty-state building-empty" th:if="${#lists.isEmpty(buildings.content)}">
                 <p>등록된 건물이 없습니다.</p>
             </div>
 
+            <!-- 페이징 버튼 -->
             <nav class="building-pagination" th:if="${buildings.totalPages > 1}">
                 <a th:classappend="${buildings.first} ? 'disabled'"
                    th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId}, page=${buildings.page - 1}, size=${size}, sort=${sort})}">
@@ -102,6 +113,7 @@
                 </a>
             </nav>
 
+            <!-- 건물 추가 모달 (카카오 도로명 주소 API 연동) -->
             <div class="modal-overlay" id="buildingModalOverlay">
                 <div class="modal-folder-wrapper building-modal">
                     <div class="modal-tab">Building 생성</div>
@@ -112,14 +124,14 @@
                         </div>
                         <div class="building-form-group">
                             <label>Description</label>
-                            <textarea id="buildingDescInput" placeholder="건물 설명을 입력해주세요."></textarea>
+                            <textarea id="buildingDescInput" placeholder="건물 설명을 입력하세요."></textarea>
                         </div>
                         <div class="form-grid">
                             <div class="building-form-group">
                                 <label>Road Address</label>
                                 <div class="address-input-row">
-                                    <input type="text" id="roadAddressInput" placeholder="도로명 주소" readonly>
-                                    <button type="button" id="searchAddressBtn">주소 찾기</button>
+                                    <input type="text" id="roadAddressInput" placeholder="도로명 주소 검색" readonly>
+                                    <button type="button" id="searchAddressBtn">검색</button>
                                 </div>
                             </div>
                             <div class="building-form-group">
@@ -143,6 +155,8 @@
 </div>
 
 <div th:replace="~{layout/footer :: footer}"></div>
+
+<!-- 카카오 주소 검색 라이브러리 및 건물 로직 스크립트 -->
 <script th:inline="javascript">
     const teamId = /*[[${team.teamId}]]*/ null;
 </script>
