@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - 4iren</title>
+    <link rel="stylesheet" href="/fonts/font.css">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard/dashboard.css}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+</head>
+<body>
+<div class="layout">
+    <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div class="main-content-area">
+        <header th:replace="~{layout/header :: header('Dashboard')}"></header>
+        <main class="content dashboard-content dashboard-list-content">
+            <section class="dashboard-intro">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>여러 공간의 환경 상태를 한눈에 확인하세요.</p>
+                </div>
+            </section>
+
+            <section class="room-count-card" aria-label="구독 공간 수">
+                <span class="room-count-icon" aria-hidden="true">⌂</span>
+                <div><p>구독 공간</p><strong id="room-count">-</strong><span>개</span></div>
+            </section>
+
+            <section class="dashboard-panel room-list-panel" aria-labelledby="room-list-title">
+                <div class="panel-heading">
+                    <div><p class="panel-eyebrow">SPACES</p><h2 id="room-list-title">구독 공간 목록</h2></div>
+                    <p>최근 15분 평균</p>
+                </div>
+                <div class="room-list-state" id="room-list-state">공간을 불러오는 중입니다.</div>
+                <div class="room-rows" id="room-rows" hidden></div>
+            </section>
+        </main>
+    </div>
+</div>
+<div th:replace="~{layout/footer :: footer}"></div>
+<script src="/js/dashboard/dashboard-list.js"></script>
+</body>
+</html>

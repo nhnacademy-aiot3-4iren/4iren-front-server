@@ -1,0 +1,240 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    color: #111827;
+    background: #f6f7f9;
+}
+
+.dashboard-content {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.dashboard-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.dashboard-intro h1 {
+    margin: 0;
+    font-size: clamp(28px, 3vw, 42px);
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+}
+
+.dashboard-intro p {
+    margin: 10px 0 0;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.room-count-card {
+    width: min(280px, 100%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 24px;
+    border: 1px solid #eceef1;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.room-count-icon,
+.room-thumb {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2f7;
+    color: #64748b;
+}
+
+.room-count-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 21px;
+}
+
+.room-count-card p {
+    margin: 0 0 7px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.room-count-card strong {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.room-count-card div > span {
+    margin-left: 5px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.dashboard-panel {
+    padding: 26px;
+    border: 1px solid #eceef1;
+    border-radius: 18px;
+    background: #fff;
+}
+
+.room-list-panel {
+    margin-top: 28px;
+}
+
+.panel-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.panel-heading h2 {
+    margin: 3px 0 0;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+}
+
+.panel-heading > p {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.panel-eyebrow {
+    margin: 0;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.room-list-state {
+    padding: 70px 20px;
+    color: #9ca3af;
+    text-align: center;
+}
+
+.room-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.room-row {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.45fr) repeat(3, minmax(120px, 1fr)) 24px;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 20px;
+    border: 1px solid #eceef1;
+    border-radius: 14px;
+    color: inherit;
+}
+
+.room-identity {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+}
+
+.room-thumb {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border-radius: 12px;
+    font-size: 21px;
+}
+
+.room-identity strong {
+    display: block;
+    overflow: hidden;
+    font-size: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.room-identity p,
+.room-metric p {
+    margin: 4px 0 0;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.room-metric {
+    min-width: 0;
+    padding-left: 18px;
+    border-left: 1px solid #f0f1f4;
+}
+
+.room-metric-label {
+    display: block;
+    margin-bottom: 4px;
+    color: #9ca3af;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.room-metric strong {
+    font-size: 21px;
+}
+
+.room-metric-unit {
+    margin-left: 4px;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.room-arrow {
+    color: #94a3b8;
+    font-size: 30px;
+    line-height: 1;
+}
+
+@media (max-width: 1180px) {
+    .room-row {
+        grid-template-columns: minmax(200px, 1.3fr) repeat(3, minmax(95px, 1fr)) 20px;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 820px) {
+    .dashboard-content {
+        padding: 28px 20px;
+    }
+
+    .dashboard-intro,
+    .panel-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .room-row {
+        grid-template-columns: 1fr 24px;
+    }
+
+    .room-identity {
+        grid-column: 1;
+    }
+
+    .room-arrow {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .room-metric {
+        grid-column: 1 / -1;
+        padding: 12px 0 0;
+        border-top: 1px solid #f0f1f4;
+        border-left: 0;
+    }
+}

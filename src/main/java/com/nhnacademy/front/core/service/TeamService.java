@@ -46,6 +46,10 @@ public class TeamService {
         );
     }
 
+    public List<TeamResponse> getAllTeams() {
+        return coreTeamClient.getAllTeams();
+    }
+
     public TeamResponse createTeam(TeamCreateRequest request) {
         return coreTeamClient.createTeam(request);
     }
