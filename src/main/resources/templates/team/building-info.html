@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Building Info - Re I New</title>
 
-    <link rel="stylesheet" th:href="@{/css/myteams.css}">
-    <link rel="stylesheet" th:href="@{/css/basic/header-sidebar.css}">
+    <link rel="stylesheet" href="/fonts/font.css">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
     <link rel="stylesheet" th:href="@{/css/team/buildings.css}">
+
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -17,25 +21,35 @@
     <meta name="application-name" content="4iren">
 </head>
 <body>
+<!-- 전체 레이아웃: 사이드바(좌측) + 메인 콘텐츠 영역(우측) -->
 <div class="layout">
+    <!-- 공통 좌측 사이드바 템플릿 프래그먼트 삽입 -->
     <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
-    <div class="main-wrap">
+    <!-- 우측 메인 작업 영역 -->
+    <div class="main-content-area">
+        <!-- 상단 헤더 프래그먼트 (페이지 타이틀을 매개변수로 전달) -->
         <div th:replace="~{layout/header :: header('Building-Info')}"></div>
 
-        <main class="main-content">
+        <!-- 본문 메인 콘텐츠 -->
+        <main class="content">
+            <!-- 상단 헤더 섹션: 뒤로가기 링크, 건물 이름, MQTT 등록 버튼, 건물 ID 요약 -->
             <div class="building-page-header">
                 <div>
+                    <!-- 이전 건물 목록 페이지로 이동하는 동적 링크 -->
                     <a class="back-link" th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId})}">Building List</a>
                     <h2>Building Info</h2>
+                    <!-- 컨트롤러에서 전달받은 팀 이름 표시 -->
                     <p th:text="${team.teamName}">Team Name</p>
                 </div>
                 <div class="building-header-actions">
+                    <!-- 매니저(ADMIN/OWNER) 권한이 있는 경우에만 MQTT 설정 페이지 이동 버튼 렌더링 -->
                     <a class="building-create-btn mqtt-register-link"
                        th:if="${team.myRole != null && team.myRole.isManager()}"
                        th:href="@{/teams/{teamId}/buildings/{buildingId}/mqtt(teamId=${team.teamId}, buildingId=${building.buildingId})}">
                         MQTT 등록
                     </a>
+                    <!-- 건물 식별자(ID) 표시 카드 -->
                     <div class="building-summary">
                         <span>Building ID</span>
                         <strong th:text="${building.buildingId}">0</strong>
@@ -43,6 +57,7 @@
                 </div>
             </div>
 
+            <!-- 건물 상세 정보 패널 (주소 및 통계 수치) -->
             <section class="building-info-panel">
                 <div class="building-info-main">
                     <div class="building-info-title">
@@ -50,11 +65,13 @@
                             <img src="/photo/icon/buidling-icon.png" alt="building">
                         </div>
                         <div>
+                            <!-- 건물 이름 출력 -->
                             <h3 th:text="${building.buildingName}">Building Name</h3>
-                            <p th:text="${#strings.defaultString(building.description, '설명이 없습니다.')}">Description</p>
+                            <!-- 건물 설명 (null 또는 공백 시 기본 안내문 대체) -->
+                            <p th:text="${#strings.defaultString(building.description, '등록된 설명이 없습니다.')}">Description</p>
                         </div>
                     </div>
-
+                    <!-- 주소 상세 목록 -->
                     <dl class="building-detail-list">
                         <div>
                             <dt>Road Address</dt>
@@ -71,10 +88,12 @@
                     </dl>
                 </div>
 
+                <!-- 건물이 보유한 하위 자산 통계 (강의실 수, 센서 수, 디바이스 수) -->
                 <div class="building-info-stats">
                     <div>
                         <span>Rooms</span>
                         <strong th:text="${building.roomCount}">0</strong>
+                        <!-- 해당 건물의 하위 강의실 목록 화면으로 이동 -->
                         <a class="stat-link"
                            th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId})}">
                             Classroom List
@@ -93,7 +112,7 @@
         </main>
     </div>
 </div>
-
+<!-- 공통 하단 푸터 프래그먼트 -->
 <div th:replace="~{layout/footer :: footer}"></div>
 </body>
 </html>

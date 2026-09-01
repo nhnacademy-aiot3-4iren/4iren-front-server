@@ -1,3 +1,8 @@
+/* ================================================================
+   건물 / 강의실 / 센서 / 디바이스 상세 및 목록 공통 스타일 (buildings.css)
+   ================================================================ */
+
+/* 1. 상단 페이지 헤더 (뒤로가기, 타이틀, 우측 요약/버튼) */
 .building-page-header {
     display: flex;
     justify-content: space-between;
@@ -27,6 +32,11 @@
     text-decoration: none;
 }
 
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* 상단 우측 요약 박스 */
 .building-summary {
     min-width: 140px;
     background: #ffffff;
@@ -42,6 +52,7 @@
     gap: 12px;
 }
 
+/* 생성 및 등록 버튼 */
 .building-create-btn {
     align-self: stretch;
     background: #ff9d42;
@@ -52,6 +63,13 @@
     font-size: 14px;
     font-weight: 800;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.building-create-btn:hover {
+    background: #f38b2a;
 }
 
 .mqtt-register-link {
@@ -78,6 +96,7 @@
     line-height: 1;
 }
 
+/* 2. 카드 목록 패널 (건물/강의실/디바이스/센서 리스트) */
 .building-list-panel {
     display: flex;
     flex-direction: column;
@@ -94,74 +113,6 @@
     border-radius: 8px;
     padding: 22px 24px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
-}
-
-.building-detail-link {
-    flex: 0 0 auto;
-    background: #4a7dff;
-    color: #ffffff;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 13px;
-    font-weight: 800;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.asset-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
-    flex: 0 0 auto;
-}
-
-.asset-delete-btn {
-    flex: 0 0 auto;
-    background: #ffffff;
-    color: #d64a4a;
-    border: 1px solid #f0b7b7;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.asset-delete-btn:disabled {
-    opacity: 0.65;
-    cursor: default;
-}
-
-.room-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 14px;
-    flex: 0 0 auto;
-}
-
-.room-subscription-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-    min-width: 188px;
-}
-
-.room-subscription-text {
-    margin: 0;
-    color: #737791;
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.room-subscription-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
 }
 
 .building-main {
@@ -185,6 +136,14 @@
 .building-icon img {
     width: 24px;
     height: 24px;
+}
+
+.room-icon {
+    background: #eef4ff;
+}
+
+.asset-icon {
+    background: #eef9f5;
 }
 
 .building-main h3 {
@@ -234,6 +193,49 @@
     line-height: 1;
 }
 
+/* 카드 우측 액션 버튼들 */
+.asset-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
+.building-detail-link {
+    flex: 0 0 auto;
+    background: #4a7dff;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.building-detail-link:hover {
+    background: #3b6ae8;
+}
+
+.asset-delete-btn {
+    flex: 0 0 auto;
+    background: #ffffff;
+    color: #d64a4a;
+    border: 1px solid #f0b7b7;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.asset-delete-btn:hover {
+    background: #fff5f5;
+}
+
+/* 3. 상세 정보 패널 (Building Info, Room Info 본문) */
 .building-info-panel {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 260px;
@@ -243,225 +245,6 @@
     border-radius: 8px;
     padding: 30px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
-}
-
-.mqtt-register-panel {
-    display: block;
-}
-
-.mqtt-register-form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    max-width: 760px;
-}
-
-.mqtt-result {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    border: 1px solid #ccefe5;
-    border-radius: 8px;
-    background: #f2fbf8;
-    padding: 14px 16px;
-    color: #206d5a;
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.mqtt-result strong {
-    color: #158064;
-}
-
-.mqtt-result span {
-    color: #3f7669;
-}
-
-.mqtt-cancel-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-}
-
-.subscription-panel {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    background: #ffffff;
-    border: 1px solid #edf0f5;
-    border-radius: 8px;
-    padding: 22px 24px;
-    margin-bottom: 18px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
-}
-
-.subscription-panel h3 {
-    margin: 0 0 6px;
-    color: #111;
-    font-size: 18px;
-    font-weight: 900;
-}
-
-.subscription-panel p {
-    margin: 0;
-    color: #737791;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.room-briefing-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-    margin-bottom: 18px;
-}
-
-.room-briefing-panel {
-    background: #ffffff;
-    border: 1px solid #edf0f5;
-    border-radius: 8px;
-    padding: 22px 24px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
-}
-
-.room-briefing-header {
-    margin-bottom: 14px;
-}
-
-.room-briefing-header span {
-    display: block;
-    margin-bottom: 6px;
-    color: #4a7dff;
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.room-briefing-header h3 {
-    margin: 0;
-    color: #111;
-    font-size: 18px;
-    font-weight: 900;
-    line-height: 1.45;
-}
-
-.room-briefing-panel p {
-    margin: 10px 0 0;
-    color: #555;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.6;
-}
-
-.room-briefing-panel ul {
-    margin: 14px 0 0;
-    padding-left: 18px;
-    color: #555;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.6;
-}
-
-.room-briefing-panel li + li {
-    margin-top: 6px;
-}
-
-.subscription-btn {
-    border: 0;
-    border-radius: 8px;
-    padding: 12px 18px;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.subscription-btn.subscribe {
-    background: #4a7dff;
-}
-
-.subscription-btn.unsubscribe {
-    background: #f38b2a;
-}
-
-.subscription-btn:disabled {
-    opacity: 0.65;
-    cursor: default;
-}
-
-.notification-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #333;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.notification-toggle input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.notification-toggle span {
-    position: relative;
-    width: 46px;
-    height: 26px;
-    border-radius: 999px;
-    background: #c9ceda;
-    transition: background-color 0.2s;
-}
-
-.notification-toggle span::after {
-    content: "";
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-    transition: transform 0.2s;
-}
-
-.notification-toggle input:checked + span {
-    background: #33c09c;
-}
-
-.notification-toggle input:checked + span::after {
-    transform: translateX(20px);
-}
-
-.notification-toggle.disabled {
-    opacity: 0.55;
-    cursor: default;
-}
-
-.notification-toggle.compact {
-    gap: 6px;
-}
-
-.notification-toggle.compact span {
-    width: 40px;
-    height: 22px;
-}
-
-.notification-toggle.compact span::after {
-    width: 16px;
-    height: 16px;
-}
-
-.notification-toggle.compact input:checked + span::after {
-    transform: translateX(18px);
-}
-
-.room-subscription-actions .subscription-btn {
-    padding: 9px 12px;
-    font-size: 12px;
 }
 
 .building-info-main {
@@ -525,27 +308,6 @@
     padding: 20px;
 }
 
-.stat-link {
-    display: inline-block;
-    margin-top: 14px;
-    color: #4a7dff;
-    font-size: 13px;
-    font-weight: 800;
-    text-decoration: none;
-}
-
-.room-icon {
-    background: #eef4ff;
-}
-
-.asset-icon {
-    background: #eef9f5;
-}
-
-.asset-row {
-    min-height: 86px;
-}
-
 .building-info-stats span {
     display: block;
     color: #737791;
@@ -561,37 +323,143 @@
     line-height: 1;
 }
 
-.building-empty {
-    height: 420px;
-}
-
-.building-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
-    margin-top: 28px;
-}
-
-.building-pagination a {
+.stat-link {
+    display: inline-block;
+    margin-top: 14px;
     color: #4a7dff;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
     text-decoration: none;
 }
 
-.building-pagination a.disabled {
-    color: #b7bbca;
-    pointer-events: none;
+/* 4. 구독 패널 & AI 브리핑 패널 (Room Info 전용) */
+.subscription-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background: #ffffff;
+    border: 1px solid #edf0f5;
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
 }
 
-.building-pagination span {
-    color: #555;
-    font-size: 14px;
+.subscription-panel h3 {
+    margin: 0 0 6px;
+    color: #111;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.subscription-panel p {
+    margin: 0;
+    color: #737791;
+    font-size: 13px;
     font-weight: 700;
 }
 
-/* ---------------- 모달 공통 오버레이 ---------------- */
+.subscription-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.subscription-btn {
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 18px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.subscription-btn.subscribe { background: #4a7dff; }
+.subscription-btn.unsubscribe { background: #f38b2a; }
+
+.notification-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.notification-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.notification-toggle span {
+    position: relative;
+    width: 46px;
+    height: 26px;
+    border-radius: 999px;
+    background: #c9ceda;
+    transition: background-color 0.2s;
+}
+
+.notification-toggle span::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    transition: transform 0.2s;
+}
+
+.notification-toggle input:checked + span { background: #33c09c; }
+.notification-toggle input:checked + span::after { transform: translateX(20px); }
+
+.room-briefing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.room-briefing-panel {
+    background: #ffffff;
+    border: 1px solid #edf0f5;
+    border-radius: 8px;
+    padding: 22px 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
+}
+
+.room-briefing-header h3 {
+    margin: 0;
+    color: #111;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.room-briefing-header span {
+    display: block;
+    margin-bottom: 6px;
+    color: #4a7dff;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.room-briefing-panel p,
+.room-briefing-panel ul {
+    margin: 10px 0 0;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+/* 5. 모달 및 센서 선택 UI */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -600,26 +468,17 @@
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
 }
 
 .modal-overlay.active {
     display: flex !important;
 }
 
-#buildingModalOverlay,
-#roomModalOverlay,
-#deviceModalOverlay,
-#sensorModalOverlay {
-    position: fixed;
-    min-height: 100vh;
-    overflow-y: auto;
-    padding: 40px 20px;
-    box-sizing: border-box;
-}
-
 .building-modal {
-    width: 680px;
-    max-width: min(92vw, 680px);
+    width: 600px;
+    max-width: 92vw;
     background: #ffffff;
     border-radius: 14px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -639,79 +498,88 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 28px 32px 32px;
+    padding: 24px 28px;
 }
 
 .building-form-group {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
     gap: 8px;
-    margin: 0;
 }
 
 .building-form-group label {
-    width: auto;
-    margin: 0;
-    color: #333;
     font-size: 13px;
     font-weight: 800;
+    color: #333;
 }
 
 .building-form-group input:not([type="checkbox"]),
 .building-form-group textarea {
     width: 100%;
-    min-width: 0;
     box-sizing: border-box;
-    border: 1px solid #f38b2a;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 12px 14px;
-    color: #333;
-    font-family: inherit;
     font-size: 14px;
     outline: none;
 }
 
 .building-form-group input:not([type="checkbox"]):focus,
 .building-form-group textarea:focus {
-    box-shadow: 0 0 0 2px rgba(243, 139, 42, 0.2);
+    border-color: #ff9d42;
 }
 
-.building-form-group textarea {
-    height: 96px;
-    min-height: 96px;
-    resize: none;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-}
-
-.address-input-row {
+.sensor-select-box {
+    min-height: 240px;
+    max-height: 340px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #fafbfc;
     display: flex;
+    flex-direction: column;
     gap: 8px;
-    width: 100%;
-    min-width: 0;
+    box-sizing: border-box;
 }
 
-.address-input-row input {
-    flex: 1 1 auto;
+.sensor-select-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 10px 14px !important;
+    background: #ffffff !important;
+    border: 1px solid #edf0f5 !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
 }
 
-.address-input-row button {
-    flex: 0 0 auto;
-    border: 0;
-    border-radius: 8px;
-    background: #ff9d42;
-    color: #ffffff;
-    min-width: 86px;
-    padding: 0 12px;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    white-space: nowrap;
+.sensor-select-item:hover {
+    background: #fff8f0 !important;
+    border-color: #fed7aa !important;
+}
+
+.sensor-checkbox {
+    width: 18px !important;
+    height: 18px !important;
+    accent-color: #ff9800 !important;
+    flex: 0 0 18px !important;
+}
+
+.sensor-item-info {
+    display: flex !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+
+.sensor-location-title {
+    font-weight: 700 !important;
+    color: #2d3748 !important;
+}
+
+.sensor-deveui-sub {
+    font-size: 12.5px !important;
+    color: #a0aec0 !important;
 }
 
 .building-modal-actions {
@@ -721,167 +589,39 @@
     margin-top: 10px;
 }
 
-.modal-cancel-btn,
-.modal-submit-btn {
+.modal-cancel-btn, .modal-submit-btn {
     border: 0;
     border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 14px;
+    padding: 10px 18px;
+    font-size: 13px;
     font-weight: 800;
     cursor: pointer;
 }
 
-.modal-cancel-btn {
-    background: #edf0f5;
-    color: #555;
-}
+.modal-cancel-btn { background: #edf0f5; color: #555; }
+.modal-submit-btn { background: #4a7dff; color: #ffffff; }
 
-.modal-submit-btn {
-    background: #4a7dff;
-    color: #ffffff;
-}
-
-.modal-submit-btn:disabled {
-    opacity: 0.65;
-    cursor: default;
-}
-
-/* ---------------- 센서 등록 체크박스 리스트 영역 (수정됨) ---------------- */
-.sensor-select-box {
-    min-height: 280px;
-    max-height: 380px;
-    overflow-y: auto;
-    border: 1px solid #e2e8f0;
-    padding: 12px;
-    border-radius: 10px;
-    background-color: #fafbfc;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    box-sizing: border-box;
-}
-
-.sensor-select-status {
-    color: #888888;
-    font-size: 13px;
+.building-empty {
+    padding: 60px 0;
     text-align: center;
-    margin: auto 0;
-    padding: 40px 0;
-}
-
-.sensor-select-item {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 14px !important;
-    padding: 12px 16px !important;
-    background-color: #ffffff !important;
-    border: 1px solid #eef0f4 !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-    box-sizing: border-box !important;
-    transition: all 0.15s ease-in-out;
-}
-
-.sensor-select-item:hover {
-    background-color: #fff9f2 !important;
-    border-color: #fed7aa !important;
-}
-
-/* 체크박스 크기 및 스타일 강제 고정 */
-.building-form-group .sensor-select-box input[type="checkbox"],
-.sensor-checkbox {
-    width: 18px !important;
-    height: 18px !important;
-    min-width: 18px !important;
-    max-width: 18px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    flex: 0 0 18px !important;
-    cursor: pointer !important;
-    accent-color: #ff9800 !important;
-}
-
-.sensor-item-info {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    gap: 12px !important;
-}
-
-.sensor-location-title {
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    color: #2d3748 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-}
-
-.sensor-deveui-sub {
-    font-size: 12.5px !important;
-    color: #a0aec0 !important;
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-    margin-left: auto !important;
-}
-
-.sensor-notice-text {
     color: #94a3b8;
-    font-size: 12px;
-    margin-top: 6px;
-    line-height: 1.4;
 }
 
-/* ---------------- 반응형 ---------------- */
-@media (max-width: 900px) {
-    .building-page-header,
-    .building-row {
-        align-items: stretch;
-        flex-direction: column;
-    }
+.building-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+}
 
-    .building-header-actions {
-        flex-direction: column;
-    }
+.building-pagination a {
+    color: #4a7dff;
+    font-weight: 800;
+    text-decoration: none;
+}
 
-    .building-stats {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        width: 100%;
-    }
-
-    .building-detail-link {
-        text-align: center;
-    }
-
-    .room-actions,
-    .room-subscription-controls,
-    .room-subscription-actions {
-        align-items: stretch;
-        width: 100%;
-    }
-
-    .room-actions {
-        flex-direction: column;
-    }
-
-    .room-subscription-controls {
-        min-width: 0;
-    }
-
-    .room-subscription-actions {
-        justify-content: space-between;
-    }
-
-    .building-info-panel {
-        grid-template-columns: 1fr;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
+.building-pagination a.disabled {
+    color: #cbd5e1;
+    pointer-events: none;
 }

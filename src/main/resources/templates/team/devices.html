@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Device List - Re I New</title>
 
-    <link rel="stylesheet" th:href="@{/css/myteams.css}">
-    <link rel="stylesheet" th:href="@{/css/basic/header-sidebar.css}">
+    <link rel="stylesheet" href="/fonts/font.css">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/team/buildings.css}">
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebarmenu/team/bulidings/buildings.css}">
+
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -20,10 +25,11 @@
 <div class="layout">
     <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
-    <div class="main-wrap">
+    <div class="main-content-area">
         <div th:replace="~{layout/header :: header('Devices')}"></div>
+        <main class="content">
 
-        <main class="main-content">
+            <!-- 상단 헤더: 이전 강의실 화면 링크 및 디바이스 추가 버튼 -->
             <div class="building-page-header">
                 <div>
                     <a class="back-link"
@@ -39,10 +45,11 @@
                         <strong th:text="${devices.totalElements}">0</strong>
                     </div>
                     <button class="building-create-btn" type="button" id="openDeviceModalBtn"
-                            th:if="${team.myRole != null && team.myRole.isManager()}">+ Device 생성</button>
+                            th:if="${team.myRole != null && team.myRole.isManager()}">+ Device 추가</button>
                 </div>
             </div>
 
+            <!-- 디바이스(제어기 등) 목록 렌더링 -->
             <section class="building-list-panel" th:if="${!#lists.isEmpty(devices.content)}">
                 <article class="building-row asset-row" th:each="device : ${devices.content}">
                     <div class="building-main">
@@ -65,10 +72,12 @@
                 </article>
             </section>
 
+            <!-- 빈 목록 안내 -->
             <div class="empty-state building-empty" th:if="${#lists.isEmpty(devices.content)}">
-                <p>등록된 장치가 없습니다.</p>
+                <p>등록된 디바이스가 없습니다.</p>
             </div>
 
+            <!-- 페이징 영역 -->
             <nav class="building-pagination" th:if="${devices.totalPages > 1}">
                 <a th:classappend="${devices.first} ? 'disabled'"
                    th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId}, page=${devices.page - 1}, size=${size}, sort=${sort})}">
@@ -81,13 +90,14 @@
                 </a>
             </nav>
 
+            <!-- 디바이스 등록 모달 -->
             <div class="modal-overlay" id="deviceModalOverlay">
                 <div class="modal-folder-wrapper building-modal">
-                    <div class="modal-tab">Device 생성</div>
+                    <div class="modal-tab">Device 추가</div>
                     <div class="modal-content">
                         <div class="building-form-group">
                             <label>Device Name</label>
-                            <input type="text" id="deviceNameInput" placeholder="ex ) 에어컨 제어 장치">
+                            <input type="text" id="deviceNameInput" placeholder="ex ) 에어컨 제어기">
                         </div>
                         <div class="building-modal-actions">
                             <button class="modal-cancel-btn" type="button" id="closeDeviceModalBtn">Cancel</button>
@@ -101,6 +111,8 @@
 </div>
 
 <div th:replace="~{layout/footer :: footer}"></div>
+
+<!-- devices.js에서 사용할 변수 -->
 <script th:inline="javascript">
     const teamId = /*[[${team.teamId}]]*/ null;
     const roomId = /*[[${room.roomId}]]*/ null;

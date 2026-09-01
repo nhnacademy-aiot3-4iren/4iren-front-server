@@ -2,23 +2,40 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Team Info</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Info - Re I New</title>
+
     <link rel="stylesheet" href="/fonts/font.css">
-    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
     <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
-    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
     <link rel="stylesheet" th:href="@{/css/team/team-info.css}">
-    <link rel="stylesheet" th:href="@{/css/room-info.css}">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
 </head>
 <body>
+<!-- 전체 레이아웃: 사이드바(좌측) + 메인 작업영역(우측) -->
 <div class="layout">
+    <!-- 1. 공통 좌측 사이드바 템플릿 삽입 -->
     <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
+    <!-- 2. 우측 메인 콘텐츠 영역 -->
     <div class="main-content-area">
+        <!-- 상단 헤더 프래그먼트 -->
         <div th:replace="~{layout/header :: header('Team Info')}"></div>
+
         <main class="content">
+            <!-- 가로 2단 카드 배치 (좌측: 팀정보 폼 / 우측: 건물·강의실 리스트) -->
             <div class="info-cards-row">
+
+                <!-- [좌측 패널] 팀 이름/설명 수정 및 멤버 수 요약 카드 -->
                 <div class="info-card info-left-panel">
                     <div class="info-header">
                         <div>
@@ -32,18 +49,23 @@
                         </button>
                     </div>
 
+                    <!-- 팀 정보 입력 폼 -->
                     <div class="input-section">
+                        <!-- 팀 이름 입력 -->
                         <div class="form-group">
                             <label for="editTeamName">TEAM NAME</label>
                             <div class="input-wrapper">
                                 <input type="text" id="editTeamName" th:value="${team.teamName}"
                                        th:readonly="${team.myRole == null || !team.myRole.isManager()}">
+                                <!-- 관리자/소유자만 표시되는 텍스트 전체 지우기 버튼 -->
                                 <button type="button" class="clear-btn" id="clearNameBtn"
                                         th:if="${team.myRole != null && team.myRole.isManager()}">
                                     <img src="/photo/icon/signout-icon.png" alt="clear" id="clearIcon">
                                 </button>
                             </div>
                         </div>
+
+                        <!-- 팀 설명 입력 -->
                         <div class="form-group">
                             <label for="editTeamDesc">DESCRIPTION</label>
                             <textarea id="editTeamDesc" placeholder="Enter about space ..." th:text="${team.description}"
@@ -51,9 +73,11 @@
                         </div>
                     </div>
 
+                    <!-- 저장 버튼 (매니저 권한 소유 시에만 렌더링) -->
                     <button class="btn-save" id="saveTeamInfoBtn"
                             th:if="${team.myRole != null && team.myRole.isManager()}">Team Info Save</button>
 
+                    <!-- 카드 내부 구분선 -->
                     <div class="info-section-divider"></div>
 
                     <div class="stat-card stat-card-flat">
@@ -67,39 +91,49 @@
                             </div>
                             <div class="member-count-box">
                                 <span class="member-label">Total Members</span>
-                                <span class="member-number" th:text="${team.memberCount}">0</span>
+                                <strong class="member-number" th:text="${team.memberCount}">0</strong>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Building/Classroom split -->
+                <!-- [우측 패널] 건물 및 강의실 분할 리스트 카드 -->
                 <div class="info-card info-lists-panel"
                      th:data-team-id="${team.teamId}"
                      th:data-can-manage="${team.myRole != null && team.myRole.isManager()}">
+
                     <div class="lists-split">
+                        <!-- 건물 목록 (좌측) -->
                         <div class="list-half">
                             <div class="list-half-header">
                                 <h3>Building List</h3>
                                 <span class="sub-text">Team에 소속된 건물 리스트</span>
                             </div>
+                            <!-- JS를 통해 건물이 비동기로 주입되는 목록 태그 -->
                             <ul class="entity-list" id="buildingList">
                                 <li class="entity-list-empty">불러오는 중입니다...</li>
                             </ul>
+                            <!-- 건물 추가/삭제 액션 버튼 (매니저 전용) -->
                             <div class="list-actions" th:if="${team.myRole != null && team.myRole.isManager()}">
                                 <button type="button" class="btn-outline-sm" id="addBuildingBtn">+ 추가</button>
                                 <button type="button" class="btn-outline-sm btn-danger-outline" id="deleteBuildingBtn" disabled>삭제</button>
                             </div>
                         </div>
+
+                        <!-- 가운데 세로 구분선 -->
                         <div class="list-divider"></div>
+
+                        <!-- 강의실 목록 (우측) -->
                         <div class="list-half">
                             <div class="list-half-header">
                                 <h3 id="classroomListTitle">Classroom List</h3>
                                 <span class="sub-text" id="classroomListSubtitle">건물을 선택하면 강의실 목록이 표시됩니다</span>
                             </div>
+                            <!-- 선택된 건물의 강의실이 비동기로 주입되는 목록 태그 -->
                             <ul class="entity-list" id="classroomList">
                                 <li class="entity-list-empty">왼쪽에서 건물을 선택하세요.</li>
                             </ul>
+                            <!-- 강의실 추가/삭제 액션 버튼 (건물 선택 시 노출) -->
                             <div class="list-actions" id="classroomActions" style="display:none;">
                                 <button type="button" class="btn-outline-sm" id="addRoomBtn">+ 추가</button>
                                 <button type="button" class="btn-outline-sm btn-danger-outline" id="deleteRoomBtn" disabled>삭제</button>
@@ -107,12 +141,15 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </main>
     </div>
 </div>
 
-<!-- 건물 추가 모달 (MQTT 설정 포함) -->
+<!-- ======================================================= -->
+<!-- 모달 영역: 신규 건물 등록 모달 (MQTT 브로커 설정 포함) -->
+<!-- ======================================================= -->
 <dialog class="modal" id="addBuildingModal">
     <div class="modal-header">
         <h2>건물 추가</h2>
@@ -134,9 +171,9 @@
         <label class="modal-field-label" for="newBuildingDetailAddress">상세 주소</label>
         <input type="text" id="newBuildingDetailAddress" placeholder="선택 입력">
 
-        <!-- MQTT 브로커 입력 필드 -->
-        <div style="margin-top: 18px; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 14px;">
-            <div style="font-size: 14px; font-weight: 600; color: #4a5568; margin-bottom: 10px;">MQTT 브로커 설정 (선택)</div>
+        <!-- MQTT 브로커 연동 설정 필드 (선택 사항) -->
+        <div style="margin-top: 18px; border-top: 1px solid var(--border-color, #edf0f5); padding-top: 14px;">
+            <div style="font-size: 13.5px; font-weight: 700; color: #334155; margin-bottom: 10px;">MQTT 브로커 설정 (선택)</div>
 
             <label class="modal-field-label" for="newMqttServerName">MQTT 서버 이름</label>
             <input type="text" id="newMqttServerName" placeholder="예) 본관 센서 브로커">
@@ -162,7 +199,9 @@
     </div>
 </dialog>
 
-<!-- 강의실 추가 모달 -->
+<!-- ======================================================= -->
+<!-- 모달 영역: 강의실 추가 모달 -->
+<!-- ======================================================= -->
 <dialog class="modal" id="addRoomModal">
     <div class="modal-header">
         <h2>강의실 추가</h2>
@@ -171,8 +210,10 @@
     <div class="modal-body">
         <label class="modal-field-label" for="newRoomName">강의실 이름</label>
         <input type="text" id="newRoomName" placeholder="예) 301호">
+
         <label class="modal-field-label" for="newRoomDesc">설명</label>
         <input type="text" id="newRoomDesc" placeholder="선택 입력">
+
         <p class="form-error" id="addRoomError"></p>
         <div class="modal-actions">
             <button type="button" class="btn-outline" id="addRoomCancelBtn">취소</button>
@@ -269,15 +310,21 @@
 
 <div th:replace="~{layout/footer :: footer}"></div>
 
+<!-- ======================================================= -->
+<!-- 페이지 내부 동작 자바스크립트 -->
+<!-- ======================================================= -->
 <script th:inline="javascript">
+    // Thymeleaf 모델 객체에서 필요한 ID 및 권한 플래그 주입
     const teamId = /*[[${team.teamId}]]*/ null;
     const canManage = /*[[${team.myRole != null && team.myRole.isManager()}]]*/ false;
 
+    // DOM 요소 캐싱
     const editTeamName = document.getElementById('editTeamName');
     const clearNameBtn = document.getElementById('clearNameBtn');
     const saveTeamInfoBtn = document.getElementById('saveTeamInfoBtn');
     const editTeamDesc = document.getElementById('editTeamDesc');
 
+    // 1. 팀 이름 입력창 클리어(X) 버튼 토글 로직
     if (clearNameBtn) {
         function toggleClearButton() {
             clearNameBtn.style.display = editTeamName.value.length > 0 ? 'flex' : 'none';
@@ -291,18 +338,23 @@
         });
     }
 
+    // 2. 팀 정보(이름, 설명) 수정 저장 API 호출
     if (saveTeamInfoBtn) {
         saveTeamInfoBtn.addEventListener('click', async () => {
             const updatedName = editTeamName.value.trim();
             const updatedDesc = editTeamDesc.value.trim();
+
             if (!updatedName) { alert("팀 이름을 입력해주세요."); return; }
+
             try {
                 const response = await fetch(`/api/front/teams/${teamId}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ teamName: updatedName, description: updatedDesc })
                 });
+
                 if (!response.ok) throw new Error(await response.text());
+
                 alert("팀 정보가 성공적으로 수정되었습니다!");
                 window.location.reload();
             } catch (error) {
@@ -311,6 +363,7 @@
         });
     }
 
+    // 우측 리스트 DOM 요소
     const buildingListEl = document.getElementById('buildingList');
     const classroomListEl = document.getElementById('classroomList');
     const classroomListTitle = document.getElementById('classroomListTitle');
@@ -324,6 +377,7 @@
     let selectedBuildingId = null;
     let selectedRoomId = null;
 
+    // 공통 Fetch JSON 헬퍼 함수
     async function requestJson(url, options = {}) {
         const response = await fetch(url, {
             headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
@@ -334,6 +388,7 @@
         return response.json();
     }
 
+    // 3. 건물 목록 조회 및 렌더링
     async function loadBuildings() {
         buildingListEl.innerHTML = '<li class="entity-list-empty">불러오는 중입니다...</li>';
         try {
@@ -349,11 +404,14 @@
             buildingListEl.innerHTML = '<li class="entity-list-empty">등록된 건물이 없습니다.</li>';
             return;
         }
+
         buildingListEl.innerHTML = buildings.map(b => `
             <li class="entity-list-item" data-building-id="${b.buildingId}">
                 <span class="entity-name">${escapeHtml(b.buildingName)}</span>
                 <a href="/teams/${teamId}/buildings/${b.buildingId}" class="btn-detail-blue" onclick="event.stopPropagation()">상세보기</a>
             </li>`).join('');
+
+        // 각 건물 항목 클릭 시 선택 상태 활성화 및 하위 강의실 목록 로드
         buildingListEl.querySelectorAll('.entity-list-item').forEach(li => {
             li.addEventListener('click', () => selectBuilding(Number(li.dataset.buildingId), li));
         });
@@ -362,19 +420,26 @@
     function selectBuilding(buildingId, liEl) {
         selectedBuildingId = buildingId;
         selectedRoomId = null;
+
+        // 선택 스타일(.selected) 부여
         buildingListEl.querySelectorAll('.entity-list-item').forEach(li => li.classList.remove('selected'));
         liEl.classList.add('selected');
+
         if (deleteBuildingBtn) deleteBuildingBtn.disabled = false;
         if (deleteRoomBtn) deleteRoomBtn.disabled = true;
+
         loadRooms(buildingId);
     }
 
+    // 4. 강의실 목록 조회 및 렌더링
     async function loadRooms(buildingId) {
         const selectedName = buildingListEl.querySelector('.entity-list-item.selected .entity-name')?.textContent || '';
         classroomListTitle.textContent = 'Classroom List';
         classroomListSubtitle.textContent = `${selectedName}에 소속된 강의실 리스트`;
         classroomListEl.innerHTML = '<li class="entity-list-empty">불러오는 중입니다...</li>';
+
         if (canManage) classroomActions.style.display = 'flex';
+
         try {
             const result = await requestJson(`/api/front/teams/${teamId}/buildings/${buildingId}/rooms?size=100&sort=id,ASC`);
             renderRooms(result.content || []);
@@ -388,11 +453,13 @@
             classroomListEl.innerHTML = '<li class="entity-list-empty">등록된 강의실이 없습니다.</li>';
             return;
         }
+
         classroomListEl.innerHTML = rooms.map(r => `
             <li class="entity-list-item" data-room-id="${r.roomId}">
                 <span class="entity-name">${escapeHtml(r.roomName)}</span>
                 <a href="/teams/${teamId}/buildings/${selectedBuildingId}/rooms/${r.roomId}" class="btn-detail-blue" onclick="event.stopPropagation()">상세보기</a>
             </li>`).join('');
+
         classroomListEl.querySelectorAll('.entity-list-item').forEach(li => {
             li.addEventListener('click', () => {
                 classroomListEl.querySelectorAll('.entity-list-item').forEach(el => el.classList.remove('selected'));
@@ -403,7 +470,7 @@
         });
     }
 
-    // 건물 추가 모달 컨트롤
+    // 5. 건물 추가 모달 컨트롤
     const addBuildingModal = document.getElementById('addBuildingModal');
 
     function resetAddBuildingForm() {
@@ -435,7 +502,7 @@
         if (!buildingName) { errorEl.textContent = '건물 이름을 입력해주세요.'; return; }
 
         try {
-            // 1. 건물 생성 API 호출
+            // 1. 건물 엔티티 생성 API 호출
             const buildingResult = await requestJson(`/api/front/teams/${teamId}/buildings`, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -449,7 +516,7 @@
 
             const buildingId = buildingResult.buildingId;
 
-            // 2. MQTT 브로커 입력 필드 확인
+            // 2. MQTT 브로커 입력 필드가 작성된 경우 연동 API 호출
             const serverName = document.getElementById('newMqttServerName').value.trim();
             const brokerUrl = document.getElementById('newMqttBrokerUrl').value.trim();
             const topic = document.getElementById('newMqttTopic').value.trim();
@@ -483,10 +550,12 @@
         }
     });
 
+    // 6. 건물 삭제
     if (deleteBuildingBtn) {
         deleteBuildingBtn.addEventListener('click', async () => {
             if (!selectedBuildingId) return;
-            if (!confirm('선택한 건물을 삭제하시겠습니까? 강의실이 있는 건물은 삭제할 수 없습니다.')) return;
+            if (!confirm('선택한 건물을 삭제하시겠습니까? 하위 강의실이 있는 건물은 삭제할 수 없습니다.')) return;
+
             try {
                 await requestJson(`/api/front/teams/${teamId}/buildings/${selectedBuildingId}`, { method: 'DELETE' });
                 selectedBuildingId = null;
@@ -501,6 +570,7 @@
         });
     }
 
+    // 7. 강의실 추가 모달 컨트롤
     const addRoomModal = document.getElementById('addRoomModal');
     if (addRoomBtn) {
         addRoomBtn.addEventListener('click', () => {
@@ -517,7 +587,9 @@
     document.getElementById('addRoomSubmitBtn')?.addEventListener('click', async () => {
         const errorEl = document.getElementById('addRoomError');
         const roomName = document.getElementById('newRoomName').value.trim();
+
         if (!roomName) { errorEl.textContent = '강의실 이름을 입력해주세요.'; return; }
+
         try {
             await requestJson(`/api/front/teams/${teamId}/buildings/${selectedBuildingId}/rooms`, {
                 method: 'POST',
@@ -534,10 +606,12 @@
         }
     });
 
+    // 8. 강의실 삭제
     if (deleteRoomBtn) {
         deleteRoomBtn.addEventListener('click', async () => {
             if (!selectedRoomId) return;
             if (!confirm('선택한 강의실을 삭제하시겠습니까?')) return;
+
             try {
                 await requestJson(`/api/front/teams/${teamId}/buildings/${selectedBuildingId}/rooms/${selectedRoomId}`, { method: 'DELETE' });
                 selectedRoomId = null;
@@ -549,6 +623,7 @@
         });
     }
 
+    // XSS 방지 HTML Escape 헬퍼 함수
     function escapeHtml(value) {
         return String(value)
             .replaceAll('&', '&amp;')
@@ -558,6 +633,7 @@
             .replaceAll("'", '&#039;');
     }
 
+    // DOM 준비 완료 시 건물 목록 최초 로드
     document.addEventListener('DOMContentLoaded', loadBuildings);
 </script>
 <script src="/js/weather-policy.js"></script>
