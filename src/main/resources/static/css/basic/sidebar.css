@@ -1,14 +1,34 @@
+/* ==========================================================================
+   Sidebar - frosted glass
+   유리 느낌을 한 곳에서 조절할 수 있도록 변수로 뺐습니다.
+   더 불투명하게 하고 싶으면 --glass-bg 의 알파값(0.62)만 올리면 됩니다.
+   (단, 1.0 이 되면 backdrop-filter 의 블러가 보이지 않으니 0.85 이하 권장)
+   ========================================================================== */
+:root {
+    /* 살짝 따뜻한 톤이 도는 반투명 흰색 - 배경이 비치되 뿌옇게 덮이는 정도 */
+    --glass-bg: rgba(255, 252, 249, 0.62);
+    --glass-bg-strong: rgba(255, 253, 251, 0.72); /* 선택된 메뉴용(조금 더 밝게) */
+    --glass-bg-hover: rgba(255, 255, 255, 0.34);
+
+    /* 외곽선: 기존 #A6A6A6 실선 대신 아주 옅은 따뜻한 회색 */
+    --glass-border: rgba(255, 255, 255, 0.55);
+    --glass-border-outer: rgba(150, 138, 127, 0.14);
+
+    --glass-blur: 20px;
+}
+
 .sidebar {
+    /* 기존의 inset #262626(어두운 안쪽 선) 두 줄을 빼고,
+       밝은 하이라이트 + 아주 옅은 테두리만 남겨 외곽선을 옅게 했습니다. */
     box-shadow:
-            0px 0px 2px rgba(0, 0, 0, 0.1),
-            0px 1px 8px rgba(0, 0, 0, 0.1),
-            inset 3px 3px 0.5px -3.5px #FFFFFF,
-            inset 2px 2px 0.5px -2px #262626,
-            inset -2px -2px 0.5px -2px #262626,
-            inset 0px 0px 0px 1px #A6A6A6,
-            inset 0px 0px 8px #F2F2F2;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+            0 1px 2px rgba(90, 78, 68, 0.04),
+            0 8px 24px rgba(90, 78, 68, 0.06),
+            inset 1px 1px 0.5px -1px rgba(255, 255, 255, 0.9),
+            inset 0 0 0 1px var(--glass-border),
+            inset 0 0 0 1.5px var(--glass-border-outer),
+            inset 0 0 30px rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
     border-radius: 21px;
     margin: 10px 20px 25px 10px;
     padding: 30px 0;
@@ -17,8 +37,7 @@
     box-sizing: border-box;
     width: 250px;
     flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.3);
-
+    background: var(--glass-bg);
 }
 
 .sidebar-logo {
@@ -37,7 +56,7 @@
 .user-info-block {
     padding: 0 24px;
     margin-bottom: 20px;
-    border-bottom: 1px solid rgba(102, 90, 80, 0.12);
+    border-bottom: 1px solid rgba(102, 90, 80, 0.10);
     padding-bottom: 20px;
 }
 
@@ -138,28 +157,25 @@
 
 .nav-item:hover,
 .nav-item-toggle:hover {
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: var(--glass-bg-hover);
     color: #444;
 }
 
-/* 선택된 메뉴 = 같은 유리 레시피를 적용한 필 버튼 */
+/* 선택된 메뉴 = 같은 유리 레시피를 적용한 필 버튼
+   사이드바 본체보다 살짝 더 밝게 해서 "떠 있는" 느낌만 주고,
+   테두리는 흰색 하이라이트 한 겹만 남겼습니다. */
 .nav-item.active,
 .nav-item-toggle.expanded {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--glass-bg-strong);
     box-shadow:
-            0px 0px 2px rgba(0, 0, 0, 0.1),
-            0px 1px 8px rgba(0, 0, 0, 0.1),
-            inset 3px 3px 0.5px -3.5px #FFFFFF,
-            inset 2px 2px 0.5px -2px #262626,
-            inset -2px -2px 0.5px -2px #262626,
-            inset 0px 0px 0px 1px #A6A6A6,
-            inset 0px 0px 8px #F2F2F2;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+            0 1px 3px rgba(90, 78, 68, 0.05),
+            inset 1px 1px 0.5px -1px rgba(255, 255, 255, 0.9),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+            inset 0 0 0 1.5px rgba(150, 138, 127, 0.10);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border-radius: 100px;
-    color: #000;
+    color: #3a3330;
     font-weight: 500;
 }
 
@@ -195,7 +211,8 @@
 }
 
 /* 트리 연결선: 항목마다 자기 몫의 L자 선을 그려서 둥글게 이어지게 함
-   (세로선 하나 + 가로 stub 대신, border로 둥근 모서리를 만드는 방식) */
+   (세로선 하나 + 가로 stub 대신, border로 둥근 모서리를 만드는 방식)
+   유리 배경이 밝아진 만큼 선도 함께 옅게 낮췄습니다. */
 .submenu-item::before {
     content: '';
     position: absolute;
@@ -203,8 +220,8 @@
     top: -21px;
     width: 16px;
     height: 40px; /* 항목 높이(38px) + 항목 간 gap(2px) */
-    border-left: 1.5px solid #b3a89c;
-    border-bottom: 1.5px solid #b3a89c;
+    border-left: 1.5px solid rgba(150, 138, 127, 0.45);
+    border-bottom: 1.5px solid rgba(150, 138, 127, 0.45);
     border-bottom-left-radius: 8px;
 }
 
@@ -229,37 +246,32 @@
     left: 12px;
     right: 12px;
     bottom: -8px;
-    border-bottom: 1px solid rgba(102, 90, 80, 0.08);
+    border-bottom: 1px solid rgba(102, 90, 80, 0.07);
 }
 
 .submenu-item:hover {
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: var(--glass-bg-hover);
     color: #444;
 }
 
 .submenu-item.active {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--glass-bg-strong);
     box-shadow:
-            0px 0px 2px rgba(0, 0, 0, 0.1),
-            0px 1px 8px rgba(0, 0, 0, 0.1),
-            inset 3px 3px 0.5px -3.5px #FFFFFF,
-            inset 2px 2px 0.5px -2px #262626,
-            inset -2px -2px 0.5px -2px #262626,
-            inset 0px 0px 0px 1px #A6A6A6,
-            inset 0px 0px 8px #F2F2F2;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+            0 1px 3px rgba(90, 78, 68, 0.05),
+            inset 1px 1px 0.5px -1px rgba(255, 255, 255, 0.9),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+            inset 0 0 0 1.5px rgba(150, 138, 127, 0.10);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     border-radius: 100px;
-    color: #958a87;
+    color: #6d635f;
     font-weight: 500;
 }
 
 .sidebar-bottom {
     margin-top: auto;
     padding: 15px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid rgba(102, 90, 80, 0.10);
 }
 
 .sidebar-bottom .nav-item {
@@ -267,8 +279,6 @@
 }
 
 .sidebar-bottom .nav-item:hover {
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: var(--glass-bg-hover);
     color: #666;
 }
