@@ -552,7 +552,7 @@ dialog.modal::backdrop {
     font-weight: 700;
     color: #475569;
     cursor: pointer;
-}ㄷ
+}
 
 /* 7. 반응형 디자인 */
 @media (max-width: 1024px) {
