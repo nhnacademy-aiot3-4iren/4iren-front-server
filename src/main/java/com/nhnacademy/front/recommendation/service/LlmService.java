@@ -1,9 +1,8 @@
-package com.nhnacademy.front.service;
+package com.nhnacademy.front.recommendation.service;
 
 import com.nhnacademy.front.recommendation.client.RecommendationClient;
 import com.nhnacademy.front.recommendation.dto.AnswerDto;
 import com.nhnacademy.front.recommendation.dto.LlmRequestDto;
-import com.nhnacademy.front.recommendation.dto.LlmResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

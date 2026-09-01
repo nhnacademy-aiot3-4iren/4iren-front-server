@@ -1,7 +1,7 @@
 package com.nhnacademy.front.recommendation.controller;
 
 import com.nhnacademy.front.recommendation.dto.AnswerDto;
-import com.nhnacademy.front.service.LlmService;
+import com.nhnacademy.front.recommendation.service.LlmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
