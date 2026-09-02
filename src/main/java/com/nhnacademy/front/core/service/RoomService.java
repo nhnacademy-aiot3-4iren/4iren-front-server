@@ -102,6 +102,10 @@ public class RoomService {
         return statuses;
     }
 
+    public List<RoomSubscriptionResponse> getAllSubscriptions(Long teamId) {
+        return coreSubscriptionClient.getAllSubscriptions(teamId);
+    }
+
     public RoomSubscriptionResponse subscribeToRoom(Long teamId, Long roomId) {
         return coreSubscriptionClient.subscribeToRoom(teamId, roomId);
     }
