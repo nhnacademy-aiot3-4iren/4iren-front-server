@@ -1,6 +1,7 @@
 package com.nhnacademy.front.account.client;
 
 import com.nhnacademy.front.account.dto.signup.RegisterRequest;
+import com.nhnacademy.front.account.dto.user.ResetPasswordRequest;
 import com.nhnacademy.front.account.dto.user.UpdateRequest;
 import com.nhnacademy.front.account.dto.user.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -32,4 +33,8 @@ public interface AccountClient {
     void withdraw(
             @PathVariable("user-id") Long userId
     );
+
+    // 5. 임시 비밀번호 발급
+    @PostMapping("/reset-password")
+    void resetPassword(@RequestBody ResetPasswordRequest request);
 }

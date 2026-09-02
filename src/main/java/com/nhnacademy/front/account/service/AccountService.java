@@ -2,6 +2,7 @@ package com.nhnacademy.front.account.service;
 
 import com.nhnacademy.front.account.client.AccountClient;
 import com.nhnacademy.front.account.dto.signup.RegisterRequest;
+import com.nhnacademy.front.account.dto.user.ResetPasswordRequest;
 import com.nhnacademy.front.account.dto.user.UpdateRequest;
 import com.nhnacademy.front.account.dto.user.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,10 @@ public class AccountService {
     //회원 정보 조회(마이페이지 등)
     public UserResponse getUser(Long userId) {
         return accountClient.getUser(userId);
+    }
+
+    //임시 비밀번호 발급
+    public void resetPassword(ResetPasswordRequest request) {
+        accountClient.resetPassword(request);
     }
 }

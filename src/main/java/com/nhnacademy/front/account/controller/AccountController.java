@@ -1,10 +1,10 @@
 package com.nhnacademy.front.account.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.front.account.dto.signup.RegisterRequest;
+import com.nhnacademy.front.account.dto.user.ResetPasswordRequest;
 import com.nhnacademy.front.account.dto.user.UserResponse;
 import com.nhnacademy.front.account.service.AccountService;
+import com.nhnacademy.front.account.config.FeignErrorParser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,18 +49,8 @@ public class AccountController {
             log.info("Signup success loginId:{}", requestDto.loginId());
             return "redirect:/login";
         } catch (feign.FeignException e) {
-            if (e.status() >= 400 && e.status() < 500) {
-                log.warn("Failed to signup (Client Error): {}", e.getMessage());
-            } else {
-                log.warn("Failed to signup", e);
-            }
-            String errorMessage = "회원가입에 실패했습니다. (중복된 아이디/이메일 등)";
-            try {
-                JsonNode node = new ObjectMapper().readTree(e.contentUTF8());
-                if (node.has("message")) errorMessage = node.get("message").asText();
-            } catch (Exception ex) {
-                log.warn("Error parsing feign exception", ex);
-            }
+            String errorMessage = FeignErrorParser.getMessage(e, "회원가입에 실패했습니다. (중복된 아이디/이메일 등)");
+            log.warn("Failed to signup", e);
             model.addAttribute("errorMessage", errorMessage);
             return "account/signup";
         }
@@ -78,5 +68,27 @@ public class AccountController {
         model.addAttribute("myInfo", myInfo);
 
         return "mypage/profile";
+    }
+
+    @GetMapping("/account/forgot")
+    public String forgotPasswordPage() {
+        return "account/forgot";
+    }
+
+    @PostMapping("/account/forgot")
+    public String forgotPassword(
+            @ModelAttribute ResetPasswordRequest request,
+            Model model
+    ) {
+        try {
+            accountService.resetPassword(request);
+            model.addAttribute("successMessage", "임시 비밀번호가 이메일로 전송되었습니다.");
+            return "account/forgot";
+        } catch (feign.FeignException e) {
+            String errorMessage = FeignErrorParser.getMessage(e, "비밀번호 초기화에 실패했습니다.");
+            log.warn("Failed to reset password", e);
+            model.addAttribute("errorMessage", errorMessage);
+            return "account/forgot";
+        }
     }
 }
