@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <!-- 건물 상세 정보 패널 (좌: 건물 주소 메타정보 / 우: 소속 강의실별 디바이스 목록) -->
+            <!-- 건물 상세 정보 패널 -->
             <section class="building-info-panel">
                 <div class="building-info-main">
                     <div class="building-info-title">
@@ -104,7 +104,6 @@
                                 </a>
                             </li>
                         </ul>
-                        <!-- 등록된 디바이스가 없을 때 -->
                         <div class="empty-device-list" th:if="${#lists.isEmpty(buildingDevices)}">
                             <p>등록된 디바이스가 없습니다.</p>
                         </div>
@@ -112,82 +111,131 @@
                 </div>
             </section>
 
-            <!-- 하단 2단 섹션: 하위 Classroom 목록 & 설치된 Sensor 목록 -->
-            <div class="building-sub-grid">
+            <!-- ======================================================= -->
+            <!-- 하단 섹션 1: Classroom List (가로 100%) -->
+            <!-- ======================================================= -->
+            <div class="info-card" style="margin-top: 24px; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0;">
 
-                <!-- [좌측 카드] 하위 Classroom 목록 -->
-                <section class="sub-panel">
-                    <div class="sub-panel-header">
-                        <div>
-                            <h3>Classroom List</h3>
-                            <span class="sub-text" th:text="|총 ${#lists.size(rooms)}개의 강의실|">총 0개의 강의실</span>
-                        </div>
-                        <a class="btn-sub-link"
-                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId})}">
-                            강의실 관리 →
-                        </a>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
+                    <div>
+                        <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 0 0 4px 0;">Classroom List</h3>
+                        <span style="font-size: 0.85rem; color: #64748b;" th:text="${building.buildingName} + '에 소속된 강의실 리스트'">건물 강의실 리스트</span>
                     </div>
-                    <div class="sub-list-wrap">
-                        <ul class="sub-entity-list" th:if="${!#lists.isEmpty(rooms)}">
-                            <li class="sub-entity-item" th:each="r : ${rooms}">
-                                <div class="sub-entity-main">
-                                    <div class="sub-icon room-icon">
-                                        <img src="/photo/icon/door-icon.png" alt="classroom">
-                                    </div>
-                                    <div class="sub-entity-text">
-                                        <strong th:text="${r.roomName}">301호</strong>
-                                        <p th:text="${#strings.defaultString(r.description, '등록된 설명이 없습니다.')}">설명</p>
-                                    </div>
-                                </div>
-                                <div class="sub-entity-badges">
-                                    <span class="badge-mini" th:text="|센서 ${r.sensorCount}개|">센서 0개</span>
-                                    <a class="btn-detail-sm"
-                                       th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${r.roomId})}">
-                                        상세보기
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="empty-sub-list" th:if="${#lists.isEmpty(rooms)}">
-                            <p>등록된 강의실이 없습니다.</p>
-                        </div>
+                    <div>
+                        <button type="button" id="openRoomModalBtn"
+                                th:if="${team.myRole != null && team.myRole.isManager()}"
+                                style="padding: 8px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; border: 1px solid #cbd5e1; background: #fff; color: #334155; font-weight: 600; transition: background 0.2s;"
+                                onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+                            + Classroom 생성
+                        </button>
                     </div>
-                </section>
+                </div>
 
-                <!-- [우측 카드] 현재 빌딩에 설치된 Sensor 목록 (devEui, location, point) -->
-                <section class="sub-panel">
-                    <div class="sub-panel-header">
-                        <div>
-                            <h3>Installed Sensors</h3>
-                            <span class="sub-text" th:text="|총 ${#lists.size(sensors)}개의 센서|">총 0개의 센서</span>
-                        </div>
-                    </div>
-                    <div class="sub-list-wrap">
-                        <ul class="sub-entity-list" th:if="${!#lists.isEmpty(sensors)}">
-                            <li class="sub-entity-item" th:each="s : ${sensors}">
-                                <div class="sub-entity-main">
-                                    <div class="sub-icon sensor-icon">
-                                        <img src="/photo/icon/connection-icon.png" alt="sensor">
-                                    </div>
-                                    <div class="sub-entity-text">
-                                        <strong th:text="${s.devEui}">24e124785c389010</strong>
-                                        <p>
-                                            <span th:text="${#strings.defaultString(s.location, '위치 미지정')}">실습실</span>
-                                            <span class="point-text"
-                                                  th:if="${s.point != null && !s.point.isBlank()}"
-                                                  th:text="|(${s.point})|"> (전방 우측)</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <span class="badge-deveui" th:text="${s.deviceName != null ? s.deviceName : 'Sensor'}">Device</span>
-                            </li>
-                        </ul>
-                        <div class="empty-sub-list" th:if="${#lists.isEmpty(sensors)}">
-                            <p>건물에 등록된 센서가 없습니다.</p>
-                        </div>
-                    </div>
-                </section>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+                    <li th:each="room : ${rooms}" th:with="subscription=${roomSubscriptionStatuses[room.roomId]}"
+                        style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #fff; transition: border-color 0.2s;"
+                        onmouseover="this.style.borderColor='#fb923c'" onmouseout="this.style.borderColor='#e2e8f0'">
 
+                        <!-- 좌측: 아이콘 및 강의실 이름 (이름이 길어지면 줄임표 처리) -->
+                        <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
+                            <div style="width: 44px; height: 44px; background: #f8fafc; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #f1f5f9; flex-shrink: 0;">
+                                <img src="/photo/icon/door-icon.png" alt="room" style="width: 22px; opacity: 0.7;">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                <strong style="font-size: 16px; color: #0f172a; overflow: hidden; text-overflow: ellipsis;" th:text="${room.roomName}">강의실 이름</strong>
+                                <span style="font-size: 12px; color: #64748b; overflow: hidden; text-overflow: ellipsis;" th:text="${#strings.defaultString(room.description, '등록된 설명이 없습니다.')}">설명</span>
+                            </div>
+                        </div>
+
+                        <!-- 중앙: 센서/장치 카운트 뱃지 (절대 밀리지 않음) -->
+                        <div style="display: flex; gap: 12px; flex-shrink: 0;">
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; padding: 6px 16px; border-radius: 6px; border: 1px solid #f1f5f9; min-width: 68px;">
+                                <span style="font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 2px;">Sensors</span>
+                                <strong style="font-size: 15px; color: #0f172a;" th:text="${room.sensorCount}">0</strong>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; padding: 6px 16px; border-radius: 6px; border: 1px solid #f1f5f9; min-width: 68px;">
+                                <span style="font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 2px;">Devices</span>
+                                <strong style="font-size: 15px; color: #0f172a;" th:text="${room.deviceCount}">0</strong>
+                            </div>
+                        </div>
+
+                        <!-- 우측: 구독 토글, 상세보기, 삭제 (절대 밀리지 않음) -->
+                        <div style="display: flex; align-items: center; gap: 16px; flex-shrink: 0;" th:attr="data-room-id=${room.roomId}">
+
+                            <!-- 구독 토글 영역 -->
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 50px;">
+                                <span style="font-size: 11px; font-weight: 600; color: #475569;" th:text="${subscription != null && subscription.subscribed} ? '구독 중' : '미구독'">구독 중</span>
+                                <label class="notification-toggle compact" th:classappend="${subscription == null || !subscription.subscribed} ? 'disabled'" style="margin: 0; transform: scale(0.85);">
+                                    <input type="checkbox" class="room-notification-toggle"
+                                           th:checked="${subscription != null && subscription.notificationEnabled}"
+                                           th:disabled="${subscription == null || !subscription.subscribed}">
+                                    <span></span>
+                                </label>
+                            </div>
+
+                            <button class="room-subscribe-btn" type="button"
+                                    th:if="${team.myRole != null && team.myRole.name() == 'NORMAL'}"
+                                    th:style="${subscription != null && subscription.subscribed} ? 'display:none' : 'padding: 6px 12px; border-radius: 6px; font-size: 13px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; color:#334155;'">구독</button>
+                            <button class="room-unsubscribe-btn" type="button"
+                                    th:if="${team.myRole != null && team.myRole.name() == 'NORMAL'}"
+                                    th:style="${subscription != null && subscription.subscribed} ? 'padding: 6px 12px; border-radius: 6px; font-size: 13px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; color:#334155;' : 'display:none'">취소</button>
+
+                            <div style="display: flex; gap: 8px;">
+                                <a style="text-decoration: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; background: #3b82f6; color: #fff; transition: background 0.2s; display:inline-flex; align-items:center;"
+                                   onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'"
+                                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">상세보기</a>
+
+                                <button class="room-delete-btn" type="button"
+                                        th:if="${team.myRole != null && team.myRole.isManager()}"
+                                        th:attr="data-room-id=${room.roomId},data-room-name=${room.roomName}"
+                                        style="padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; border: 1px solid #fecaca; color: #ef4444; background: #fff; cursor: pointer; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='#fff'">삭제</button>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li th:if="${#lists.isEmpty(rooms)}" style="padding: 40px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                        등록된 강의실이 없습니다.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- ======================================================= -->
+            <!-- 하단 섹션 2: Installed Sensors (가로 100%) -->
+            <!-- ======================================================= -->
+            <div class="info-card" style="margin-top: 24px; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0;">
+
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 0 0 4px 0;">Installed Sensors</h3>
+                    <span style="font-size: 0.85rem; color: #64748b;" th:text="|총 ${#lists.size(sensors)}개의 센서|">총 0개의 센서</span>
+                </div>
+
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+                    <li th:each="s : ${sensors}"
+                        style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #f8fafc;">
+
+                        <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
+                            <div style="width: 44px; height: 44px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0; flex-shrink: 0;">
+                                <img src="/photo/icon/connection-icon.png" alt="sensor" style="width: 22px; opacity: 0.7;">
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                <strong style="font-size: 15px; color: #0f172a;" th:text="${s.devEui}">24e124785c389010</strong>
+                                <p style="margin: 0; font-size: 12px; color: #64748b;">
+                                    <span th:text="${#strings.defaultString(s.location, '위치 미지정')}">실습실</span>
+                                    <span style="color: #fb923c; font-weight: 600;" th:if="${s.point != null && !s.point.isBlank()}" th:text="|(${s.point})|"> (전방 우측)</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="flex-shrink: 0;">
+                            <span style="display: inline-block; padding: 4px 10px; background: #e0f2fe; color: #2563eb; border-radius: 6px; font-size: 12px; font-weight: 700; border: 1px solid #bae6fd;" th:text="${s.deviceName != null ? s.deviceName : 'Sensor'}">Device</span>
+                        </div>
+                    </li>
+
+                    <li th:if="${#lists.isEmpty(sensors)}" style="padding: 40px; text-align: center; color: #64748b; background: #fff; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                        건물에 등록된 센서가 없습니다.
+                    </li>
+                </ul>
             </div>
 
         </main>
@@ -232,6 +280,27 @@
         </div>
     </form>
 </dialog>
+
+<!-- 강의실 신규 등록 팝업 모달 -->
+<div class="modal-overlay" id="roomModalOverlay">
+    <div class="modal-folder-wrapper building-modal">
+        <div class="modal-tab">Classroom 생성</div>
+        <div class="modal-content">
+            <div class="building-form-group">
+                <label>Classroom Name</label>
+                <input type="text" id="roomNameInput" placeholder="ex ) 301호">
+            </div>
+            <div class="building-form-group">
+                <label>Description</label>
+                <textarea id="roomDescInput" placeholder="강의실 설명을 입력하세요."></textarea>
+            </div>
+            <div class="building-modal-actions">
+                <button class="modal-cancel-btn" type="button" id="closeRoomModalBtn">Cancel</button>
+                <button class="modal-submit-btn" type="button" id="createRoomBtn">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- 하단 푸터 -->
 <div th:replace="~{layout/footer :: footer}"></div>
@@ -337,5 +406,6 @@
         });
     }
 </script>
+<script src="/js/rooms.js"></script>
 </body>
 </html>
