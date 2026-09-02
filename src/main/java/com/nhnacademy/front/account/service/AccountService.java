@@ -25,15 +25,4 @@ public class AccountService {
     public UserResponse getUser(Long userId) {
         return accountClient.getUser(userId);
     }
-
-    //회원 정보 수정
-    public UserResponse updateUser(Long userId, UpdateRequest requestDto) {
-        return accountClient.updateUser(userId, requestDto);
-    }
-
-    //회원 탈퇴
-    public void withdraw(Long userId) {
-        accountClient.withdraw(userId);
-    }
-
 }

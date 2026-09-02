@@ -61,11 +61,11 @@ public class AuthController {
             } catch (Exception ex) {
                 log.warn("Error parsing feign exception", ex);
             }
-            log.error("Login failed (Feign): {}", errorMessage);
+            log.warn("Login failed (Feign): {}", errorMessage);
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
             return "redirect:/login";
         } catch (Exception e) {
-            log.error("Login failed: {}", e.getMessage());
+            log.warn("Login failed: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "서버 오류가 발생했습니다.");
             return "redirect:/login";
         }
