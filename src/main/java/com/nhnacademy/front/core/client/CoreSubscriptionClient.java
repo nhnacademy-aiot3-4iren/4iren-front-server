@@ -6,6 +6,8 @@ import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionUpdateRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(
         name = "4iren-gateway",
         contextId = "coreSubscriptionClient",
@@ -25,6 +27,11 @@ public interface CoreSubscriptionClient {
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "size", defaultValue = "20") Integer size,
             @RequestParam(name = "sort", defaultValue = "id,ASC") String sort
+    );
+
+    @GetMapping("/{teamId}/room-subscriptions/all")
+    List<RoomSubscriptionResponse> getAllSubscriptions(
+            @PathVariable("teamId") Long teamId
     );
 
     @PatchMapping("/{teamId}/rooms/{roomId}/subscription")
