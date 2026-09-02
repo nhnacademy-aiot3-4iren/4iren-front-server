@@ -23,11 +23,19 @@ public class MqttBrokerController {
         return ResponseEntity.ok(mqttBrokerService.getBrokerByBuilding(buildingId));
     }
 
-    // 2. 빌딩 MQTT 설정 등록 및 수정
+    // 2. 빌딩 MQTT 설정 등록
     @PostMapping
     public ResponseEntity<MqttBrokerInfoDto> registerBroker(@PathVariable Long teamId,
                                                             @PathVariable Long buildingId,
                                                             @Valid @RequestBody MqttBrokerCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(mqttBrokerService.registerBroker(request));
+    }
+
+    // 3. 빌딩 MQTT 설정 수정
+    @PutMapping
+    public ResponseEntity<MqttBrokerInfoDto> updateBroker(@PathVariable Long teamId,
+                                                          @PathVariable Long buildingId,
+                                                          @Valid @RequestBody MqttBrokerCreateRequest request) {
+        return ResponseEntity.ok(mqttBrokerService.updateBroker(buildingId, request));
     }
 }

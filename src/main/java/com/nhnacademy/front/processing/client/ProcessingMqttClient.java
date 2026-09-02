@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.*;
 public interface ProcessingMqttClient {
 
     @GetMapping("/building/{buildingId}")
-    MqttBrokerInfoDto getBrokerByBuilding(@PathVariable("buildingId") Long buildingId);
+    MqttBrokerInfoDto getBrokerByBuilding(@PathVariable Long buildingId);
 
     @PostMapping
     MqttBrokerInfoDto registerBroker(@RequestBody MqttBrokerCreateRequest request);
 
+    @PutMapping("/building/{buildingId}")
+    MqttBrokerInfoDto updateBroker(@PathVariable Long buildingId, @RequestBody MqttBrokerCreateRequest request);
+
     @DeleteMapping("/{id}")
-    void deleteBroker(@PathVariable("id") Long id);
+    void deleteBroker(@PathVariable Long id);
 }

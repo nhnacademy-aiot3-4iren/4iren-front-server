@@ -325,6 +325,8 @@
     const mqttPassword = document.getElementById('mqttPassword');
     const mqttTopic = document.getElementById('mqttTopic');
 
+    let isUpdate = false;
+
     if (openMqttModalBtn) {
         openMqttModalBtn.addEventListener('click', async () => {
             mqttError.textContent = '';
@@ -338,6 +340,7 @@
                 const broker = res.ok ? await res.json() : null;
 
                 if (broker && broker.serverName) {
+                    isUpdate = true;
                     mqttModalTitle.textContent = 'MQTT 브로커 수정';
                     mqttServerName.value = broker.serverName || '';
                     mqttBrokerUrl.value = broker.brokerUrl || '';
@@ -346,6 +349,7 @@
                     mqttTopic.value = broker.topic || '';
                     saveMqttBtn.textContent = '수정 저장';
                 } else {
+                    isUpdate = false;
                     mqttModalTitle.textContent = 'MQTT 브로커 신규 등록';
                     mqttServerName.value = '';
                     mqttBrokerUrl.value = '';
@@ -356,6 +360,7 @@
                 }
             } catch (err) {
                 mqttModalTitle.textContent = 'MQTT 브로커 설정';
+                isUpdate = false;
             } finally {
                 saveMqttBtn.disabled = false;
             }
@@ -384,8 +389,9 @@
             saveMqttBtn.textContent = '저장 중...';
 
             try {
+                const method = isUpdate ? 'PUT' : 'POST';
                 const res = await fetch(`/api/front/teams/${teamId}/buildings/${buildingId}/mqtt`, {
-                    method: 'POST',
+                    method: method,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
@@ -395,13 +401,13 @@
                     throw new Error(errorText || 'MQTT 브로커 설정 저장에 실패했습니다.');
                 }
 
-                alert('MQTT 브로커 설정이 성공적으로 저장되었습니다.');
+                alert(isUpdate ? 'MQTT 브로커 설정이 성공적으로 수정되었습니다.' : 'MQTT 브로커가 성공적으로 등록되었습니다.');
                 closeModal();
                 window.location.reload();
             } catch (err) {
                 mqttError.textContent = err.message || '저장 중 오류가 발생했습니다.';
                 saveMqttBtn.disabled = false;
-                saveMqttBtn.textContent = '저장';
+                saveMqttBtn.textContent = isUpdate ? '수정 저장' : '등록';
             }
         });
     }
