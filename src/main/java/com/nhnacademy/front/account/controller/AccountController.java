@@ -3,6 +3,7 @@ package com.nhnacademy.front.account.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.front.account.dto.signup.RegisterRequest;
+import com.nhnacademy.front.account.dto.user.ResetPasswordRequest;
 import com.nhnacademy.front.account.dto.user.UserResponse;
 import com.nhnacademy.front.account.service.AccountService;
 import jakarta.validation.Valid;
@@ -78,5 +79,37 @@ public class AccountController {
         model.addAttribute("myInfo", myInfo);
 
         return "mypage/profile";
+    }
+
+    @GetMapping("/account/forgot")
+    public String forgotPasswordPage() {
+        return "account/forgot";
+    }
+
+    @PostMapping("/account/forgot")
+    public String forgotPassword(
+            @ModelAttribute ResetPasswordRequest request,
+            Model model
+    ) {
+        try {
+            accountService.resetPassword(request);
+            model.addAttribute("successMessage", "임시 비밀번호가 이메일로 전송되었습니다.");
+            return "account/forgot";
+        } catch (feign.FeignException e) {
+            if (e.status() >= 400 && e.status() < 500) {
+                log.warn("Failed to reset password (Client Error): {}", e.getMessage());
+            } else {
+                log.error("Failed to reset password", e);
+            }
+            String errorMessage = "비밀번호 초기화에 실패했습니다.";
+            try {
+                JsonNode node = new ObjectMapper().readTree(e.contentUTF8());
+                if (node.has("message")) errorMessage = node.get("message").asText();
+            } catch (Exception ex) {
+                log.warn("Error parsing feign exception", ex);
+            }
+            model.addAttribute("errorMessage", errorMessage);
+            return "account/forgot";
+        }
     }
 }
