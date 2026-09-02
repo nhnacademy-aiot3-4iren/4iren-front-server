@@ -42,7 +42,7 @@ public class AccountApiController {
             if (e.status() >= 400 && e.status() < 500) {
                 log.warn("Failed to update profile (Client Error): {}", e.getMessage());
             } else {
-                log.error("Failed to update profile", e);
+                log.warn("Failed to update profile", e);
             }
             String errorMessage = "수정에 실패했습니다.";
             try {
@@ -84,7 +84,7 @@ public class AccountApiController {
             if (e.status() >= 400 && e.status() < 500) {
                 log.warn("Failed to withdraw (Client Error): {}", e.getMessage());
             } else {
-                log.error("Failed to withdraw", e);
+                log.warn("Failed to withdraw", e);
             }
             String errorMessage = "탈퇴 처리에 실패했습니다.";
             try {
