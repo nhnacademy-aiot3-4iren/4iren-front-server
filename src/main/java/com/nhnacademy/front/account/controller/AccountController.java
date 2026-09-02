@@ -49,6 +49,11 @@ public class AccountController {
             log.info("Signup success loginId:{}", requestDto.loginId());
             return "redirect:/login";
         } catch (feign.FeignException e) {
+            if (e.status() >= 400 && e.status() < 500) {
+                log.warn("Failed to signup (Client Error): {}", e.getMessage());
+            } else {
+                log.error("Failed to signup", e);
+            }
             String errorMessage = "회원가입에 실패했습니다. (중복된 아이디/이메일 등)";
             try {
                 JsonNode node = new ObjectMapper().readTree(e.contentUTF8());

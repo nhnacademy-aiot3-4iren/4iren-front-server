@@ -47,7 +47,7 @@ public class AdminPasswordController {
         }
 
         try {
-            UpdateRequest request = new UpdateRequest(null, null, password);
+            UpdateRequest request = new UpdateRequest(null, null, password, null);
             accountClient.updateUser(userId, request);
             redirectAttributes.addFlashAttribute("successMessage", "비밀번호가 성공적으로 변경되었습니다. 메인 페이지로 이동합니다.");
             return "redirect:/";

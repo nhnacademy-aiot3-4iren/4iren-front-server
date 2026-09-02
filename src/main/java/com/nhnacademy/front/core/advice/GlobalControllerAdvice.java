@@ -52,8 +52,8 @@ public class GlobalControllerAdvice {
      */
     @ModelAttribute("currentTeamId")
     public Long getCurrentTeamId(HttpServletRequest request) {
-        // 로그인되지 않은 상태(userId가 없음)라면 Feign 호출 생략
-        if (getUserId(request) == null) {
+        Long userId = getUserId(request);
+        if (userId == null) {
             return null;
         }
 
@@ -63,6 +63,7 @@ public class GlobalControllerAdvice {
                 return teams.content().get(0).teamId();
             }
         } catch (Exception e) {
+            // 팀이 없는 유저(회원가입 직후 등)일 수 있으므로 조용히 넘어감
             log.debug("Failed to resolve currentTeamId: {}", e.getMessage());
         }
         return null;
