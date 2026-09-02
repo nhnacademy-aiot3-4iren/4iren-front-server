@@ -1,0 +1,65 @@
+<!-- !! header.html -->
+<header xmlns:th="http://www.thymeleaf.org" th:fragment="header(pageTitle)" class="header">
+
+    <h1 class="page-title" th:text="${pageTitle ?: 'My Page'}">My Page</h1>
+
+    <div class="search-bar">
+        <img src="/photo/icon/search-icon.png" alt="search" class="search-icon">
+        <input type="text" placeholder="Search...">
+    </div>
+
+    <div class="header-right">
+
+        <!-- 알림 벨 -->
+        <a th:href="@{/alert-histories}" class="icon-btn" aria-label="알림">
+            <svg class="icon-btn-svg" width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.5763 19.3264C21.9066 18.7294 21.3203 18.0451 20.8332 17.2917C20.3014 16.2518 19.9827 15.1162 19.8957 13.9514V10.5209C19.9003 8.69142 19.2367 6.92327 18.0295 5.54862C16.8224 4.17397 15.1548 3.28743 13.3401 3.05558V2.15975C13.3401 1.91387 13.2425 1.67806 13.0686 1.5042C12.8947 1.33034 12.6589 1.23267 12.4131 1.23267C12.1672 1.23267 11.9314 1.33034 11.7575 1.5042C11.5837 1.67806 11.486 1.91387 11.486 2.15975V3.06947C9.68754 3.31803 8.04012 4.20993 6.84884 5.57996C5.65756 6.95 5.00315 8.70534 5.00681 10.5209V13.9514C4.91983 15.1162 4.6011 16.2518 4.06931 17.2917C3.59075 18.0433 3.01389 18.7276 2.35403 19.3264C2.27996 19.3915 2.22059 19.4716 2.17988 19.5614C2.13917 19.6512 2.11804 19.7486 2.11792 19.8473V20.7917C2.11792 20.9759 2.19108 21.1525 2.32132 21.2827C2.45155 21.413 2.62819 21.4861 2.81236 21.4861H22.1179C22.3021 21.4861 22.4787 21.413 22.609 21.2827C22.7392 21.1525 22.8124 20.9759 22.8124 20.7917V19.8473C22.8122 19.7486 22.7911 19.6512 22.7504 19.5614C22.7097 19.4716 22.6503 19.3915 22.5763 19.3264ZM3.56236 20.0973C4.20848 19.4731 4.77736 18.7736 5.25681 18.0139C5.92668 16.758 6.31753 15.3723 6.40264 13.9514V10.5209C6.3751 9.707 6.51162 8.89591 6.80406 8.13591C7.09651 7.3759 7.5389 6.68252 8.1049 6.09704C8.67089 5.51157 9.34892 5.04598 10.0986 4.728C10.8483 4.41001 11.6543 4.24614 12.4686 4.24614C13.2829 4.24614 14.0889 4.41001 14.8386 4.728C15.5883 5.04598 16.2663 5.51157 16.8323 6.09704C17.3983 6.68252 17.8407 7.3759 18.1332 8.13591C18.4256 8.89591 18.5621 9.707 18.5346 10.5209V13.9514C18.6197 15.3723 19.0106 16.758 19.6804 18.0139C20.1599 18.7736 20.7287 19.4731 21.3749 20.0973H3.56236Z" fill="#FFA412"/>
+                <path d="M12.4995 23.8055C12.937 23.7954 13.3568 23.6309 13.6847 23.3412C14.0126 23.0514 14.2274 22.655 14.2912 22.2221H10.6384C10.704 22.6668 10.9289 23.0725 11.2713 23.3637C11.6136 23.655 12.0501 23.812 12.4995 23.8055V23.8055Z" fill="#FFA412"/>
+            </svg>
+        </a>
+
+        <!-- 유저 이름 / 역할 + 토글: 드롭다운 트리거를 염두에 두고 하나의 버튼으로 묶음 -->
+        <div class="user-menu">
+            <button type="button" class="user-info" id="userMenuToggle" aria-haspopup="true" aria-expanded="false">
+                <span class="user-text">
+                    <span class="user-name" th:text="${loginId != null ? loginId : 'Guest'}"></span>
+                    <span class="user-role"
+                          th:text="${role != null ? role : 'Unknown'}"
+                          th:attr="data-role=${role != null ? #strings.toLowerCase(role) : 'unknown'}"></span>
+                </span>
+                <img src="/photo/icon/toggle-icon.png" alt="" class="user-toggle">
+            </button>
+
+            <div class="user-dropdown" id="userDropdown">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="user-dropdown-item">로그아웃</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        (function () {
+            const toggle = document.getElementById('userMenuToggle');
+            const dropdown = document.getElementById('userDropdown');
+            if (!toggle || !dropdown) {
+                return;
+            }
+
+            toggle.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const isOpen = dropdown.classList.toggle('active');
+                toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!dropdown.contains(event.target) && !toggle.contains(event.target)) {
+                    dropdown.classList.remove('active');
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        })();
+    </script>
+
+</header>

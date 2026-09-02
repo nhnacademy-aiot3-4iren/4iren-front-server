@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Register - Re I New</title>
+
+    <link rel="stylesheet" href="/fonts/font.css">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebarmenu/team/bulidings/buildings.css}">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
+</head>
+<body>
+<div class="layout">
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
+    <div class="main-content-area">
+        <div th:replace="~{layout/header :: header('MQTT')}"></div>
+        <main class="content">
+
+            <!-- 상단 헤더 영역 -->
+            <div class="building-page-header">
+                <div>
+                    <a class="back-link"
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                        Building Info
+                    </a>
+                    <h2>MQTT Broker Register</h2>
+                    <p>
+                        <span th:text="${team.teamName}">Team Name</span>
+                        <span> / </span>
+                        <span th:text="${building.buildingName}">Building Name</span>
+                    </p>
+                </div>
+                <div class="building-summary">
+                    <span>Building ID</span>
+                    <strong th:text="${building.buildingId}">0</strong>
+                </div>
+            </div>
+
+            <!-- MQTT 브로커 연결 정보 입력 폼 -->
+            <section class="building-info-panel mqtt-register-panel">
+                <form class="mqtt-register-form" id="mqttRegisterForm">
+                    <div class="building-form-group">
+                        <label for="serverNameInput">Server Name</label>
+                        <input type="text" id="serverNameInput" placeholder="ex ) main-mqtt" required>
+                    </div>
+
+                    <div class="building-form-group">
+                        <label for="brokerUrlInput">Broker URL</label>
+                        <input type="text" id="brokerUrlInput" placeholder="ex ) tcp://broker.example.com:1883" required>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="building-form-group">
+                            <label for="usernameInput">Username</label>
+                            <input type="text" id="usernameInput" placeholder="Optional">
+                        </div>
+                        <div class="building-form-group">
+                            <label for="passwordInput">Password</label>
+                            <input type="password" id="passwordInput" placeholder="Optional">
+                        </div>
+                    </div>
+
+                    <div class="building-form-group">
+                        <label for="topicInput">Topic</label>
+                        <input type="text" id="topicInput" placeholder="ex ) 4iren/building/1/#" required>
+                    </div>
+
+                    <!-- 처리 결과 메시지 출력 영역 -->
+                    <div class="mqtt-result" id="mqttResult" hidden></div>
+
+                    <div class="building-modal-actions">
+                        <a class="modal-cancel-btn mqtt-cancel-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                            Cancel
+                        </a>
+                        <button class="modal-submit-btn" type="submit" id="mqttRegisterBtn">Register</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<!-- mqtt-register.js에서 사용할 변수 -->
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+    const buildingId = /*[[${building.buildingId}]]*/ null;
+</script>
+<script src="/js/mqtt-register.js"></script>
+</body>
+</html>

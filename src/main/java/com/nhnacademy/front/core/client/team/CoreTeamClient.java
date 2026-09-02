@@ -8,6 +8,8 @@ import com.nhnacademy.front.core.dto.team.TeamUpdateRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(
         name = "4iren-gateway",
         contextId = "coreTeamClient",
@@ -24,6 +26,9 @@ public interface CoreTeamClient {
             @RequestParam(name = "size", defaultValue = "20") Integer size,
             @RequestParam(name = "sort", defaultValue = "id,ASC") String sort
     );
+
+    @GetMapping("/all")
+    List<TeamResponse> getAllTeams();
 
     @GetMapping("/{teamId}")
     TeamDetailResponse getTeam(@PathVariable("teamId") Long teamId);

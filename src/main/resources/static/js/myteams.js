@@ -24,7 +24,13 @@ let currentInviteCode = '';
 
 document.addEventListener('DOMContentLoaded', loadTeams);
 
-openBtn.addEventListener('click', () => modalOverlay.classList.add('active'));
+openBtn.addEventListener('click', () => {
+    if (openBtn.dataset.role === 'NORMAL') {
+        window.location.href = '/payment/plans';
+        return;
+    }
+    modalOverlay.classList.add('active');
+});
 
 openJoinTeamBtn.addEventListener('click', () => {
     joinTeamModal.classList.add('active');
@@ -62,6 +68,10 @@ closeBtn.addEventListener('click', async () => {
         teamDescInput.value = '';
         await loadTeams();
     } catch (error) {
+        if (error.status === 403) {
+            window.location.href = '/payment/plans';
+            return;
+        }
         alert(error.message || '팀 생성에 실패했습니다.');
     }
 });
@@ -90,6 +100,15 @@ function renderTeams(teams) {
     teams.forEach(team => teamListContainer.appendChild(createTeamCard(team)));
 }
 
+// 역할값 → 뱃지에 쓸 라벨/클래스 매핑
+// team.myRole은 "OWNER" / "ADMIN" / "NORMAL" 중 하나로 내려옴 (TeamRole enum)
+// 화면 표기는 일반 유저를 "MEMBER"로 부르기로 했으므로 NORMAL만 라벨을 바꿔줌
+function getRoleBadge(myRole) {
+    const label = myRole === 'NORMAL' ? 'MEMBER' : myRole;
+    const cssClass = 'role-badge-' + (myRole || 'normal').toLowerCase();
+    return `<span class="role-badge ${cssClass}">${label}</span>`;
+}
+
 function createTeamCard(team) {
     const card = document.createElement('div');
     card.className = 'team-card';
@@ -99,6 +118,7 @@ function createTeamCard(team) {
       <div class="team-info">
         <div class="team-header-row">
           <span class="team-card-name">${escapeHtml(team.teamName || '')}</span>
+          ${getRoleBadge(team.myRole)}
           <span class="team-card-desc">${escapeHtml(team.description || '')}</span>
         </div>
         <div class="team-meta-row">
@@ -204,7 +224,9 @@ async function requestJson(url, options = {}) {
 
     if (!response.ok) {
         const text = await response.text();
-        throw new Error(text || `요청 실패 (${response.status})`);
+        const error = new Error(text || `요청 실패 (${response.status})`);
+        error.status = response.status;
+        throw error;
     }
 
     if (response.status === 204) {
@@ -222,3 +244,4 @@ function escapeHtml(value) {
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
 }
+

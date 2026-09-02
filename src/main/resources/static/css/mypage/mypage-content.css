@@ -1,8 +1,3 @@
-/* ================================================================
-   mypage-content.css
-   MyPage 전용: sidebar.html / header.html fragment + 전체 레이아웃
-   ================================================================ */
-
 * {
     margin: 0;
     padding: 0;
@@ -15,37 +10,29 @@ html, body {
 }
 
 body {
-    background-color: #F5F6FA;   /* 컨텐츠 영역의 옅은 바탕색 */
-}
-
-body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #F5F6FA;
 }
 
-/* ================================================================
-   전체 레이아웃 (사이드바 + 메인)
-   - padding 없음: 사이드바/헤더가 화면 끝까지 딱 붙어야 하므로
-   ================================================================ */
+/* 전체 레이아웃 (사이드바 + 메인 영역) */
 .layout {
     display: flex;
     min-height: 100vh;
     width: 100%;
 }
 
-/* ================================================================
-   컨텐츠 (프로필 카드 + 세로 배너)
-   - 옅은 배경(body 색과 동일) 위에 흰 카드가 그림자로 떠 있는 느낌
-   ================================================================ */
+/* 본문 레이아웃 */
 .content {
     flex: 1;
     display: flex;
-    gap: 24px;
+    gap: 40px;
     padding: 32px 40px;
-    align-items: flex-start;
+    align-items: stretch;
 }
 
+/* 프로필 카드 */
 .profile-card {
     flex: 1;
     background-color: #FFFFFF;
@@ -58,12 +45,20 @@ body {
     font-size: 24px;
     font-weight: 500;
     color: #222;
-    margin-bottom: 32px;
+    margin-bottom: 10px;
+}
+
+.card-title-descrip {
+    font-size: 18px;
+    font-weight: 500;
+    color: #8c8c8c;
+    margin-bottom: 50px;
 }
 
 .profile-body {
     display: flex;
     align-items: flex-start;
+    justify-content: center;
     gap: 64px;
 }
 
@@ -72,273 +67,70 @@ body {
     max-width: 1000px;
 }
 
-.form-group {
-    margin-bottom: 20px;
+.profile-form .form-group {
+    margin-bottom: 30px;
 }
-.form-group label {
+
+.profile-form .form-group label {
     display: block;
     font-size: 13px;
     color: #444;
     margin-bottom: 8px;
 }
-.form-group input {
+
+.profile-form .form-group input {
     width: 100%;
-    padding: 13px 16px;
+    padding: 15px 18px;
     border: 1px solid #E5E5E5;
     border-radius: 10px;
     font-size: 13px;
     outline: none;
     transition: border-color 0.2s;
 }
-.form-group input:focus {
+
+.profile-form .form-group input:focus {
     border-color: #EF8924;
 }
-.form-group input::placeholder {
-    color: #BBB;
-}
 
-.password-field {
-    position: relative;
-}
-.password-field .eye-icon {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    cursor: pointer;
-    opacity: 0.5;
-}
-.password-field .eye-icon:hover {
-    opacity: 1;
-}
-
-.profile-photo {
-    flex-shrink: 0;
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    border: 6px solid #EF8924;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #FADFCB;
-    margin-left: 50px;
-}
-.profile-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.setting-btn {
-    margin-top: 32px;
-    width: 100%;
-    max-width: 400px;
-    background-color: #EF8924;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 10px;
-    padding: 15px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.setting-btn:hover {
-    background-color: #d67a20;
-}
-
-/* ---------------- 오른쪽 세로 배너 ---------------- */
-.card {
-    position: relative;
-    width: 220px;
-    height: 320px;
-    background: rgb(255, 125, 50);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 25px;
-    font-weight: bold;
-    border-radius: 15px;
-    cursor: pointer;
-}
-
-.card::before,
-.card::after {
-    position: absolute;
-    content: "";
-    width: 20%;
-    height: 20%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 25px;
-    font-weight: bold;
-    background-color: rgb(255, 247, 238);
-    transition: all 0.5s;
-}
-
-.card::before {
-    top: 0;
-    right: 0;
-    border-radius: 0 15px 0 100%;
-}
-
-.card::after {
-    bottom: 0;
-    left: 0;
-    border-radius: 0 100%  0 15px;
-}
-
-.card:hover::before,
-.card:hover:after {
-    width: 100%;
-    height: 100%;
-    border-radius: 15px;
-    transition: all 0.5s;
-}
-
-.card:hover:after {
-    content: "MAKE TEAM";
-}
-
-
-/*go to subscribe*/
-
-.box {
-    position: relative;
-    width: 220px;
-    height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: 0.5s;
-    z-index: 1;
-}
-
-.box::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50px;
-    width: 50%;
-    height: 100%;
-    background: #fff;
-    border-radius: 8px;
-    transform: skewX(15deg);
-    transition: 0.5s;
-}
-
-.box::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50px;
-    width: 50%;
-    height: 100%;
-    background: #fff;
-    border-radius: 8px;
-    transform: skewX(15deg);
-    transition: 0.5s;
-    filter: blur(30px);
-}
-
-.box:hover::before,
-.box:hover::after {
-    transform: skewX(0deg) scaleX(1.3);
-}
-
-.box::before,
-.box::after {
-    background: linear-gradient(315deg, #ffbc00, #ff3300);
-}
-
-.box span {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 5;
+/* 읽기 전용 인풋 스타일 */
+.profile-form input[readonly] {
+    background: #f5f6f8;
+    color: #4b4b4b;
+    cursor: default;
     pointer-events: none;
 }
 
-.box span::before {
-    content: '';
-    position: absolute;
-    top: -40px;
-    left: 40px;
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    opacity: 1;
-    transition: 0.1s;
-    animation: animate 2s ease-in-out infinite;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+.profile-form input[readonly]:focus {
+    outline: none;
+    box-shadow: none;
 }
 
-.box span::after {
-    content: '';
-    position: absolute;
-    bottom: -40px;
-    right: 40px;
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    opacity: 1;
-    transition: 0.5s;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    animation-delay: -1s;
-}
-
-@keyframes animate {
-    0%, 100% {
-        transform: translateY(-20px);
-    }
-    50% {
-        transform: translateY(20px);
-    }
-}
-
-
-.banner-stack .box {
-    margin-top: 38px;
-}
-
-.box .box-content {
-    position: relative;
-    width: 190px;
-    height: 254px;
-    padding: 20px 40px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    z-index: 1;
-    transition: 0.5s;
-    color: #fff;
+/* 프로필 수정 버튼 */
+.edit-profile-btn {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px;
+    height: 52px;
+    margin: 32px auto 0;
+    background-color: #f3f7fe;
+    color: #f6803b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.3s;
 }
 
-.box .box-content h2 {
-    font-size: 20px;
+.edit-profile-btn:hover {
+    background-color: #f6803b;
+    box-shadow: 0 0 0 5px rgba(246, 128, 59, 0.37);
     color: #fff;
-    margin-bottom: 10px;
 }
 
-.banner-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    flex-shrink: 0;
+.edit-profile-btn:focus-visible {
+    outline: 3px solid #f6803b;
+    outline-offset: 3px;
 }

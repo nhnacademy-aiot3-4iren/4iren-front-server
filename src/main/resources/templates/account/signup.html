@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/signup.css">
+    <link rel="stylesheet" href="/css/account/signup.css">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -57,19 +57,19 @@
         <form th:action="@{/signup}" method="POST">
             <div class="enterid">
                 <label for="loginId">사용할 ID를 입력하세요</label>
-                <input type="text" id="loginId" name="loginId" placeholder="사용할 아이디" required>
+                <input type="text" id="loginId" name="loginId" placeholder="사용할 아이디" th:value="${registerRequest.loginId}" required>
             </div>
 
         <!--사용자 이름 & e-mail 입력칸-->
         <div class="ne-input">
             <div class="name-email">
             <label for="name">사용자 이름</label>
-                <input type="text" id="name" name="name" placeholder="사용자 이름" required>
+                <input type="text" id="name" name="name" placeholder="사용자 이름" th:value="${registerRequest.name}" required>
             </div>
 
             <div class="name-email">
             <label for="email">e-mail</label>
-                <input type="email" id="email" name="email" placeholder="e-mail" required>
+                <input type="email" id="email" name="email" placeholder="e-mail" th:value="${registerRequest.email}" required>
             </div>
         </div>
 
@@ -81,14 +81,15 @@
             </div>
         </div>
 
+        <p style="color: #ff4d4f; font-size: 0.9em; margin-top: 10px; margin-bottom: 10px; text-align: center;" th:if="${errorMessage}" th:text="${errorMessage}"></p>
 
-            <button type="submit" class="signup-btn">Sign up</button>
+        <button type="submit" class="signup-btn">Sign up</button>
         </form>
 </div>
 </main>
 
 <!--Footer-->
-<div th:replace="~{basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 <script src="/js/eye.js"></script>
 </body>

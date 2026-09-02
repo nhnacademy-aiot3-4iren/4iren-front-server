@@ -1,0 +1,23 @@
+/* =========================================================
+   layout.css
+   전역 레이아웃 뼈대 전용 (사이드바/헤더 스타일은 각자 파일에서 관리)
+   ========================================================= */
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #fcfcfc;
+}
+
+/* 좌우를 나누는 전체 화면 래퍼 */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 실제 본문이 들어가는 도화지 */
+.content {
+    padding: 40px;
+    flex-grow: 1;
+    position: relative;
+}

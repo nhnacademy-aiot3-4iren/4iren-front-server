@@ -100,4 +100,27 @@ document.addEventListener('DOMContentLoaded', () => {
             saveBtn.textContent = '저장';
         }
     });
+
+    // 회원 탈퇴 로직
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    if (withdrawBtn) {
+        withdrawBtn.addEventListener('click', async () => {
+            if (confirm('정말로 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                try {
+                    const res = await fetch(PROFILE_UPDATE_URL, {
+                        method: 'DELETE'
+                    });
+                    if (res.ok) {
+                        alert('회원 탈퇴가 완료되었습니다.');
+                        window.location.href = '/login';
+                    } else {
+                        const data = await res.json().catch(() => ({}));
+                        alert(data.message || '탈퇴 처리에 실패했습니다.');
+                    }
+                } catch (err) {
+                    alert('오류가 발생했습니다.');
+                }
+            }
+        });
+    }
 });

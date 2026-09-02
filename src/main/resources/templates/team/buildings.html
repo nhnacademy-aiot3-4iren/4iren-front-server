@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building List - Re I New</title>
+
+    <link rel="stylesheet" href="/fonts/font.css">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebarmenu/team/bulidings/buildings.css}">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
+</head>
+<body>
+<div class="layout">
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
+    <div class="main-content-area">
+        <div th:replace="~{layout/header :: header('Building')}"></div>
+        <main class="content">
+
+            <!-- 페이지 상단 헤더: 팀 상세 정보 링크 및 건물 추가 모달 버튼 -->
+            <div class="building-page-header">
+                <div>
+                    <a class="back-link" th:href="@{/team-info/{teamId}(teamId=${team.teamId})}">Team Info</a>
+                    <h2>Building List</h2>
+                    <p th:text="${team.teamName}">Team Name</p>
+                </div>
+                <div class="building-header-actions">
+                    <div class="building-summary">
+                        <span>Buildings</span>
+                        <strong th:text="${buildings.totalElements}">0</strong>
+                    </div>
+                    <button class="building-create-btn" type="button" id="openBuildingModalBtn"
+                            th:if="${team.myRole != null && team.myRole.isManager()}">+ Building 생성</button>
+                </div>
+            </div>
+
+            <!-- 건물 목록 카드 영역 -->
+            <section class="building-list-panel" th:if="${!#lists.isEmpty(buildings.content)}">
+                <article class="building-row" th:each="building : ${buildings.content}">
+                    <div class="building-main">
+                        <div class="building-icon">
+                            <img src="/photo/icon/buidling-icon.png" alt="building">
+                        </div>
+                        <div>
+                            <h3 th:text="${building.buildingName}">Building Name</h3>
+                            <p th:text="${#strings.defaultString(building.description, '등록된 설명이 없습니다.')}">Description</p>
+                            <address>
+                                <span th:text="${#strings.defaultString(building.roadAddress, '도로명 주소 없음')}">Road Address</span>
+                                <span th:if="${building.detailAddress != null && !building.detailAddress.isBlank()}"
+                                      th:text="| ${building.detailAddress}|">Detail Address</span>
+                            </address>
+                        </div>
+                    </div>
+
+                    <!-- 건물 통계 -->
+                    <div class="building-stats">
+                        <div>
+                            <span>Rooms</span>
+                            <strong th:text="${building.roomCount}">0</strong>
+                        </div>
+                        <div>
+                            <span>Sensors</span>
+                            <strong th:text="${building.sensorCount}">0</strong>
+                        </div>
+                        <div>
+                            <span>Devices</span>
+                            <strong th:text="${building.deviceCount}">0</strong>
+                        </div>
+                    </div>
+
+                    <!-- 건물 동작 버튼 -->
+                    <div class="asset-actions">
+                        <button class="asset-delete-btn building-delete-btn" type="button"
+                                th:if="${team.myRole != null && team.myRole.isManager()}"
+                                th:attr="data-building-id=${building.buildingId},data-building-name=${building.buildingName}">
+                            삭제
+                        </button>
+                        <a class="building-detail-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                            상세보기
+                        </a>
+                    </div>
+                </article>
+            </section>
+
+            <!-- 빈 목록 안내 -->
+            <div class="empty-state building-empty" th:if="${#lists.isEmpty(buildings.content)}">
+                <p>등록된 건물이 없습니다.</p>
+            </div>
+
+            <!-- 페이징 버튼 -->
+            <nav class="building-pagination" th:if="${buildings.totalPages > 1}">
+                <a th:classappend="${buildings.first} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId}, page=${buildings.page - 1}, size=${size}, sort=${sort})}">
+                    Previous
+                </a>
+                <span th:text="|${buildings.page + 1} / ${buildings.totalPages}|">1 / 1</span>
+                <a th:classappend="${buildings.last} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId}, page=${buildings.page + 1}, size=${size}, sort=${sort})}">
+                    Next
+                </a>
+            </nav>
+
+            <!-- 건물 추가 모달 (카카오 도로명 주소 API 연동) -->
+            <div class="modal-overlay" id="buildingModalOverlay">
+                <div class="modal-folder-wrapper building-modal">
+                    <div class="modal-tab">Building 생성</div>
+                    <div class="modal-content">
+                        <div class="building-form-group">
+                            <label>Building Name</label>
+                            <input type="text" id="buildingNameInput" placeholder="ex ) NHN Academy">
+                        </div>
+                        <div class="building-form-group">
+                            <label>Description</label>
+                            <textarea id="buildingDescInput" placeholder="건물 설명을 입력하세요."></textarea>
+                        </div>
+                        <div class="form-grid">
+                            <div class="building-form-group">
+                                <label>Road Address</label>
+                                <div class="address-input-row">
+                                    <input type="text" id="roadAddressInput" placeholder="도로명 주소 검색" readonly>
+                                    <button type="button" id="searchAddressBtn">검색</button>
+                                </div>
+                            </div>
+                            <div class="building-form-group">
+                                <label>Detail Address</label>
+                                <input type="text" id="detailAddressInput" placeholder="상세 주소">
+                            </div>
+                        </div>
+                        <div class="building-form-group">
+                            <label>Region Name</label>
+                            <input type="text" id="regionNameInput" placeholder="ex ) 광주 동구 대의동">
+                        </div>
+                        <div class="building-modal-actions">
+                            <button class="modal-cancel-btn" type="button" id="closeBuildingModalBtn">Cancel</button>
+                            <button class="modal-submit-btn" type="button" id="createBuildingBtn">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<!-- 카카오 주소 검색 라이브러리 및 건물 로직 스크립트 -->
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+</script>
+<script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="/js/buildings.js"></script>
+</body>
+</html>

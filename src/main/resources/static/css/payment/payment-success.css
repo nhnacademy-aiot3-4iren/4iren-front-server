@@ -1,0 +1,27 @@
+.result-card {
+    max-width: 480px;
+    margin: 80px auto 0;
+    text-align: center;
+}
+
+.result-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 12px;
+}
+
+.result-title.result-success {
+    color: rgb(255, 125, 50);
+}
+
+.result-desc {
+    font-size: 14px;
+    color: #777;
+    margin: 0 0 32px;
+}
+
+.result-card .setting-btn {
+    display: inline-block;
+    width: auto;
+    text-decoration: none;
+}

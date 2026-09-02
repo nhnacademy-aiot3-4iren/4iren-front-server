@@ -1,7 +1,6 @@
 package com.nhnacademy.front.auth.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.front.account.config.FeignErrorParser;
 import com.nhnacademy.front.auth.dto.login.LoginRequest;
 import com.nhnacademy.front.auth.dto.token.TokenResponse;
 import com.nhnacademy.front.auth.service.AuthService;
@@ -54,18 +53,12 @@ public class AuthController {
 
             return "redirect:/";
         } catch (feign.FeignException e) {
-            String errorMessage = "로그인에 실패했습니다.";
-            try {
-                JsonNode node = new ObjectMapper().readTree(e.contentUTF8());
-                if (node.has("message")) errorMessage = node.get("message").asText();
-            } catch (Exception ex) {
-                log.warn("Error parsing feign exception", ex);
-            }
-            log.error("Login failed (Feign): {}", errorMessage);
+            String errorMessage = com.nhnacademy.front.account.config.FeignErrorParser.getMessage(e, "로그인에 실패했습니다.");
+            log.warn("Login failed", e);
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
             return "redirect:/login";
         } catch (Exception e) {
-            log.error("Login failed: {}", e.getMessage());
+            log.warn("Login failed", e);
             redirectAttributes.addFlashAttribute("errorMessage", "서버 오류가 발생했습니다.");
             return "redirect:/login";
         }

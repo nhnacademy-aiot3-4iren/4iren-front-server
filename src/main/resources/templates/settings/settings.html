@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+
+  <link rel="stylesheet" href="/fonts/font.css">
+  <link rel="stylesheet" th:href="@{/css/settings.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+  <link rel="stylesheet" th:href="@{/css/telegram.css}">
+
+</head>
+
+<body>
+<div class="layout">
+
+  <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
+  <div class="main-content-area">
+
+    <div th:replace="~{layout/header :: header('설정')}"></div>
+
+    <main class="content">
+
+      <!-- ============================================== -->
+      <!-- 설정 카드: 왼쪽 탭 목록 + 오른쪽 탭별 컨텐츠 패널 -->
+      <!-- ============================================== -->
+      <section class="settings-card">
+
+        <!-- ============================================== -->
+        <!-- 왼쪽: 세로 탭 목록 -->
+        <!-- ============================================== -->
+        <nav class="settings-nav">
+
+          <button type="button" class="settings-tab active" data-tab="notifications">Notifications</button>
+
+          <button type="button" class="settings-tab" data-tab="payment"
+                  th:if="${role=='OWNER'}">Payment</button>
+        </nav>
+
+        <!-- ============================================== -->
+        <!-- 오른쪽: 탭별 컨텐츠 패널 -->
+        <!-- ============================================== -->
+        <div class="settings-content">
+
+
+
+          <!-- ---------------- Notifications ---------------- -->
+          <section class="settings-panel active" id="panel-notifications">
+            <div class="panel-header">
+              <h2 class="panel-title">Notifications</h2>
+              <a href="/alert-histories" class="btn-outline" style="text-decoration:none;">
+                Notification History →
+              </a>
+            </div>
+
+            <!-- ============================= -->
+            <!-- 큰 카드: Telegram 알림 상태 전체  -->
+            <!-- ============================= -->
+            <div class="telegram-card">
+
+              <!-- Telegram 알림 상태 헤더, 아이콘 -->
+              <div class="telegram-header">
+                <img src="/photo/icon/telegram-icon.png" alt="telegram" class="telegram-icon-img">
+                <h3 class="telegram-title">Telegram 알림 상태</h3>
+              </div>
+              <!-- 회색 음영선 알림 상태 밑에 줄 -->
+              <hr class="telegram-divider">
+
+              <div class="telegram-bot-columns">
+
+                <div th:replace="~{telegram/telegramBot :: telegram-bot('member', 'Member Bot')}"></div>
+                <div th:if="${isAdmin}" style="display: contents;">
+                  <div th:replace="~{telegram/telegramBot :: telegram-bot('admin', 'Admin Bot')}"></div>
+                </div>
+
+              </div>
+
+            </div>
+            <!-- // telegram-card 끝 -->
+
+            <h3 class="panel-subtitle">공간별 알림 수신</h3>
+            <p class="panel-desc">
+              구독 중인 공간이 많아지면 이 목록도 함께 길어지므로,
+              별도 페이지에서 검색/페이지네이션과 함께 관리합니다.
+            </p>
+
+            <a href="/settings/notifications/rooms" class="btn-outline" style="display:inline-block; text-decoration:none;">
+              공간별 알림 관리 →
+            </a>
+          </section>
+
+          <!-- ---------------- Payment (owner 전용) ----------------
+               결제 내역/수단변경/구독해지는 전부 별도 페이지(/payment,
+               sidebar-menu/settings/payment.html)로 분리됨. 여기서는
+               안내 문구와 바로가기 버튼만 둠. -->
+          <section class="settings-panel" id="panel-payment"
+                   th:if="${role == 'OWNER'}">
+            <h2 class="panel-title">Payment</h2>
+
+            <div class="setting-row">
+              <div class="setting-row-text">
+                <strong>결제 관리</strong>
+                <p>구독 정보, 결제 내역, 결제 수단 변경, 구독 해지를 한 곳에서 관리할 수 있습니다.</p>
+              </div>
+              <a href="/payment" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center;">
+                결제 관리 페이지로 이동 →
+              </a>
+            </div>
+          </section>
+
+
+        </div> <!-- /settings-content -->
+
+      </section> <!-- /settings-card -->
+
+    </main>
+  </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<script src="/js/telegram.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.settings-tab');
+    const panels = document.querySelectorAll('.settings-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        panels.forEach(p => p.classList.toggle('active', p.id === 'panel-' + target));
+      });
+    });
+  });
+</script>
+</body>
+</html>

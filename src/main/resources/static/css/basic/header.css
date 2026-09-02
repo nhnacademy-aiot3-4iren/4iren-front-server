@@ -115,12 +115,55 @@
 }
 
 /* 역할별 색상 */
-.user-role[data-role="owner"] { color: #FF9800; }
-.user-role[data-role="admin"] { color: #4A90D9; }
-.user-role[data-role="user"]  { color: #999999; }
+.user-role[data-role="admin"]  { color: #4A90D9; }
+.user-role[data-role="normal"] { color: #999999; }
 
 .user-toggle {
     width: 12px;
     height: 6px;
     margin-left: 2px;
+}
+
+/* 유저 메뉴 드롭다운 */
+.user-menu {
+    position: relative;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 140px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 0.2px solid rgba(151, 154, 155, 0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 6px;
+    z-index: 100;
+}
+
+.user-dropdown.active {
+    display: block;
+}
+
+.user-dropdown form {
+    margin: 0;
+}
+
+.user-dropdown-item {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #d33;
+    cursor: pointer;
+}
+
+.user-dropdown-item:hover {
+    background-color: #f5f5f5;
 }

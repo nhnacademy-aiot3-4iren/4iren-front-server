@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Info - Re I New</title>
+
+    <link rel="stylesheet" href="/fonts/font.css">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/team/buildings.css}">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
+</head>
+<body>
+<!-- 전체 레이아웃: 사이드바(좌측) + 메인 작업 영역(우측) -->
+<div class="layout">
+    <!-- 1. 사이드바 프래그먼트 -->
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
+    <!-- 2. 우측 메인 콘텐츠 영역 -->
+    <div class="main-content-area">
+        <div th:replace="~{layout/header :: header('Room Info')}"></div>
+        <main class="content">
+
+            <!-- 상단 네비게이션 및 강의실 식별자 / 외부 날씨 정책 버튼 -->
+            <div class="building-page-header">
+                <div>
+                    <!-- 상위 강의실 목록 화면으로 복귀하는 링크 -->
+                    <a class="back-link"
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                        Classroom List
+                    </a>
+                    <h2>Classroom Info</h2>
+                    <p>
+                        <span th:text="${team.teamName}">Team Name</span>
+                        <span> / </span>
+                        <span th:text="${building.buildingName}">Building Name</span>
+                    </p>
+                </div>
+                <div class="building-summary">
+                    <div>
+                        <span>Classroom ID</span>
+                        <strong th:text="${room.roomId}">0</strong>
+                    </div>
+                    <!-- 외부 날씨 정책 모달 열기 버튼 (ADMIN/OWNER 전용) -->
+                    <button class="weather-policy-open-btn" type="button" id="openWeatherPolicyBtn"
+                            th:if="${team.myRole != null && (team.myRole.name() == 'OWNER' || team.myRole.name() == 'ADMIN')}"
+                            aria-haspopup="dialog" aria-controls="weatherPolicyDialog">
+                        외부날씨 정책 설정
+                    </button>
+                </div>
+            </div>
+
+            <!-- 알림 구독 관리 패널 -->
+            <section class="subscription-panel">
+                <div>
+                    <h3>Subscription</h3>
+                    <p id="subscriptionStatusText"
+                       th:text="${subscriptionStatus.subscribed} ? '구독 중인 강의실입니다.' : '구독하지 않은 강의실입니다.'">
+                        구독 상태
+                    </p>
+                </div>
+                <div class="subscription-actions">
+                    <label class="notification-toggle"
+                           th:classappend="${!subscriptionStatus.subscribed} ? 'disabled'">
+                        <input type="checkbox" id="notificationToggle"
+                               th:checked="${subscriptionStatus.notificationEnabled}"
+                               th:disabled="${!subscriptionStatus.subscribed}">
+                        <span></span>
+                        <strong>알림</strong>
+                    </label>
+
+                    <!-- 일반 사용자(NORMAL) 전용 구독/해제 버튼 -->
+                    <button class="subscription-btn subscribe" type="button" id="subscribeBtn"
+                            th:if="${team.myRole != null && team.myRole.name() == 'NORMAL'}"
+                            th:style="${subscriptionStatus.subscribed} ? 'display:none' : ''">
+                        구독
+                    </button>
+                    <button class="subscription-btn unsubscribe" type="button" id="unsubscribeBtn"
+                            th:if="${team.myRole != null && team.myRole.name() == 'NORMAL'}"
+                            th:style="${subscriptionStatus.subscribed} ? '' : 'display:none'">
+                        구독 취소
+                    </button>
+                </div>
+            </section>
+
+            <!-- AI 추천 브리핑 섹션 (데이터가 있을 때만 렌더링) -->
+            <section class="room-briefing-grid"
+                     th:if="${welcomeBriefing != null || dailySummary != null}">
+
+                <!-- 1) 실시간 입실 브리핑 -->
+                <details class="room-briefing-panel" th:if="${welcomeBriefing != null}">
+                    <summary class="room-briefing-summary">
+                        <span class="room-briefing-toggle" aria-hidden="true"></span>
+                        <span class="room-briefing-type">Welcome Briefing</span>
+                        <strong th:text="${welcomeBriefing.summary}">오늘의 브리핑</strong>
+                    </summary>
+                    <div class="room-briefing-detail">
+                        <p th:if="${welcomeBriefing.currentStatus != null}"
+                           th:text="${welcomeBriefing.currentStatus}">현재 상태</p>
+                        <p th:if="${welcomeBriefing.comparison != null}"
+                           th:text="${welcomeBriefing.comparison}">비교</p>
+                        <ul th:if="${!#lists.isEmpty(welcomeBriefing.recommendations)}">
+                            <li th:each="recommendation : ${welcomeBriefing.recommendations}"
+                                th:text="${recommendation}">추천</li>
+                        </ul>
+                        <ul th:if="${!#lists.isEmpty(welcomeBriefing.checks)}">
+                            <li th:each="check : ${welcomeBriefing.checks}"
+                                th:text="${check}">체크</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <!-- 2) 일일 종합 브리핑 -->
+                <details class="room-briefing-panel" th:if="${dailySummary != null}">
+                    <summary class="room-briefing-summary">
+                        <span class="room-briefing-toggle" aria-hidden="true"></span>
+                        <span class="room-briefing-type">Daily Summary</span>
+                        <strong th:text="${dailySummary.summary}">하루 요약</strong>
+                    </summary>
+                    <div class="room-briefing-detail">
+                        <p th:if="${dailySummary.indoorEnvironment != null}"
+                           th:text="${dailySummary.indoorEnvironment}">실내 환경</p>
+                        <p th:if="${dailySummary.outdoorEnvironment != null}"
+                           th:text="${dailySummary.outdoorEnvironment}">외부 환경</p>
+                        <p th:if="${dailySummary.comparison != null}"
+                           th:text="${dailySummary.comparison}">비교</p>
+                        <ul th:if="${!#lists.isEmpty(dailySummary.recommendations)}">
+                            <li th:each="recommendation : ${dailySummary.recommendations}"
+                                th:text="${recommendation}">추천</li>
+                        </ul>
+                        <ul th:if="${!#lists.isEmpty(dailySummary.checks)}">
+                            <li th:each="check : ${dailySummary.checks}"
+                                th:text="${check}">체크</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- 강의실 메타 정보 패널 -->
+            <section class="building-info-panel">
+                <div class="building-info-main">
+                    <div class="building-info-title">
+                        <div class="building-icon room-icon">
+                            <img src="/photo/icon/door-icon.png" alt="classroom">
+                        </div>
+                        <div>
+                            <h3 th:text="${room.roomName}">Classroom Name</h3>
+                            <p th:text="${#strings.defaultString(room.description, '등록된 설명이 없습니다.')}">Description</p>
+                        </div>
+                    </div>
+
+                    <dl class="building-detail-list">
+                        <div>
+                            <dt>Building</dt>
+                            <dd th:text="${#strings.defaultString(room.buildingName, building.buildingName)}">Building Name</dd>
+                        </div>
+                        <div>
+                            <dt>Room ID</dt>
+                            <dd th:text="${room.roomId}">0</dd>
+                        </div>
+                    </dl>
+                </div>
+            </section>
+
+            <!-- ======================================================= -->
+            <!-- 하단 2단 그리드: 강의실 Sensor 목록 & Device 목록 -->
+            <!-- ======================================================= -->
+            <div class="building-sub-grid">
+
+                <!-- [좌측 카드] 해당 강의실에 설치된 Sensor 목록 -->
+                <section class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div>
+                            <h3>Installed Sensors</h3>
+                            <span class="sub-text" th:text="|총 ${#lists.size(sensorLocations)}개의 센서|">총 0개의 센서</span>
+                        </div>
+                        <a class="btn-sub-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/sensor-locations(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
+                            센서 관리 →
+                        </a>
+                    </div>
+                    <div class="sub-list-wrap">
+                        <ul class="sub-entity-list" th:if="${!#lists.isEmpty(sensorLocations)}">
+                            <li class="sub-entity-item" th:each="s : ${sensorLocations}">
+                                <div class="sub-entity-main">
+                                    <div class="sub-icon sensor-icon">
+                                        <img src="/photo/icon/connection-icon.png" alt="sensor">
+                                    </div>
+                                    <div class="sub-entity-text">
+                                        <strong th:text="${s.devEui}">24e124785c389010</strong>
+                                        <p th:text="${#strings.defaultString(s.locationDetail, '위치 상세 정보 없음')}">위치 상세</p>
+                                    </div>
+                                </div>
+                                <span class="badge-deveui" th:text="|ID ${s.sensorLocationId}|">ID 1</span>
+                            </li>
+                        </ul>
+                        <div class="empty-sub-list" th:if="${#lists.isEmpty(sensorLocations)}">
+                            <p>강의실에 등록된 센서가 없습니다.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- [우측 카드] 해당 강의실에 설치된 Device 목록 -->
+                <section class="sub-panel">
+                    <div class="sub-panel-header">
+                        <div>
+                            <h3>Installed Devices</h3>
+                            <span class="sub-text" th:text="|총 ${#lists.size(devices)}개의 디바이스|">총 0개의 디바이스</span>
+                        </div>
+                        <a class="btn-sub-link"
+                           th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
+                            디바이스 관리 →
+                        </a>
+                    </div>
+                    <div class="sub-list-wrap">
+                        <ul class="sub-entity-list" th:if="${!#lists.isEmpty(devices)}">
+                            <li class="sub-entity-item" th:each="d : ${devices}">
+                                <div class="sub-entity-main">
+                                    <div class="sub-icon asset-icon">
+                                        <img src="/photo/icon/node-icon.png" alt="device">
+                                    </div>
+                                    <div class="sub-entity-text">
+                                        <strong th:text="${d.deviceName}">에어컨</strong>
+                                        <p th:text="|Device ID ${d.deviceId}|">Device ID 1</p>
+                                    </div>
+                                </div>
+                                <span class="badge-mini">Device</span>
+                            </li>
+                        </ul>
+                        <div class="empty-sub-list" th:if="${#lists.isEmpty(devices)}">
+                            <p>강의실에 등록된 디바이스가 없습니다.</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- ======================================================= -->
+<!-- 모달: 외부 날씨 판단 기준 설정 다이얼로그 -->
+<!-- ======================================================= -->
+<dialog class="weather-policy-dialog" id="weatherPolicyDialog" aria-labelledby="weatherPolicyTitle">
+    <form class="weather-policy-form" id="weatherPolicyForm">
+        <div class="weather-policy-header">
+            <div>
+                <span class="weather-policy-eyebrow">Welcome Briefing</span>
+                <h2 id="weatherPolicyTitle">외부날씨 판단 기준</h2>
+                <p>이 강의실의 웰컴브리핑에 적용할 날씨 판단 기준을 설정합니다.</p>
+            </div>
+            <button type="button" class="weather-policy-close-btn" id="closeWeatherPolicyBtn" aria-label="닫기">&times;</button>
+        </div>
+
+        <div class="weather-policy-loading" id="weatherPolicyLoading" role="status">정책을 불러오는 중입니다.</div>
+
+        <div class="weather-policy-body" id="weatherPolicyBody" hidden>
+            <div class="weather-policy-scope">
+                <span>적용 범위</span>
+                <strong th:text="|${room.roomName} 강의실|">강의실</strong>
+                <small>상위 정책이 적용 중이면 현재 상속된 값을 불러옵니다.</small>
+            </div>
+
+            <div class="weather-policy-fields">
+                <label class="weather-policy-field">
+                    <span>비 가능성 기준</span>
+                    <span class="weather-policy-input-wrap">
+                        <input type="number" id="rainPossibleProbability" min="0" max="100" required>
+                        <em>%</em>
+                    </span>
+                    <small>이 확률 이상이면 비가 올 가능성이 있다고 판단합니다.</small>
+                </label>
+
+                <label class="weather-policy-field">
+                    <span>비 예상 기준</span>
+                    <span class="weather-policy-input-wrap">
+                        <input type="number" id="rainExpectedProbability" min="0" max="100" required>
+                        <em>%</em>
+                    </span>
+                    <small>이 확률 이상이면 비가 예상된다고 판단합니다.</small>
+                </label>
+
+                <label class="weather-policy-field">
+                    <span>강풍 기준</span>
+                    <span class="weather-policy-input-wrap">
+                        <input type="number" id="strongWindSpeed" min="0" step="0.1" required>
+                        <em>m/s</em>
+                    </span>
+                    <small>이 풍속 이상이면 강한 바람으로 판단합니다.</small>
+                </label>
+
+                <label class="weather-policy-field">
+                    <span>고습도 기준</span>
+                    <span class="weather-policy-input-wrap">
+                        <input type="number" id="highHumidityPercent" min="0" max="100" required>
+                        <em>%</em>
+                    </span>
+                    <small>이 습도 이상이면 습도가 높다고 판단합니다.</small>
+                </label>
+            </div>
+
+            <div class="weather-policy-enabled-row">
+                <div>
+                    <strong>외부날씨 판단 활성화</strong>
+                    <p>끄면 이 강의실 전용 정책을 비활성화하고 상위 정책을 사용합니다.</p>
+                </div>
+                <label class="weather-policy-switch">
+                    <input type="checkbox" id="weatherPolicyEnabled">
+                    <span aria-hidden="true"></span>
+                    <span class="sr-only">외부날씨 판단 활성화</span>
+                </label>
+            </div>
+
+            <div class="weather-policy-reactivate-row">
+                <div>
+                    <strong>강의실 전용 정책 다시 활성화</strong>
+                    <p>비활성화된 전용 정책이 있으면 상위 정책 대신 다시 사용합니다.</p>
+                </div>
+                <button type="button" class="weather-policy-reactivate-btn" id="reactivateWeatherPolicyBtn">
+                    다시 활성화
+                </button>
+            </div>
+
+            <p class="weather-policy-message" id="weatherPolicyMessage" role="status" aria-live="polite"></p>
+
+            <div class="weather-policy-actions">
+                <button type="button" class="weather-policy-cancel-btn" id="cancelWeatherPolicyBtn">취소</button>
+                <button type="submit" class="weather-policy-save-btn" id="saveWeatherPolicyBtn">정책 저장</button>
+            </div>
+        </div>
+    </form>
+</dialog>
+
+<!-- 하단 푸터 -->
+<div th:replace="~{layout/footer :: footer}"></div>
+
+<!-- 외부 JS 파일에서 사용할 변수 바인딩 -->
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+    const buildingId = /*[[${building.buildingId}]]*/ null;
+    const roomId = /*[[${room.roomId}]]*/ null;
+</script>
+<script src="/js/room-info.js"></script>
+<script src="/js/weather-policy.js"></script>
+</body>
+</html>

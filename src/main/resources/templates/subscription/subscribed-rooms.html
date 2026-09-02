@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구독중인 강의실 - 4iren</title>
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+    <link rel="stylesheet" th:href="@{/css/subscription/subscribed-rooms.css}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+</head>
+<body>
+<div class="layout">
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
+    <div class="main-wrap">
+        <div th:replace="~{layout/header :: header('구독중인 강의실')}"></div>
+
+        <main class="main-content subscribed-room-page">
+            <header class="subscribed-room-header">
+                <p class="page-eyebrow">SUBSCRIPTIONS</p>
+                <h1>구독중인 강의실 목록</h1>
+                <p>구독한 강의실을 선택하면 기존 상세 화면으로 이동합니다.</p>
+            </header>
+
+            <section class="subscribed-room-list" aria-label="구독중인 강의실 목록"
+                     th:if="${!#lists.isEmpty(rooms)}">
+                <a class="subscribed-room-card"
+                   th:each="room : ${rooms}"
+                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}(teamId=${room.teamId}, buildingId=${room.buildingId}, roomId=${room.roomId})}">
+                    <span class="room-card-copy">
+                        <strong th:text="${room.roomName}">E.Space</strong>
+                        <span th:text="${room.buildingName}">IT융합대학</span>
+                    </span>
+                    <span class="room-card-arrow" aria-hidden="true">›</span>
+                </a>
+            </section>
+
+            <section class="subscribed-room-empty" th:if="${#lists.isEmpty(rooms)}">
+                <p>구독중인 강의실이 없습니다.</p>
+            </section>
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{layout/footer :: footer}"></div>
+</body>
+</html>

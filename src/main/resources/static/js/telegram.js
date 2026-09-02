@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // ==========================================
     // 좌측 탭 전환
     // ==========================================
-    const tabs = document.querySelectorAll('.settings-tab');
+    const tabs = document.querySelectorAll('.settings-tab[data-target]');
     const tabContents = document.querySelectorAll('.tab-content');
 
     tabs.forEach(tab => {

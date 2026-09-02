@@ -51,6 +51,7 @@ public class RoomController {
         model.addAttribute("size", size);
         model.addAttribute("sort", sort);
 
-        return "mypage/rooms";
+        // 파일 위치: templates/sidebar-menu/team/classrooms/rooms.html
+        return "team/rooms";
     }
 }
