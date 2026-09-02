@@ -1,5 +1,6 @@
 package com.nhnacademy.front.owner.controller;
 
+import com.nhnacademy.front.account.config.FeignErrorParser;
 import com.nhnacademy.front.owner.dto.AdminCreateRequest;
 import com.nhnacademy.front.owner.dto.UserResponse;
 import com.nhnacademy.front.owner.service.OwnerService;
@@ -30,7 +31,7 @@ public class OwnerController {
                 model.addAttribute("adminCreateRequest", new AdminCreateRequest("", "", ""));
             }
         } catch (Exception e) {
-            log.error("Failed to fetch admin list", e);
+            log.warn("Failed to fetch admin list", e);
             model.addAttribute("errorMessage", "관리자 목록을 불러오는데 실패했습니다.");
         }
         return "owner/admin_list";
@@ -51,10 +52,11 @@ public class OwnerController {
             ownerService.createAdmin(request);
             redirectAttributes.addFlashAttribute("successMessage", "관리자 계정이 성공적으로 생성되었습니다.");
         } catch (feign.FeignException e) {
-            log.error("Failed to create admin: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "관리자 계정 생성에 실패했습니다. (아이디 중복 등)");
+            String errorMessage = FeignErrorParser.getMessage(e, "관리자 계정 생성에 실패했습니다.");
+            log.warn("Failed to create admin", e);
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
         } catch (Exception e) {
-            log.error("Failed to create admin", e);
+            log.warn("Failed to create admin", e);
             redirectAttributes.addFlashAttribute("errorMessage", "서버 오류로 관리자 계정 생성에 실패했습니다.");
         }
         return "redirect:/owner/admin/list";
@@ -71,7 +73,7 @@ public class OwnerController {
             model.addAttribute("admin", admin);
             return "owner/admin_detail";
         } catch (Exception e) {
-            log.error("Failed to fetch admin detail", e);
+            log.warn("Failed to fetch admin detail", e);
             redirectAttributes.addFlashAttribute("errorMessage", "관리자 상세 정보를 불러오는데 실패했습니다.");
             return "redirect:/owner/admin/list";
         }
@@ -83,7 +85,7 @@ public class OwnerController {
             ownerService.deleteAdmin(userId);
             redirectAttributes.addFlashAttribute("successMessage", "관리자 계정이 삭제(비활성화)되었습니다.");
         } catch (Exception e) {
-            log.error("Failed to delete admin", e);
+            log.warn("Failed to delete admin", e);
             redirectAttributes.addFlashAttribute("errorMessage", "관리자 삭제에 실패했습니다.");
         }
         return "redirect:/owner/admin/list";
@@ -95,7 +97,7 @@ public class OwnerController {
             ownerService.restoreAdmin(userId);
             redirectAttributes.addFlashAttribute("successMessage", "관리자 계정이 복구되었습니다.");
         } catch (Exception e) {
-            log.error("Failed to restore admin", e);
+            log.warn("Failed to restore admin", e);
             redirectAttributes.addFlashAttribute("errorMessage", "관리자 복구에 실패했습니다.");
         }
         return "redirect:/owner/admin/list";
@@ -107,7 +109,7 @@ public class OwnerController {
             ownerService.resetPassword(userId);
             redirectAttributes.addFlashAttribute("successMessage", "관리자의 비밀번호가 1234 초기화되었습니다.");
         } catch (Exception e) {
-            log.error("Failed to reset password", e);
+            log.warn("Failed to reset password", e);
             redirectAttributes.addFlashAttribute("errorMessage", "비밀번호 초기화에 실패했습니다.");
         }
         return "redirect:/owner/admin/list";
