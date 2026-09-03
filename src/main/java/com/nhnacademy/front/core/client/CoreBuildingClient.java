@@ -8,6 +8,8 @@ import com.nhnacademy.front.core.dto.building.BuildingUpdateRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(
         name = "4iren-gateway",
         contextId = "coreBuildingClient",
@@ -28,6 +30,9 @@ public interface CoreBuildingClient {
             @RequestParam(name = "size", defaultValue = "20") Integer size,
             @RequestParam(name = "sort", defaultValue = "id,ASC") String sort
     );
+
+    @GetMapping("/{teamId}/buildings/all")
+    List<BuildingResponse> getAllBuildings(@PathVariable("teamId") Long teamId);
 
     @GetMapping("/{teamId}/buildings/{buildingId}")
     BuildingDetailResponse getBuilding(

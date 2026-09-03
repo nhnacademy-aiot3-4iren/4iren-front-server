@@ -3,7 +3,9 @@ package com.nhnacademy.front.core.controller;
 import com.nhnacademy.front.core.dto.PageResponse;
 import com.nhnacademy.front.core.dto.room.RoomCreateRequest;
 import com.nhnacademy.front.core.dto.room.RoomDetailResponse;
+import com.nhnacademy.front.core.dto.room.RoomMatchResponse;
 import com.nhnacademy.front.core.dto.room.RoomResponse;
+import com.nhnacademy.front.core.dto.room.RoomUpdateRequest;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionResponse;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionStatus;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionUpdateRequest;
@@ -13,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +36,23 @@ public class CoreRoomRestController {
         return ResponseEntity.ok(roomService.getRooms(teamId, buildingId, page, size, sort));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<RoomResponse>> getAllRooms(
+            @PathVariable Long teamId,
+            @PathVariable Long buildingId
+    ) {
+        return ResponseEntity.ok(roomService.getAllRooms(teamId, buildingId));
+    }
+
+    @GetMapping("/by-name")
+    public ResponseEntity<RoomMatchResponse> searchRoomInBuilding(
+            @PathVariable Long teamId,
+            @PathVariable Long buildingId,
+            @RequestParam String roomName
+    ) {
+        return ResponseEntity.ok(roomService.searchRoomInBuilding(teamId, buildingId, roomName));
+    }
+
     @PostMapping
     public ResponseEntity<RoomResponse> createRoom(
             @PathVariable Long teamId,
@@ -39,6 +60,15 @@ public class CoreRoomRestController {
             @Valid @RequestBody RoomCreateRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomService.createRoom(teamId, buildingId, request));
+    }
+
+    @PatchMapping("/{roomId}")
+    public ResponseEntity<RoomResponse> updateRoom(
+            @PathVariable Long teamId,
+            @PathVariable Long roomId,
+            @Valid @RequestBody RoomUpdateRequest request
+    ) {
+        return ResponseEntity.ok(roomService.updateRoom(teamId, roomId, request));
     }
 
     @DeleteMapping("/{roomId}")

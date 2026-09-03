@@ -1,3 +1,25 @@
+<!-- ================================================================
+     !! sidebar.html
+     - 사용법: <div th:replace="~{sidebar :: sidebar}"></div>
+     - mypage, team 등 공통으로 사용
+     - active 상태는 브라우저에서 JS가 현재 URL을 보고 판단 (컨트롤러 수정 불필요)
+     - role, loginId는 GlobalControllerAdvice가 모든 페이지에 자동으로 내려줌
+       (role 값은 "ADMIN" 또는 "NORMAL" 둘 중 하나 - owner도 시스템상으로는 ADMIN이라
+        role만으로는 owner/admin을 구분할 수 없음)
+     - 변경 사항 정리:
+       1) "관리자 페이지"(owner-page-btn) 삭제. role == 'OWNER' 조건은 애초에 절대
+          참이 될 수 없어 항상 안 보이던 죽은 코드였음.
+       2) Team 서브메뉴에 "Team Info" 추가 (팀 이름/설명 수정, 추후 활성화·비활성화/
+          삭제 버튼도 이 페이지 쪽에 추가 예정).
+       3) Team 서브메뉴에 "Members" 추가 (초대 코드 생성, 팀원 관리). Settings는
+          계정/사이트 전체 설정 스코프이고 Members는 "이 팀에 누굴 넣을지"를 다루는
+          팀 스코프 기능이라 Settings가 아니라 여기로 위치를 확정함.
+          Settings에는 이제 팀 스코프 기능이 없고, Payment(결제)만 계정 전체
+          설정으로 남음.
+       4) Team 서브메뉴에서 Buildings / Classrooms 삭제. Building/Classroom
+          관리는 Team Info 페이지 안(좌우 분할 리스트)으로 통합되어 별도
+          사이드바 진입점이 필요 없어짐.
+     ================================================================ -->
 <aside xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar" class="sidebar">
 
     <!-- 접기/펼치기 버튼 -->
@@ -26,6 +48,16 @@
     </div>
 
     <nav class="sidebar-nav">
+
+        <a th:href="${currentTeamId != null ? '/teams/' + currentTeamId + '/dashboard' : '/dashboard'}"
+           class="nav-item"
+           data-page="dashboard">
+            <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M8 20V10M13 20v-6M18 20V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Dashboard</span>
+        </a>
 
         <a href="/mypage"
            class="nav-item"
@@ -141,7 +173,7 @@
     </nav>
 
     <div class="sidebar-bottom">
-        <a th:href="@{/static}" class="nav-item" data-page="home" data-label="Home">
+        <a th:href="@{/}" class="nav-item" data-page="home">
             <svg class="nav-icon" width="24" height="24" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12.9167 32.9623C12.9167 29.4547 12.9167 27.701 13.6258 26.1594C14.3348 24.6178 15.6664 23.4765 18.3295 21.1938L20.9128 18.9795C25.7264 14.8536 28.1332 12.7906 31.0001 12.7906C33.867 12.7906 36.2738 14.8536 41.0873 18.9795L43.6707 21.1938C46.3338 23.4765 47.6654 24.6178 48.3744 26.1594C49.0834 27.701 49.0834 29.4547 49.0834 32.9623V43.9166C49.0834 48.7878 49.0834 51.2234 47.5701 52.7367C46.0569 54.25 43.6213 54.25 38.7501 54.25H23.2501C18.3789 54.25 15.9433 54.25 14.43 52.7367C12.9167 51.2234 12.9167 48.7878 12.9167 43.9166V32.9623Z" stroke="currentColor" stroke-width="2.87396"/>
                 <path d="M37.4582 54.25V41.624C37.4582 40.0367 36.1715 38.75 34.5842 38.75H27.4155C25.8282 38.75 24.5415 40.0367 24.5415 41.624V54.25" stroke="currentColor" stroke-width="2.87396" stroke-linecap="round" stroke-linejoin="round"/>

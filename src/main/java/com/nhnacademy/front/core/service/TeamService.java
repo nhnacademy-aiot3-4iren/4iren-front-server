@@ -4,17 +4,13 @@ import com.nhnacademy.front.core.client.team.CoreTeamClient;
 import com.nhnacademy.front.core.client.team.CoreTeamInvitationCodeClient;
 import com.nhnacademy.front.core.client.team.CoreTeamMemberClient;
 import com.nhnacademy.front.core.dto.PageResponse;
-import com.nhnacademy.front.core.dto.team.TeamCreateRequest;
-import com.nhnacademy.front.core.dto.team.TeamDetailResponse;
-import com.nhnacademy.front.core.dto.team.TeamResponse;
-import com.nhnacademy.front.core.dto.team.TeamUpdateRequest;
+import com.nhnacademy.front.core.dto.team.*;
 import com.nhnacademy.front.core.dto.team.invitation.TeamInvitationCodeCreateRequest;
 import com.nhnacademy.front.core.dto.team.invitation.TeamInvitationCodeResponse;
 import com.nhnacademy.front.core.dto.team.invitation.TeamInvitationCodeSummaryResponse;
 import com.nhnacademy.front.core.dto.team.member.TeamJoinRequest;
 import com.nhnacademy.front.core.dto.team.member.TeamMemberResponse;
 import lombok.RequiredArgsConstructor;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -59,12 +55,12 @@ public class TeamService {
         return coreTeamClient.getTeam(teamId);
     }
 
-    public TeamResponse updateTeam(Long teamId, TeamCreateRequest request) {
-        TeamUpdateRequest updateRequest = new TeamUpdateRequest();
-        updateRequest.setTeamName(JsonNullable.of(request.teamName()));
-        updateRequest.setDescription(JsonNullable.of(request.description()));
+    public TeamResponse updateTeam(Long teamId, TeamUpdateRequest request) {
+        return coreTeamClient.updateTeam(teamId, request);
+    }
 
-        return coreTeamClient.updateTeam(teamId, updateRequest);
+    public TeamResponse updateTeamStatus(Long teamId, TeamStatusUpdateRequest request) {
+        return coreTeamClient.updateTeamStatus(teamId, request);
     }
 
     public void deleteTeam(Long teamId) {
@@ -96,5 +92,13 @@ public class TeamService {
 
     public PageResponse<TeamMemberResponse> getTeamMembers(Long teamId, Integer page, Integer size, String sort) {
         return coreTeamMemberClient.getTeamMembers(teamId, page, size, sort);
+    }
+
+    public void removeTeamMember(Long teamId, Long teamMemberId) {
+        coreTeamMemberClient.removeTeamMember(teamId, teamMemberId);
+    }
+
+    public void leaveTeam(Long teamId) {
+        coreTeamMemberClient.leaveTeam(teamId);
     }
 }

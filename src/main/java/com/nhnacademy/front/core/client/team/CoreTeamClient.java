@@ -4,6 +4,7 @@ import com.nhnacademy.front.core.dto.PageResponse;
 import com.nhnacademy.front.core.dto.team.TeamCreateRequest;
 import com.nhnacademy.front.core.dto.team.TeamDetailResponse;
 import com.nhnacademy.front.core.dto.team.TeamResponse;
+import com.nhnacademy.front.core.dto.team.TeamStatusUpdateRequest;
 import com.nhnacademy.front.core.dto.team.TeamUpdateRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,12 @@ public interface CoreTeamClient {
     TeamResponse updateTeam(
             @PathVariable("teamId") Long teamId,
             @RequestBody TeamUpdateRequest request
+    );
+
+    @PatchMapping("/{teamId}/status")
+    TeamResponse updateTeamStatus(
+            @PathVariable("teamId") Long teamId,
+            @RequestBody TeamStatusUpdateRequest request
     );
 
     @DeleteMapping("/{teamId}")
