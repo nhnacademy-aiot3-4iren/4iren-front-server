@@ -89,7 +89,7 @@
                     <!-- ============================================== -->
                     <!-- 팀원 목록
                          실제 API: GET /api/front/teams/{teamId}/members (page/size/sort)
-                         TeamMemberResponse = { teamMemberId, teamId, userId, teamRole }
+                         TeamMemberResponse = { teamMemberId, teamId, userId }
                          ※ userId → 이름 변환 API가 아직 없어서 지금은 userId를 그대로 표시함.
                             나중에 이름 조회 API가 생기면 renderMembers()의 표시 부분만
                             바꾸면 됨 (fetchUserNames 같은 함수를 추가해서 매핑). -->
@@ -99,13 +99,12 @@
                         <thead>
                         <tr>
                             <th>User ID</th>
-                            <th>역할</th>
                             <th>관리</th>
                         </tr>
                         </thead>
                         <tbody id="membersTableBody">
                         <tr class="empty-row">
-                            <td colspan="3">팀원 목록을 불러오는 중입니다.</td>
+                            <td colspan="2">팀원 목록을 불러오는 중입니다.</td>
                         </tr>
                         </tbody>
                     </table>
@@ -150,7 +149,7 @@
     // ============================================================
     async function loadMembers(page = 0) {
         const tbody = document.getElementById('membersTableBody');
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="3">팀원 목록을 불러오는 중입니다.</td></tr>';
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="2">팀원 목록을 불러오는 중입니다.</td></tr>';
 
         try {
             const result = await requestJson(
@@ -160,7 +159,7 @@
             renderMembers(result.content || []);
             renderPagination(result);
         } catch (error) {
-            tbody.innerHTML = `<tr class="empty-row"><td colspan="3">${error.message || '팀원 목록을 불러오지 못했습니다.'}</td></tr>`;
+            tbody.innerHTML = `<tr class="empty-row"><td colspan="2">${error.message || '팀원 목록을 불러오지 못했습니다.'}</td></tr>`;
         }
     }
 
@@ -168,27 +167,35 @@
         const tbody = document.getElementById('membersTableBody');
 
         if (members.length === 0) {
-            tbody.innerHTML = '<tr class="empty-row"><td colspan="3">팀원이 없습니다.</td></tr>';
+            tbody.innerHTML = '<tr class="empty-row"><td colspan="2">팀원이 없습니다.</td></tr>';
             return;
         }
 
         tbody.innerHTML = members.map(member => `
             <tr>
                 <td>User #${member.userId}</td>
-                <td><span class="role-badge role-${member.teamRole.toLowerCase()}">${member.teamRole}</span></td>
                 <td>
-                    ${canManageTeam && member.teamRole !== 'OWNER'
+                    ${canManageTeam
             ? `<button type="button" class="btn-outline-sm remove-member-btn" data-member-id="${member.teamMemberId}">내보내기</button>`
             : '-'}
                 </td>
             </tr>
         `).join('');
 
-        // 내보내기 버튼에 이벤트 연결
-        // TODO: 실제 "팀원 내보내기" API 경로 확인 필요 (CoreTeamRestController에 아직 없음)
         tbody.querySelectorAll('.remove-member-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                alert('팀원 내보내기 기능은 아직 준비 중입니다.');
+            btn.addEventListener('click', async () => {
+                if (!confirm('선택한 팀원을 내보낼까요?')) return;
+
+                try {
+                    btn.disabled = true;
+                    await requestJson(`/api/front/teams/${teamId}/members/${btn.dataset.memberId}`, {
+                        method: 'DELETE'
+                    });
+                    await loadMembers(currentPage);
+                } catch (error) {
+                    alert(error.message || '팀원을 내보내지 못했습니다.');
+                    btn.disabled = false;
+                }
             });
         });
     }

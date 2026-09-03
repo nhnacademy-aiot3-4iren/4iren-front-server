@@ -30,6 +30,12 @@ public interface CoreRoomClient {
             @RequestParam(name = "sort", defaultValue = "id,ASC") String sort
     );
 
+    @GetMapping("/{teamId}/buildings/{buildingId}/rooms/all")
+    List<RoomResponse> getAllRooms(
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("buildingId") Long buildingId
+    );
+
     @GetMapping("/{teamId}/rooms/{roomId}")
     RoomDetailResponse getRoom(
             @PathVariable("teamId") Long teamId,
