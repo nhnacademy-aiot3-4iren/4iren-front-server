@@ -63,6 +63,3 @@ management:
     web:
       exposure:
         include: health, info, prometheus
-
-server:
-  port: 8181
