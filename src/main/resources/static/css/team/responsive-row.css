@@ -1,0 +1,37 @@
+/* =======================================================
+   반응형 2열/1열 분할 레이아웃
+   - 가로 공간이 넉넉할 때: 좌우 1:1 배치
+   - 화면 폭이 좁아지거나 최소 너비(500px) 미만일 때: 상하 세로 배치
+   ======================================================= */
+.responsive-cards-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 24px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.responsive-cards-row > .info-card {
+    flex: 1 1 500px;
+    min-width: 0;
+    margin-top: 0 !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.responsive-cards-row > .info-card > ul {
+    flex: 1;
+}
+
+/* 2열 배치 시 리스트 내부 항목이 겹치지 않도록 줄바꿈 허용 */
+.responsive-cards-row .info-card ul li {
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+@media (max-width: 1200px) {
+    .responsive-cards-row > .info-card {
+        flex: 1 1 100%;
+    }
+}
