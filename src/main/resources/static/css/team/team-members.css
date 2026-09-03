@@ -33,6 +33,29 @@
     margin: 0 0 12px;
 }
 
+.invitation-code-policy {
+    margin: -4px 0 12px;
+    color: #999;
+    font-size: 12px;
+}
+
+.invitation-code-table {
+    margin-bottom: 4px;
+}
+
+.invitation-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.invitation-status-badge.status-available { background: #EAF7EE; color: #2E8B57; }
+.invitation-status-badge.status-expired { background: #F2F2F2; color: #777; }
+.invitation-status-badge.status-deactivated,
+.invitation-status-badge.status-unknown { background: #FFF0ED; color: #C45A49; }
+
 /* ---------------- 팀원 테이블 ---------------- */
 .members-table {
     width: 100%;
@@ -87,6 +110,12 @@
 
 .btn-outline-sm:hover {
     background: #f7f7f7;
+}
+
+.btn-outline-sm:disabled,
+.btn-primary:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
 }
 
 .btn-primary {

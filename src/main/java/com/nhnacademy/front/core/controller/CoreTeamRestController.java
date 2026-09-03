@@ -5,6 +5,7 @@ import com.nhnacademy.front.core.dto.team.TeamCreateRequest;
 import com.nhnacademy.front.core.dto.team.TeamDetailResponse;
 import com.nhnacademy.front.core.dto.team.TeamResponse;
 import com.nhnacademy.front.core.dto.team.invitation.TeamInvitationCodeResponse;
+import com.nhnacademy.front.core.dto.team.invitation.TeamInvitationCodeSummaryResponse;
 import com.nhnacademy.front.core.dto.team.member.TeamJoinRequest;
 import com.nhnacademy.front.core.dto.team.member.TeamMemberResponse;
 import com.nhnacademy.front.core.service.TeamService;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -74,6 +76,22 @@ public class CoreTeamRestController {
     ) {
         LocalDateTime expiresAt = request != null ? request.expiresAt() : null;
         return ResponseEntity.status(HttpStatus.CREATED).body(teamService.createInvitationCode(teamId, expiresAt));
+    }
+
+    @GetMapping("/{teamId}/invitation-codes")
+    public ResponseEntity<List<TeamInvitationCodeSummaryResponse>> getInvitationCodes(
+            @PathVariable Long teamId
+    ) {
+        return ResponseEntity.ok(teamService.getInvitationCodes(teamId));
+    }
+
+    @DeleteMapping("/{teamId}/invitation-codes/{invitationCodeId}")
+    public ResponseEntity<Void> deactivateInvitationCode(
+            @PathVariable Long teamId,
+            @PathVariable Long invitationCodeId
+    ) {
+        teamService.deactivateInvitationCode(teamId, invitationCodeId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/memberships")
