@@ -162,6 +162,11 @@
                             <h3 th:text="${room.roomName}">Classroom Name</h3>
                             <p th:text="${#strings.defaultString(room.description, '등록된 설명이 없습니다.')}">Description</p>
                         </div>
+                        <!-- 매니저(ADMIN/OWNER) 전용: 강의실 정보 수정 모달을 여는 버튼 -->
+                        <button class="info-edit-btn" type="button" id="openEditRoomModalBtn"
+                                th:if="${team.myRole != null && team.myRole.isManager()}">
+                            ✎ 수정
+                        </button>
                     </div>
 
                     <dl class="building-detail-list">
@@ -286,6 +291,33 @@
         </main>
     </div>
 </div>
+
+<!-- 모달: 강의실 정보 수정 팝업 (<dialog>) -->
+<dialog class="modal" id="editRoomModal">
+    <div class="modal-header">
+        <h2 id="editRoomModalTitle">강의실 정보 수정</h2>
+        <button type="button" class="modal-close" id="closeEditRoomModalBtn">&times;</button>
+    </div>
+    <form class="modal-body" id="editRoomForm">
+        <div class="building-form-group">
+            <label for="editRoomName">Classroom Name</label>
+            <input type="text" id="editRoomName" placeholder="ex ) 301호"
+                   th:value="${room.roomName}" required>
+        </div>
+        <div class="building-form-group">
+            <label for="editRoomDesc">Description</label>
+            <textarea id="editRoomDesc" placeholder="강의실 설명을 입력하세요."
+                      th:text="${room.description}"></textarea>
+        </div>
+
+        <p class="form-error" id="editRoomError"></p>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-outline" id="cancelEditRoomModalBtn">취소</button>
+            <button type="submit" class="btn-primary" id="saveEditRoomBtn">수정 저장</button>
+        </div>
+    </form>
+</dialog>
 
 <!-- ======================================================= -->
 <!-- 모달: 외부 날씨 판단 기준 설정 다이얼로그 -->

@@ -68,6 +68,11 @@
                             <h3 th:text="${building.buildingName}">Building Name</h3>
                             <p th:text="${#strings.defaultString(building.description, '등록된 설명이 없습니다.')}">Description</p>
                         </div>
+                        <!-- 매니저(ADMIN/OWNER) 전용: 건물 정보 수정 모달을 여는 버튼 -->
+                        <button class="info-edit-btn" type="button" id="openEditBuildingModalBtn"
+                                th:if="${team.myRole != null && team.myRole.isManager()}">
+                            ✎ 수정
+                        </button>
                     </div>
                     <dl class="building-detail-list">
                         <div>
@@ -243,6 +248,51 @@
         </main>
     </div>
 </div>
+
+<!-- 모달: 건물 정보 수정 팝업 (<dialog>) -->
+<dialog class="modal" id="editBuildingModal">
+    <div class="modal-header">
+        <h2 id="editBuildingModalTitle">건물 정보 수정</h2>
+        <button type="button" class="modal-close" id="closeEditBuildingModalBtn">&times;</button>
+    </div>
+    <form class="modal-body" id="editBuildingForm">
+        <div class="building-form-group">
+            <label for="editBuildingName">Building Name</label>
+            <input type="text" id="editBuildingName" placeholder="ex ) IT융합대학"
+                   th:value="${building.buildingName}" required>
+        </div>
+        <div class="building-form-group">
+            <label for="editBuildingDesc">Description</label>
+            <textarea id="editBuildingDesc" placeholder="건물 설명을 입력하세요."
+                      th:text="${building.description}"></textarea>
+        </div>
+        <div class="building-form-group">
+            <label for="editRoadAddress">Road Address</label>
+            <div class="address-input-row">
+                <input type="text" id="editRoadAddress" placeholder="도로명 주소 검색"
+                       th:value="${building.roadAddress}" readonly>
+                <button type="button" id="editSearchAddressBtn">검색</button>
+            </div>
+        </div>
+        <div class="building-form-group">
+            <label for="editDetailAddress">Detail Address</label>
+            <input type="text" id="editDetailAddress" placeholder="상세 주소"
+                   th:value="${building.detailAddress}">
+        </div>
+        <div class="building-form-group">
+            <label for="editRegionName">Region Name</label>
+            <input type="text" id="editRegionName" placeholder="ex ) 광주 동구 대의동"
+                   th:value="${building.regionName}">
+        </div>
+
+        <p class="form-error" id="editBuildingError"></p>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-outline" id="cancelEditBuildingModalBtn">취소</button>
+            <button type="submit" class="btn-primary" id="saveEditBuildingBtn">수정 저장</button>
+        </div>
+    </form>
+</dialog>
 
 <!-- 모달: MQTT 브로커 등록 / 수정 팝업 (<dialog>) -->
 <dialog class="modal" id="mqttModal">
