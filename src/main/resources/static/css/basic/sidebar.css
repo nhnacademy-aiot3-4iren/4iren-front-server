@@ -1,25 +1,24 @@
 /* ==========================================================================
    Sidebar - frosted glass
-   유리 느낌을 한 곳에서 조절할 수 있도록 변수로 뺐습니다.
-   더 불투명하게 하고 싶으면 --glass-bg 의 알파값(0.62)만 올리면 됩니다.
-   (단, 1.0 이 되면 backdrop-filter 의 블러가 보이지 않으니 0.85 이하 권장)
+   - 접기/펼치기(collapse) 상태는 .sidebar 엘리먼트 자신에게 .is-collapsed 를 붙여서 제어.
+     (레이아웃 래퍼에 클래스를 붙이지 않으므로 다른 페이지 수정 불필요.
+      body/부모가 display:flex 이면 사이드바가 줄어든 만큼 main 이 자동으로 넓어짐)
    ========================================================================== */
 :root {
-    /* 살짝 따뜻한 톤이 도는 반투명 흰색 - 배경이 비치되 뿌옇게 덮이는 정도 */
     --glass-bg: rgba(255, 252, 249, 0.62);
-    --glass-bg-strong: rgba(255, 253, 251, 0.72); /* 선택된 메뉴용(조금 더 밝게) */
+    --glass-bg-strong: rgba(255, 253, 251, 0.72);
     --glass-bg-hover: rgba(255, 255, 255, 0.34);
-
-    /* 외곽선: 기존 #A6A6A6 실선 대신 아주 옅은 따뜻한 회색 */
     --glass-border: rgba(255, 255, 255, 0.55);
     --glass-border-outer: rgba(150, 138, 127, 0.14);
-
     --glass-blur: 20px;
+
+    --sidebar-width: 250px;
+    --sidebar-width-collapsed: 88px;
+    --sidebar-anim: 0.22s ease;
 }
 
 .sidebar {
-    /* 기존의 inset #262626(어두운 안쪽 선) 두 줄을 빼고,
-       밝은 하이라이트 + 아주 옅은 테두리만 남겨 외곽선을 옅게 했습니다. */
+    position: relative;
     box-shadow:
             0 1px 2px rgba(90, 78, 68, 0.04),
             0 8px 24px rgba(90, 78, 68, 0.06),
@@ -35,63 +34,154 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    width: 250px;
+    width: var(--sidebar-width);
     flex-shrink: 0;
     background: var(--glass-bg);
+    transition: width var(--sidebar-anim);
 }
 
+.sidebar.is-collapsed {
+    width: var(--sidebar-width-collapsed);
+}
+
+/* 새로고침 직후 복원할 때 애니메이션이 한 번 튀는 것 방지 */
+.sidebar.no-transition,
+.sidebar.no-transition * {
+    transition: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   접기/펼치기 버튼
+   -------------------------------------------------------------------------- */
+.side-toggle {
+    position: absolute;
+    top: 34px;
+    right: -15px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid rgba(150, 138, 127, 0.25);
+    border-radius: 50%;
+    background: rgba(255, 253, 251, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #8a7f77;
+    box-shadow: 0 1px 3px rgba(90, 78, 68, 0.10);
+    transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+    z-index: 20;
+}
+
+.side-toggle:hover {
+    border-color: rgba(150, 138, 127, 0.45);
+    background: rgba(255, 255, 255, 0.95);
+    color: #6d635f;
+}
+
+.side-toggle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.4);
+}
+
+.side-toggle svg {
+    transition: transform var(--sidebar-anim);
+}
+
+.sidebar.is-collapsed .side-toggle svg {
+    transform: rotate(180deg);
+}
+
+/* --------------------------------------------------------------------------
+   로고 (펼침: 워드마크 / 접힘: 앱 아이콘)
+   -------------------------------------------------------------------------- */
 .sidebar-logo {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 44px;
     margin-bottom: 24px;
 }
 
-.sidebar-logo img {
+.sidebar-logo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-full {
     width: 130px;
     height: auto;
     margin-left: -15px;
 }
 
-.user-info-block {
-    padding: 0 24px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid rgba(102, 90, 80, 0.10);
-    padding-bottom: 20px;
+.logo-icon {
+    display: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
 }
 
-.user-role {
+.sidebar.is-collapsed .logo-full {
+    display: none;
+}
+
+.sidebar.is-collapsed .logo-icon {
+    display: block;
+}
+
+/* --------------------------------------------------------------------------
+   유저 정보 (접히면 구분선만 남김)
+   -------------------------------------------------------------------------- */
+.user-info-block {
+    padding: 0 24px 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(102, 90, 80, 0.10);
+    transition: padding var(--sidebar-anim);
+}
+
+.sidebar .user-role {
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.03em;
 }
 
-/*
-   data-role 값은 GlobalControllerAdvice가 내려주는 role("ADMIN"/"NORMAL")을
-   #strings.toLowerCase 한 값이라서 "admin"/"normal" 두 가지만 옵니다.
-   ("owner"는 팀 역할이지 시스템 role이 아니라서 여기서는 안 잡힙니다 - 이전엔
-   "owner"/"user"로 되어있어 실제로는 색이 전혀 안 먹혔던 상태였습니다.)
-   owner/admin(팀 관리자) 구분이 필요해지면, 팀 역할 값을 별도로 모델에 내려받아
-   여기에 조건을 추가해야 합니다.
-*/
-.user-role[data-role="admin"]  { color: #4A90D9; }
-.user-role[data-role="normal"] { color: #999999; }
+/* header.css 에도 같은 클래스명이 있고 나중에 로드되므로 .sidebar 로 감싸서 분리 */
+.sidebar .user-role[data-role="admin"]  { color: #4A90D9; }
+.sidebar .user-role[data-role="normal"] { color: #999999; }
 
-.user-name {
+.sidebar .user-name {
     margin: 4px 0 0;
     font-size: 15px;
     font-weight: 500;
     color: #333;
 }
 
+.sidebar.is-collapsed .user-info-block {
+    padding: 0 20px 16px;
+    margin-bottom: 16px;
+}
+
+.sidebar.is-collapsed .user-role,
+.sidebar.is-collapsed .user-name {
+    display: none;
+}
+
+/* --------------------------------------------------------------------------
+   메뉴
+   -------------------------------------------------------------------------- */
 .sidebar-nav {
     display: flex;
     flex-direction: column;
     gap: 4px;
     padding: 0 15px;
+    transition: padding var(--sidebar-anim);
 }
 
 .nav-item {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 12px 15px;
@@ -100,7 +190,8 @@
     text-decoration: none;
     font-weight: 400;
     font-size: 14px;
-    transition: background-color 0.15s, color 0.15s;
+    transition: background-color 0.15s, color 0.15s, padding var(--sidebar-anim);
+    box-sizing: border-box;
 }
 
 .nav-item-toggle {
@@ -118,6 +209,19 @@
     display: flex;
     align-items: center;
     min-width: 0;
+}
+
+.nav-label {
+    max-width: 160px;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 1;
+    transition: max-width var(--sidebar-anim), opacity 0.15s ease;
+}
+
+.sidebar.is-collapsed .nav-label {
+    max-width: 0;
+    opacity: 0;
 }
 
 .nav-icon-chevron {
@@ -143,6 +247,7 @@
     margin-right: 12px;
     flex-shrink: 0;
     color: inherit;
+    transition: margin-right var(--sidebar-anim);
 }
 
 .nav-icon-lg {
@@ -155,15 +260,18 @@
     height: 24px;
 }
 
+/* My Classroom 아이콘이 시각적으로 살짝 위로 떠 보여서 3px 내림 */
+.nav-icon-classroom {
+    position: relative;
+    top: 3px;
+}
+
 .nav-item:hover,
 .nav-item-toggle:hover {
     background: var(--glass-bg-hover);
     color: #444;
 }
 
-/* 선택된 메뉴 = 같은 유리 레시피를 적용한 필 버튼
-   사이드바 본체보다 살짝 더 밝게 해서 "떠 있는" 느낌만 주고,
-   테두리는 흰색 하이라이트 한 겹만 남겼습니다. */
 .nav-item.active,
 .nav-item-toggle.expanded {
     background: var(--glass-bg-strong);
@@ -179,7 +287,73 @@
     font-weight: 500;
 }
 
-/* Team 하위 메뉴 (Buildings / Classrooms) — 트리 형태의 연결선 */
+/* 접힘 상태: 아이콘만 가운데 정렬 */
+.sidebar.is-collapsed .sidebar-nav {
+    padding: 0 20px;
+}
+
+.sidebar.is-collapsed .nav-item {
+    padding: 12px 0;
+    justify-content: center;
+}
+
+.sidebar.is-collapsed .nav-item-main {
+    justify-content: center;
+    width: 100%;
+}
+
+.sidebar.is-collapsed .nav-icon {
+    margin-right: 0;
+}
+
+.sidebar.is-collapsed .nav-icon-chevron {
+    display: none;
+}
+
+/* 접힘 상태에서는 서브메뉴가 안 보이므로 Team 토글의 '펼침' 강조도 끔 */
+.sidebar.is-collapsed .nav-item-toggle.expanded {
+    background: none;
+    box-shadow: none;
+    color: #666;
+    font-weight: 400;
+}
+
+.sidebar.is-collapsed .nav-item-toggle.expanded:hover {
+    background: var(--glass-bg-hover);
+    color: #444;
+}
+
+/* 접힘 상태 툴팁 */
+.nav-item::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(100% + 24px);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(58, 51, 48, 0.88);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(90, 78, 68, 0.18);
+    transition: opacity 0.12s ease;
+    z-index: 30;
+}
+
+.sidebar.is-collapsed .nav-item:hover::after,
+.sidebar.is-collapsed .nav-item:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --------------------------------------------------------------------------
+   Team 하위 메뉴
+   -------------------------------------------------------------------------- */
 .submenu {
     position: relative;
     display: none;
@@ -192,6 +366,11 @@
 
 .submenu.open {
     display: flex;
+}
+
+/* 접힘 상태에서는 열려 있어도 숨김 (.sidebar.is-collapsed .submenu 가 .submenu.open 보다 우선) */
+.sidebar.is-collapsed .submenu {
+    display: none;
 }
 
 .submenu-item {
@@ -210,32 +389,23 @@
     transition: background-color 0.15s, color 0.15s;
 }
 
-/* 트리 연결선: 항목마다 자기 몫의 L자 선을 그려서 둥글게 이어지게 함
-   (세로선 하나 + 가로 stub 대신, border로 둥근 모서리를 만드는 방식)
-   유리 배경이 밝아진 만큼 선도 함께 옅게 낮췄습니다. */
 .submenu-item::before {
     content: '';
     position: absolute;
     left: -16px;
     top: -21px;
     width: 16px;
-    height: 40px; /* 항목 높이(38px) + 항목 간 gap(2px) */
+    height: 40px;
     border-left: 1.5px solid rgba(150, 138, 127, 0.45);
     border-bottom: 1.5px solid rgba(150, 138, 127, 0.45);
     border-bottom-left-radius: 8px;
 }
 
-/* 첫 항목은 위로 이어지는 이전 항목이 없으니 자기 절반 높이만큼만 그림 */
 .submenu-item:first-child::before {
     top: 0;
     height: 19px;
 }
 
-/* "모든 팀 보기": 팀 하위 목록이지만 성격이 달라서(특정 팀에 종속되지 않음)
-   바로 아래 항목들과 살짝 구분되도록 연한 구분선을 아래에 둠.
-   padding-bottom으로 처리하면 active/hover pill 배경까지 함께 늘어나면서
-   텍스트가 위로 치우쳐 보이므로, 구분선은 별도의 ::after로 그려서
-   항목 자체의 높이(38px)에는 영향을 주지 않게 한다. */
 .submenu-item[data-page="team-list"] {
     margin-bottom: 14px;
 }
@@ -268,10 +438,18 @@
     font-weight: 500;
 }
 
+/* --------------------------------------------------------------------------
+   하단 (Home)
+   -------------------------------------------------------------------------- */
 .sidebar-bottom {
     margin-top: auto;
     padding: 15px;
     border-top: 1px solid rgba(102, 90, 80, 0.10);
+    transition: padding var(--sidebar-anim);
+}
+
+.sidebar.is-collapsed .sidebar-bottom {
+    padding: 15px 20px;
 }
 
 .sidebar-bottom .nav-item {
@@ -281,4 +459,12 @@
 .sidebar-bottom .nav-item:hover {
     background: var(--glass-bg-hover);
     color: #666;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar,
+    .sidebar *,
+    .side-toggle svg {
+        transition: none !important;
+    }
 }
