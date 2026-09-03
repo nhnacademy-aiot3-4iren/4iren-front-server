@@ -10,6 +10,7 @@ import com.nhnacademy.front.core.dto.team.TeamResponse;
 import com.nhnacademy.front.core.dto.team.TeamUpdateRequest;
 import com.nhnacademy.front.core.dto.team.invitation.TeamInvitationCodeCreateRequest;
 import com.nhnacademy.front.core.dto.team.invitation.TeamInvitationCodeResponse;
+import com.nhnacademy.front.core.dto.team.invitation.TeamInvitationCodeSummaryResponse;
 import com.nhnacademy.front.core.dto.team.member.TeamJoinRequest;
 import com.nhnacademy.front.core.dto.team.member.TeamMemberResponse;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +80,14 @@ public class TeamService {
                 teamId,
                 new TeamInvitationCodeCreateRequest(resolvedExpiresAt)
         );
+    }
+
+    public List<TeamInvitationCodeSummaryResponse> getInvitationCodes(Long teamId) {
+        return coreTeamInvitationCodeClient.getInvitationCodes(teamId);
+    }
+
+    public void deactivateInvitationCode(Long teamId, Long invitationCodeId) {
+        coreTeamInvitationCodeClient.deactivateInvitationCode(teamId, invitationCodeId);
     }
 
     public TeamMemberResponse joinTeam(TeamJoinRequest request) {

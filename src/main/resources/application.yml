@@ -6,8 +6,11 @@ spring:
     cache: false
   web:
     resources:
-          cache:
-            period: 0
+      cache:
+        cachecontrol:
+          max-age: 10m
+          cache-public: true
+          no-store: false
 
   cloud:
     openfeign:

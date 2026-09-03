@@ -12,7 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
     <link rel="stylesheet" th:href="@{/css/team/team-info.css}">
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
-    <link rel="stylesheet" th:href="@{/css/team-members.css}">
+    <link rel="stylesheet" th:href="@{/css/team/team-members.css}">
 </head>
 <body>
 
@@ -41,25 +41,48 @@
                         </div>
                     </div>
 
-                    <div class="setting-row" th:if="${team.myRole != null && team.myRole.isManager()}">
-                        <div class="setting-row-text">
-                            <strong>초대 코드</strong>
-                            <p>새로운 8자리 초대 코드를 발급합니다. (활성 팀에서만 가능)</p>
+                    <div class="invitation-management"
+                         th:if="${team.myRole != null && team.myRole.isManager()}">
+                        <div class="setting-row">
+                            <div class="setting-row-text">
+                                <strong>초대 코드</strong>
+                                <p>새로운 8자리 초대 코드를 발급합니다. (활성 팀에서만 가능)</p>
+                            </div>
+                            <button type="button" class="btn-primary" id="createInviteCodeBtn">코드 생성</button>
                         </div>
-                        <button type="button" class="btn-primary" id="createInviteCodeBtn">코드 생성</button>
-                    </div>
 
-                    <div class="code-squares" id="codeSquaresContainer" hidden>
-                        <div class="code-square"></div>
-                        <div class="code-square"></div>
-                        <div class="code-square"></div>
-                        <div class="code-square"></div>
-                        <div class="code-square"></div>
-                        <div class="code-square"></div>
-                        <div class="code-square"></div>
-                        <div class="code-square"></div>
+                        <div class="code-squares" id="codeSquaresContainer" hidden>
+                            <div class="code-square"></div>
+                            <div class="code-square"></div>
+                            <div class="code-square"></div>
+                            <div class="code-square"></div>
+                            <div class="code-square"></div>
+                            <div class="code-square"></div>
+                            <div class="code-square"></div>
+                            <div class="code-square"></div>
+                        </div>
+                        <button type="button" class="btn-outline-sm" id="copyInviteCodeBtn" hidden>복사</button>
+
+                        <div class="info-section-divider"></div>
+
+                        <h3 class="panel-subtitle">초대 코드 발급 내역</h3>
+                        <p class="invitation-code-policy">실제 초대 코드는 발급 직후에만 확인할 수 있습니다.</p>
+                        <table class="members-table invitation-code-table">
+                            <thead>
+                            <tr>
+                                <th>발급일</th>
+                                <th>만료일</th>
+                                <th>상태</th>
+                                <th>관리</th>
+                            </tr>
+                            </thead>
+                            <tbody id="invitationCodesTableBody">
+                            <tr class="empty-row">
+                                <td colspan="4">초대 코드 발급 내역을 불러오는 중입니다.</td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <button type="button" class="btn-outline-sm" id="copyInviteCodeBtn" hidden>복사</button>
 
                     <div class="info-section-divider"></div>
 
@@ -206,6 +229,90 @@
     const copyInviteCodeBtn = document.getElementById('copyInviteCodeBtn');
     let currentInviteCode = '';
 
+    const invitationCodeStatus = {
+        AVAILABLE: { label: '사용 가능', className: 'available' },
+        EXPIRED: { label: '만료됨', className: 'expired' },
+        DEACTIVATED: { label: '비활성화됨', className: 'deactivated' }
+    };
+
+    async function loadInvitationCodes() {
+        const tbody = document.getElementById('invitationCodesTableBody');
+        if (!tbody) return;
+
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="4">초대 코드 발급 내역을 불러오는 중입니다.</td></tr>';
+
+        try {
+            const invitationCodes = await requestJson(`/api/front/teams/${teamId}/invitation-codes`);
+            renderInvitationCodes(invitationCodes || []);
+        } catch (error) {
+            tbody.innerHTML = `<tr class="empty-row"><td colspan="4">${escapeHtml(error.message || '초대 코드 발급 내역을 불러오지 못했습니다.')}</td></tr>`;
+        }
+    }
+
+    function renderInvitationCodes(invitationCodes) {
+        const tbody = document.getElementById('invitationCodesTableBody');
+
+        if (invitationCodes.length === 0) {
+            tbody.innerHTML = '<tr class="empty-row"><td colspan="4">발급된 초대 코드가 없습니다.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = invitationCodes.map(invitationCode => {
+            const status = invitationCodeStatus[invitationCode.status]
+                || { label: invitationCode.status, className: 'unknown' };
+            const action = invitationCode.status === 'AVAILABLE'
+                ? `<button type="button" class="btn-outline-sm deactivate-invitation-code-btn" data-invitation-code-id="${invitationCode.invitationCodeId}">비활성화</button>`
+                : '-';
+
+            return `
+                <tr>
+                    <td>${formatDateTime(invitationCode.createdAt)}</td>
+                    <td>${formatDateTime(invitationCode.expiresAt)}</td>
+                    <td><span class="invitation-status-badge status-${status.className}">${escapeHtml(status.label)}</span></td>
+                    <td>${action}</td>
+                </tr>
+            `;
+        }).join('');
+
+        tbody.querySelectorAll('.deactivate-invitation-code-btn').forEach(button => {
+            button.addEventListener('click', () => deactivateInvitationCode(button));
+        });
+    }
+
+    async function deactivateInvitationCode(button) {
+        button.disabled = true;
+
+        try {
+            await requestJson(
+                `/api/front/teams/${teamId}/invitation-codes/${button.dataset.invitationCodeId}`,
+                { method: 'DELETE' }
+            );
+            await loadInvitationCodes();
+        } catch (error) {
+            button.disabled = false;
+            alert(error.message || '초대 코드를 비활성화하지 못했습니다.');
+        }
+    }
+
+    function formatDateTime(value) {
+        if (!value) return '-';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return escapeHtml(value);
+        return new Intl.DateTimeFormat('ko-KR', {
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit'
+        }).format(date);
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
     if (createInviteCodeBtn) {
         createInviteCodeBtn.addEventListener('click', async () => {
             createInviteCodeBtn.disabled = true;
@@ -226,6 +333,7 @@
 
                 codeSquaresContainer.hidden = false;
                 copyInviteCodeBtn.hidden = false;
+                await loadInvitationCodes();
             } catch (err) {
                 alert(err.message || '초대 코드 발급에 실패했습니다.');
             } finally {
@@ -247,7 +355,10 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', () => loadMembers(0));
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMembers(0);
+        if (canManageTeam) loadInvitationCodes();
+    });
 </script>
 
 </body>
