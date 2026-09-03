@@ -34,7 +34,7 @@ public class OwnerController {
             log.warn("Failed to fetch admin list", e);
             model.addAttribute("errorMessage", "관리자 목록을 불러오는데 실패했습니다.");
         }
-        return "owner/admin_list";
+        return "admin/admin_list";
     }
 
     @PostMapping("/create")
@@ -71,7 +71,7 @@ public class OwnerController {
         try {
             UserResponse admin = ownerService.getAdmin(userId);
             model.addAttribute("admin", admin);
-            return "owner/admin_detail";
+            return "admin/admin_detail";
         } catch (Exception e) {
             log.warn("Failed to fetch admin detail", e);
             redirectAttributes.addFlashAttribute("errorMessage", "관리자 상세 정보를 불러오는데 실패했습니다.");
