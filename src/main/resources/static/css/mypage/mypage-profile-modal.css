@@ -1,0 +1,405 @@
+/* 드래그 방지 유틸 */
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* ================================================================
+   프로모션 스택 (결제 카드 + 틸트 카드)
+================================================================ */
+.promo-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 결제 배너 카드 */
+.card {
+    width: 190px;
+    height: 254px;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.wrapper {
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.card-image {
+    width: 100%;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 150px;
+    font-weight: 900;
+    transition: all 0.3s;
+    color: rgb(219, 94, 5);
+}
+
+.promo-content {
+    height: fit-content;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.title {
+    font-size: 0.72em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #4d4d4d;
+}
+
+.price {
+    margin-right: 2px;
+    font-size: 1em;
+    font-weight: 500;
+    color: rgb(251, 115, 18);
+}
+
+.old-price {
+    font-size: 0.7em;
+    text-decoration: line-through;
+    color: #adadad;
+}
+
+.card-btn {
+    margin-top: 10px;
+    width: 100%;
+    height: 40px;
+    background-color: rgb(24, 24, 24);
+    border: none;
+    border-radius: 40px;
+    color: white;
+    transition: all 0.3s;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.card:hover .card-image {
+    height: 120px;
+}
+
+.card:hover .card-btn {
+    margin-top: 0;
+}
+
+.card-btn:hover {
+    background-color: rgb(255, 169, 83);
+    color: rgb(35, 35, 35);
+}
+
+.tag {
+    position: absolute;
+    background-color: rgb(255, 169, 83);
+    color: rgb(0, 0, 0);
+    left: 12px;
+    top: 12px;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+/* 3D 틸트 카드 */
+.tilt-container {
+    position: relative;
+    width: 190px;
+    height: 350px;
+    transition: 200ms;
+}
+
+.tilt-container:active {
+    width: 182px;
+    height: 160px;
+}
+
+.tilt-canvas {
+    perspective: 800px;
+    inset: 0;
+    z-index: 200;
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-areas:
+    "tr-1 tr-2 tr-3 tr-4 tr-5"
+    "tr-6 tr-7 tr-8 tr-9 tr-10"
+    "tr-11 tr-12 tr-13 tr-14 tr-15"
+    "tr-16 tr-17 tr-18 tr-19 tr-20"
+    "tr-21 tr-22 tr-23 tr-24 tr-25";
+}
+
+.tilt-card {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 14px;
+    transition: 700ms;
+    background: linear-gradient(43deg, rgb(235, 208, 74) 0%, rgb(255, 203, 107) 46%, rgb(255, 112, 112) 100%);
+}
+
+.tilt-card::before {
+    content: '';
+    background: linear-gradient(43deg, rgb(208, 182, 65) 0%, rgb(241, 76, 104) 46%, rgb(255, 217, 146) 100%);
+    filter: blur(1.4rem);
+    opacity: 0.3;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    transition: 200ms;
+}
+
+.tilt-container:hover .tilt-card::before {
+    opacity: 0.8;
+}
+
+.tilt-title {
+    opacity: 0;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+    transition-delay: 100ms;
+    position: absolute;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+.tilt-prompt {
+    bottom: 40px;
+    left: 16px;
+    z-index: 20;
+    font-size: 20px;
+    font-weight: bold;
+    transition: 300ms ease-in-out;
+    position: absolute;
+    max-width: 90px;
+    color: rgb(255, 255, 255);
+}
+
+.tilt-tracker:hover ~ .tilt-card .tilt-title { opacity: 1; }
+.tilt-tracker:hover ~ .tilt-card .tilt-prompt { opacity: 0; }
+.tilt-tracker:hover ~ .tilt-card { transition: 300ms; filter: brightness(1.1); }
+
+.tilt-tracker {
+    position: absolute;
+    z-index: 200;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.tr-1 { grid-area: tr-1; } .tr-2 { grid-area: tr-2; } .tr-3 { grid-area: tr-3; } .tr-4 { grid-area: tr-4; } .tr-5 { grid-area: tr-5; }
+.tr-6 { grid-area: tr-6; } .tr-7 { grid-area: tr-7; } .tr-8 { grid-area: tr-8; } .tr-9 { grid-area: tr-9; } .tr-10 { grid-area: tr-10; }
+.tr-11 { grid-area: tr-11; } .tr-12 { grid-area: tr-12; } .tr-13 { grid-area: tr-13; } .tr-14 { grid-area: tr-14; } .tr-15 { grid-area: tr-15; }
+.tr-16 { grid-area: tr-16; } .tr-17 { grid-area: tr-17; } .tr-18 { grid-area: tr-18; } .tr-19 { grid-area: tr-19; } .tr-20 { grid-area: tr-20; }
+.tr-21 { grid-area: tr-21; } .tr-22 { grid-area: tr-22; } .tr-23 { grid-area: tr-23; } .tr-24 { grid-area: tr-24; } .tr-25 { grid-area: tr-25; }
+
+.tr-1:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(-10deg); }
+.tr-2:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(-5deg); }
+.tr-3:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(0deg); }
+.tr-4:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(5deg); }
+.tr-5:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(20deg) rotateY(10deg); }
+.tr-6:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(-10deg); }
+.tr-7:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(-5deg); }
+.tr-8:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(0deg); }
+.tr-9:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(5deg); }
+.tr-10:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(10deg) rotateY(10deg); }
+.tr-11:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(-10deg); }
+.tr-12:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(-5deg); }
+.tr-13:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(0deg); }
+.tr-14:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(5deg); }
+.tr-15:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(0deg) rotateY(10deg); }
+.tr-16:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(-10deg); }
+.tr-17:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(-5deg); }
+.tr-18:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(0deg); }
+.tr-19:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(5deg); }
+.tr-20:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-10deg) rotateY(10deg); }
+.tr-21:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(-10deg); }
+.tr-22:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(-5deg); }
+.tr-23:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(0deg); }
+.tr-24:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(5deg); }
+.tr-25:hover ~ .tilt-card { transition: 125ms ease-in-out; transform: rotateX(-20deg) rotateY(10deg); }
+
+/* ================================================================
+   프로필 수정 모달 (<dialog>)
+================================================================ */
+.modal {
+    background: #fff;
+    width: 100%;
+    max-width: 400px;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(20, 20, 20, 0.25);
+    padding: 28px 28px 24px;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: auto;
+}
+
+.modal::backdrop {
+    background: rgba(20, 20, 20, 0.45);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.modal-close {
+    border: none;
+    background: none;
+    font-size: 22px;
+    line-height: 1;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.modal-close:hover {
+    color: #1a1a1a;
+}
+
+.modal-body .form-group {
+    margin-bottom: 16px;
+}
+
+.modal-body .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.modal-body .form-group input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #e9ebee;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+    box-sizing: border-box;
+}
+
+.modal-body .form-group input:focus {
+    border-color: #ff9800;
+}
+
+.modal-body .password-field {
+    position: relative;
+}
+
+.modal-body .password-field .eye-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.modal-body .password-field .eye-icon:hover {
+    opacity: 1;
+}
+
+.form-divider {
+    height: 1px;
+    background: #e9ebee;
+    margin: 20px 0 18px;
+}
+
+.form-error {
+    color: #e05353;
+    font-size: 13px;
+    margin: 0 0 12px;
+    min-height: 16px;
+}
+
+.modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.modal-actions .btn-outline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 20%;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #e9ebee;
+    color: #6b7280;
+}
+
+.modal-actions .btn-outline img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.modal-actions .btn-outline:hover {
+    border-color: #6b7280;
+}
+
+.modal-actions .setting-btn {
+    height: 48px;
+    width: 100%;
+    max-width: 120px;
+    background-color: #EF8924;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.modal-actions .setting-btn:hover {
+    background-color: #d67a20;
+}
+
+.modal-actions .setting-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

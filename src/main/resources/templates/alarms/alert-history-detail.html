@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>알림 이력 상세</title>
+
+  <!-- 공통 헤더/사이드바/푸터 CSS (header-sidebar.css는 .layout에 padding이 있어서 안 씀 -> 사이드바/헤더가 화면에 딱 붙어야 함) -->
+  <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+
+  <style>
+    * { box-sizing: border-box; }
+    .maincontainer {
+      display: flex;
+      justify-content: center;
+    }
+    .detail-card-wrap {
+      width: 100%;
+      max-width: 960px;
+      margin-top: 120px;
+    }
+    h1 {
+      font-size: 20px;
+      margin: 0 0 20px;
+    }
+    .detail-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 24px 56px;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 26px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 18px;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row .label {
+      color: #888;
+      font-size: 14px;
+      min-width: 150px;
+    }
+    .detail-row .value {
+      text-align: right;
+      word-break: break-word;
+    }
+    .detail-row.message .value {
+      text-align: left;
+      flex: 1;
+      line-height: 1.6;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 24px;
+      height: 40px;
+      padding: 0 20px;
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #444;
+      text-decoration: none;
+    }
+    .btn-back:hover { background: #f5f5f5; }
+  </style>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
+</head>
+<body>
+
+<div class="layout">
+  <!-- 좌측 사이드바 (공통) -->
+  <div th:replace="~{basic/sidebar :: sidebar}"></div>
+
+  <div class="main-wrap">
+    <!-- 상단 헤더 (공통) -->
+    <div th:replace="~{basic/header :: header}"></div>
+
+    <!-- 본문 영역 -->
+    <div class="main-content">
+      <h2 class="page-title" style="margin-bottom: 20px;">알림 이력 상세</h2>
+
+      <div class="maincontainer">
+        <div class="detail-card-wrap">
+          <div class="detail-card">
+            <div class="detail-row">
+              <span class="label">alertHistoryId</span>
+              <span class="value" th:text="${alertHistory.alertHistoryId}">101</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">roomId</span>
+              <span class="value" th:text="${alertHistory.roomId}">3층 스터디룸</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">botType</span>
+              <span class="value" th:text="${alertHistory.botType}">TELEGRAM</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">alertType</span>
+              <span class="value" th:text="${alertHistory.alertType}">CO2_HIGH</span>
+            </div>
+            <div class="detail-row message">
+              <span class="label">message</span>
+              <span class="value" th:text="${alertHistory.message}">CO2 농도가 임계값을 초과했습니다.</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">sendAt</span>
+              <span class="value"
+                    th:text="${#temporals.format(alertHistory.sendAt, 'yyyy-MM-dd HH:mm:ss')}">2026-08-12 09:14:03</span>
+            </div>
+          </div>
+
+          <!--
+            목록에서 걸어둔 필터/페이지가 풀리지 않게 하려면
+            목록 페이지에서 넘어올 때 쿼리 파라미터를 그대로 들고 와서
+            아래 링크에 다시 실어주는 방식이 필요 (백엔드와 라우팅 협의 필요)
+            우선은 필터 없이 목록 첫 페이지로 돌아가는 링크로 작성
+          -->
+          <a class="btn-back" th:href="@{/admin/alert-histories}">← 목록으로</a>
+        </div>
+      </div>
+    </div>
+    <!-- // 본문 내용 끝 -->
+  </div>
+</div>
+
+<!-- 하단 푸터 (공통) -->
+<div th:replace="~{basic/footer :: footer}"></div>
+
+</body>
+</html>

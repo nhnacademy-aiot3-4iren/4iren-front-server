@@ -16,7 +16,7 @@
   <div th:id="'state-pending-' + ${botType}" style="display: none">
     <p>Telegram에서 연동을 완료해 주세요.</p>
     <p class="deadtime-label">유효시간</p>
-    <div th:replace="~{basic/timer :: circle-timer(${botType})}"></div>
+    <div th:replace="~{layout/timer :: circle-timer(${botType})}"></div>
   </div>
 
 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor List - Re I New</title>
+
+    <link rel="stylesheet" th:href="@{/css/myteams.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+
+    <link rel="stylesheet" th:href="@{/css/team/buildings.css}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
+</head>
+<body>
+<div class="layout">
+    <div th:replace="~{basic/sidebar :: sidebar}"></div>
+
+    <div class="main-wrap">
+        <div th:replace="~{basic/header :: header('Sensor Loc.')}"></div>
+
+        <main class="main-content">
+            <div class="building-page-header">
+                <div>
+                    <a class="back-link"
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId})}">
+                        Classroom Info
+                    </a>
+                    <h2>Sensor List</h2>
+                    <p th:text="${room.roomName}">Classroom Name</p>
+                </div>
+                <div class="building-header-actions">
+                    <div class="building-summary">
+                        <span>Sensors</span>
+                        <strong th:text="${sensorLocations.totalElements}">0</strong>
+                    </div>
+                    <button class="building-create-btn" type="button" id="openSensorModalBtn"
+                            th:if="${team.myRole != null && team.myRole.isManager()}">+ Sensor 생성</button>
+                </div>
+            </div>
+
+            <section class="building-list-panel" th:if="${!#lists.isEmpty(sensorLocations.content)}">
+                <article class="building-row asset-row" th:each="sensor : ${sensorLocations.content}">
+                    <div class="building-main">
+                        <div class="building-icon asset-icon">
+                            <img src="/photo/icon/connection-icon.png" alt="sensor">
+                        </div>
+                        <div>
+                            <h3 th:text="${sensor.devEui}">DevEUI</h3>
+                            <p th:text="${#strings.defaultString(sensor.locationDetail, '위치 상세 정보 없음')}">Location</p>
+                            <address th:text="|Sensor Location ID ${sensor.sensorLocationId}|">Sensor Location ID</address>
+                        </div>
+                    </div>
+                    <div class="asset-actions">
+                        <button class="asset-delete-btn sensor-delete-btn" type="button"
+                                th:if="${team.myRole != null && team.myRole.isManager()}"
+                                th:attr="data-sensor-location-id=${sensor.sensorLocationId},data-dev-eui=${sensor.devEui}">
+                            삭제
+                        </button>
+                    </div>
+                </article>
+            </section>
+
+            <div class="empty-state building-empty" th:if="${#lists.isEmpty(sensorLocations.content)}">
+                <p>등록된 센서가 없습니다.</p>
+            </div>
+
+            <nav class="building-pagination" th:if="${sensorLocations.totalPages > 1}">
+                <a th:classappend="${sensorLocations.first} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/sensor-locations(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId}, page=${sensorLocations.page - 1}, size=${size}, sort=${sort})}">
+                    Previous
+                </a>
+                <span th:text="|${sensorLocations.page + 1} / ${sensorLocations.totalPages}|">1 / 1</span>
+                <a th:classappend="${sensorLocations.last} ? 'disabled'"
+                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/sensor-locations(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${room.roomId}, page=${sensorLocations.page + 1}, size=${size}, sort=${sort})}">
+                    Next
+                </a>
+            </nav>
+
+            <div class="modal-overlay" id="sensorModalOverlay">
+                <div class="modal-folder-wrapper building-modal">
+                    <div class="modal-tab">Sensor 생성</div>
+                    <div class="modal-content">
+                        <div class="building-form-group">
+                            <label>DevEUI</label>
+                            <input type="text" id="devEuiInput" maxlength="16" placeholder="16자리 HEX">
+                        </div>
+                        <div class="building-form-group">
+                            <label>Location Detail</label>
+                            <input type="text" id="locationDetailInput" placeholder="ex ) 창가 오른쪽">
+                        </div>
+                        <div class="building-modal-actions">
+                            <button class="modal-cancel-btn" type="button" id="closeSensorModalBtn">Cancel</button>
+                            <button class="modal-submit-btn" type="button" id="createSensorBtn">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{basic/footer :: footer}"></div>
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+    const roomId = /*[[${room.roomId}]]*/ null;
+</script>
+<script src="/js/sensor-locations.js"></script>
+</body>
+</html>

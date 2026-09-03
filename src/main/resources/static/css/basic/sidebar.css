@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Sidebar - frosted glass
+   유리 느낌을 한 곳에서 조절할 수 있도록 변수로 뺐습니다.
+   더 불투명하게 하고 싶으면 --glass-bg 의 알파값(0.62)만 올리면 됩니다.
+   (단, 1.0 이 되면 backdrop-filter 의 블러가 보이지 않으니 0.85 이하 권장)
+   ========================================================================== */
+:root {
+    /* 살짝 따뜻한 톤이 도는 반투명 흰색 - 배경이 비치되 뿌옇게 덮이는 정도 */
+    --glass-bg: rgba(255, 252, 249, 0.62);
+    --glass-bg-strong: rgba(255, 253, 251, 0.72); /* 선택된 메뉴용(조금 더 밝게) */
+    --glass-bg-hover: rgba(255, 255, 255, 0.34);
+
+    /* 외곽선: 기존 #A6A6A6 실선 대신 아주 옅은 따뜻한 회색 */
+    --glass-border: rgba(255, 255, 255, 0.55);
+    --glass-border-outer: rgba(150, 138, 127, 0.14);
+
+    --glass-blur: 20px;
+}
+
+.sidebar {
+    /* 기존의 inset #262626(어두운 안쪽 선) 두 줄을 빼고,
+       밝은 하이라이트 + 아주 옅은 테두리만 남겨 외곽선을 옅게 했습니다. */
+    box-shadow:
+            0 1px 2px rgba(90, 78, 68, 0.04),
+            0 8px 24px rgba(90, 78, 68, 0.06),
+            inset 1px 1px 0.5px -1px rgba(255, 255, 255, 0.9),
+            inset 0 0 0 1px var(--glass-border),
+            inset 0 0 0 1.5px var(--glass-border-outer),
+            inset 0 0 30px rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    border-radius: 21px;
+    margin: 10px 20px 25px 10px;
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 250px;
+    flex-shrink: 0;
+    background: var(--glass-bg);
+}
+
+.sidebar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.sidebar-logo img {
+    width: 130px;
+    height: auto;
+    margin-left: -15px;
+}
+
+.user-info-block {
+    padding: 0 24px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(102, 90, 80, 0.10);
+    padding-bottom: 20px;
+}
+
+.user-role {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+/*
+   data-role 값은 GlobalControllerAdvice가 내려주는 role("ADMIN"/"NORMAL")을
+   #strings.toLowerCase 한 값이라서 "admin"/"normal" 두 가지만 옵니다.
+   ("owner"는 팀 역할이지 시스템 role이 아니라서 여기서는 안 잡힙니다 - 이전엔
+   "owner"/"user"로 되어있어 실제로는 색이 전혀 안 먹혔던 상태였습니다.)
+   owner/admin(팀 관리자) 구분이 필요해지면, 팀 역할 값을 별도로 모델에 내려받아
+   여기에 조건을 추가해야 합니다.
+*/
+.user-role[data-role="admin"]  { color: #4A90D9; }
+.user-role[data-role="normal"] { color: #999999; }
+
+.user-name {
+    margin: 4px 0 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 15px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 8px;
+    color: #666;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 14px;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.nav-item-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    font-family: inherit;
+    text-align: left;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.nav-item-main {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.nav-icon-chevron {
+    flex-shrink: 0;
+    margin-left: 8px;
+    color: inherit;
+    transition: transform 0.15s ease;
+}
+
+.nav-item-toggle.expanded .nav-icon-chevron {
+    transform: rotate(180deg);
+}
+
+.nav-item-toggle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.4);
+    border-radius: 8px;
+}
+
+.nav-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    color: inherit;
+}
+
+.nav-icon-lg {
+    width: 22px;
+    height: 22px;
+}
+
+.nav-icon-profile {
+    width: 24px;
+    height: 24px;
+}
+
+.nav-item:hover,
+.nav-item-toggle:hover {
+    background: var(--glass-bg-hover);
+    color: #444;
+}
+
+/* 선택된 메뉴 = 같은 유리 레시피를 적용한 필 버튼
+   사이드바 본체보다 살짝 더 밝게 해서 "떠 있는" 느낌만 주고,
+   테두리는 흰색 하이라이트 한 겹만 남겼습니다. */
+.nav-item.active,
+.nav-item-toggle.expanded {
+    background: var(--glass-bg-strong);
+    box-shadow:
+            0 1px 3px rgba(90, 78, 68, 0.05),
+            inset 1px 1px 0.5px -1px rgba(255, 255, 255, 0.9),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+            inset 0 0 0 1.5px rgba(150, 138, 127, 0.10);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: 100px;
+    color: #3a3330;
+    font-weight: 500;
+}
+
+/* Team 하위 메뉴 (Buildings / Classrooms) — 트리 형태의 연결선 */
+.submenu {
+    position: relative;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 34px;
+    margin: 0 0 2px 0;
+    box-sizing: border-box;
+}
+
+.submenu.open {
+    display: flex;
+}
+
+.submenu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 8px;
+    color: #666;
+    text-decoration: none;
+    font-size: 13.5px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+/* 트리 연결선: 항목마다 자기 몫의 L자 선을 그려서 둥글게 이어지게 함
+   (세로선 하나 + 가로 stub 대신, border로 둥근 모서리를 만드는 방식)
+   유리 배경이 밝아진 만큼 선도 함께 옅게 낮췄습니다. */
+.submenu-item::before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    top: -21px;
+    width: 16px;
+    height: 40px; /* 항목 높이(38px) + 항목 간 gap(2px) */
+    border-left: 1.5px solid rgba(150, 138, 127, 0.45);
+    border-bottom: 1.5px solid rgba(150, 138, 127, 0.45);
+    border-bottom-left-radius: 8px;
+}
+
+/* 첫 항목은 위로 이어지는 이전 항목이 없으니 자기 절반 높이만큼만 그림 */
+.submenu-item:first-child::before {
+    top: 0;
+    height: 19px;
+}
+
+/* "모든 팀 보기": 팀 하위 목록이지만 성격이 달라서(특정 팀에 종속되지 않음)
+   바로 아래 항목들과 살짝 구분되도록 연한 구분선을 아래에 둠.
+   padding-bottom으로 처리하면 active/hover pill 배경까지 함께 늘어나면서
+   텍스트가 위로 치우쳐 보이므로, 구분선은 별도의 ::after로 그려서
+   항목 자체의 높이(38px)에는 영향을 주지 않게 한다. */
+.submenu-item[data-page="team-list"] {
+    margin-bottom: 14px;
+}
+
+.submenu-item[data-page="team-list"]::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: -8px;
+    border-bottom: 1px solid rgba(102, 90, 80, 0.07);
+}
+
+.submenu-item:hover {
+    background: var(--glass-bg-hover);
+    color: #444;
+}
+
+.submenu-item.active {
+    background: var(--glass-bg-strong);
+    box-shadow:
+            0 1px 3px rgba(90, 78, 68, 0.05),
+            inset 1px 1px 0.5px -1px rgba(255, 255, 255, 0.9),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+            inset 0 0 0 1.5px rgba(150, 138, 127, 0.10);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: 100px;
+    color: #6d635f;
+    font-weight: 500;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 15px;
+    border-top: 1px solid rgba(102, 90, 80, 0.10);
+}
+
+.sidebar-bottom .nav-item {
+    color: #666;
+}
+
+.sidebar-bottom .nav-item:hover {
+    background: var(--glass-bg-hover);
+    color: #666;
+}

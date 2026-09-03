@@ -1,0 +1,190 @@
+<!-- ================================================================
+     !! sidebar.html
+     - 사용법: <div th:replace="~{sidebar :: sidebar}"></div>
+     - mypage, team 등 공통으로 사용
+     - active 상태는 브라우저에서 JS가 현재 URL을 보고 판단 (컨트롤러 수정 불필요)
+     - role, userName은 GlobalControllerAdvice가 모든 페이지에 자동으로 내려줌
+       (role 값은 "ADMIN" 또는 "NORMAL" 둘 중 하나 - owner도 시스템상으로는 ADMIN이라
+        role만으로는 owner/admin을 구분할 수 없음)
+     - 변경 사항 정리:
+       1) "관리자 페이지"(owner-page-btn) 삭제. role == 'OWNER' 조건은 애초에 절대
+          참이 될 수 없어 항상 안 보이던 죽은 코드였음.
+       2) Team 서브메뉴에 "Team Info" 추가 (팀 이름/설명 수정, 추후 활성화·비활성화/
+          삭제 버튼도 이 페이지 쪽에 추가 예정).
+       3) Team 서브메뉴에 "Members" 추가 (초대 코드 생성, 팀원 관리). Settings는
+          계정/사이트 전체 설정 스코프이고 Members는 "이 팀에 누굴 넣을지"를 다루는
+          팀 스코프 기능이라 Settings가 아니라 여기로 위치를 확정함.
+          Settings에는 이제 팀 스코프 기능이 없고, Payment(결제)만 계정 전체
+          설정으로 남음.
+       4) Team 서브메뉴에서 Buildings / Classrooms 삭제. Building/Classroom
+          관리는 Team Info 페이지 안(좌우 분할 리스트)으로 통합되어 별도
+          사이드바 진입점이 필요 없어짐.
+     ================================================================ -->
+<aside xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar" class="sidebar">
+
+    <div class="sidebar-logo">
+        <a th:href="@{/static}">
+            <img src="/photo/logo.png" alt="Logo">
+        </a>
+    </div>
+
+    <div class="user-info-block">
+        <span class="user-role"
+              th:text="${role}"
+              th:attr="data-role=${#strings.toLowerCase(role)}">ADMIN</span>
+        <p class="user-name" th:text="${userName}">jae na</p>
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <a href="/mypage"
+           class="nav-item"
+           data-page="profile">
+            <svg class="nav-icon nav-icon-profile" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18.5 9.5V8.7C18.5 7.57989 18.5 7.01984 18.282 6.59202C18.0903 6.21569 17.7843 5.90973 17.408 5.71799C16.9802 5.5 16.4201 5.5 15.3 5.5H7.7C6.57989 5.5 6.01984 5.5 5.59202 5.71799C5.21569 5.90973 4.90973 6.21569 4.71799 6.59202C4.5 7.01984 4.5 7.57989 4.5 8.7V12.3C4.5 13.4201 4.5 13.9802 4.71799 14.408C4.90973 14.7843 5.21569 15.0903 5.59202 15.282C6.01984 15.5 6.57989 15.5 7.7 15.5H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M7.5 12.5H11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M7.5 8.5H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="17.5" cy="13.5" r="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M19.5 18.5C19.5 18.5 19 17.5 17.5 17.5C16 17.5 15.5 18.5 15.5 18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Profile</span>
+        </a>
+
+        <!-- Team: 더 이상 이동 링크가 아니라, 하위 메뉴(Team Info/Members)를 여닫는 토글 버튼 -->
+        <div class="nav-item nav-item-toggle"
+             data-page="team"
+             role="button"
+             tabindex="0"
+             aria-expanded="false"
+             aria-controls="team-submenu">
+            <span class="nav-item-main">
+                <svg class="nav-icon nav-icon-lg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="9" r="1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M15.701 8.25C15.8999 7.90547 16.2275 7.65408 16.6118 7.55111C16.996 7.44815 17.4055 7.50205 17.75 7.70096C18.0945 7.89987 18.3459 8.2275 18.4489 8.61177C18.5519 8.99604 18.498 9.40547 18.299 9.75C18.1001 10.0945 17.7725 10.3459 17.3882 10.4489C17.004 10.5519 16.5945 10.498 16.25 10.299C15.9055 10.1001 15.6541 9.7725 15.5511 9.38823C15.4481 9.00396 15.502 8.59453 15.701 8.25L15.701 8.25Z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M5.70096 8.25C5.89987 7.90547 6.2275 7.65408 6.61177 7.55111C6.99604 7.44815 7.40547 7.50205 7.75 7.70096C8.09453 7.89987 8.34592 8.2275 8.44889 8.61177C8.55185 8.99604 8.49795 9.40547 8.29904 9.75C8.10013 10.0945 7.7725 10.3459 7.38823 10.4489C7.00396 10.5519 6.59453 10.498 6.25 10.299C5.90547 10.1001 5.65408 9.7725 5.55111 9.38823C5.44815 9.00396 5.50205 8.59453 5.70096 8.25L5.70096 8.25Z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M16.5004 12.5L16.5004 12H16.5004V12.5ZM20.3637 15.5127L20.85 15.3964L20.8499 15.3962L20.3637 15.5127ZM19.5004 16.5V17H19.5006L19.5004 16.5ZM14.5004 16.5L14.5002 16L14.5004 17V16.5ZM15.3803 15.5098L15.8696 15.407L15.8696 15.4069L15.3803 15.5098ZM14.1 13.1855L13.8093 12.7787L13.277 13.159L13.7838 13.5728L14.1 13.1855ZM16.5004 12.5L16.5004 13C17.7262 13.0001 18.4896 13.4089 18.9821 13.912C19.4882 14.429 19.7473 15.0863 19.8774 15.6292L20.3637 15.5127L20.8499 15.3962C20.6962 14.7546 20.3754 13.9057 19.6967 13.2125C19.0045 12.5054 17.9781 12.0001 16.5004 12L16.5004 12.5ZM20.3637 15.5127L19.8774 15.629C19.9009 15.7274 19.8754 15.807 19.8167 15.8718C19.7527 15.9424 19.6413 15.9999 19.5002 16L19.5004 16.5L19.5006 17C20.3 16.9997 21.0702 16.3171 20.85 15.3964L20.3637 15.5127ZM19.5004 16.5V16H14.5004V16.5V17H19.5004V16.5ZM14.5004 16.5L14.5006 17C15.3043 16.9997 16.0613 16.3192 15.8696 15.407L15.3803 15.5098L14.891 15.6126C14.9126 15.7156 14.8842 15.8011 14.8215 15.8694C14.7543 15.9427 14.6412 15.9999 14.5002 16L14.5004 16.5ZM15.3803 15.5098L15.8696 15.4069C15.7084 14.6399 15.3299 13.5443 14.4162 12.7983L14.1 13.1855L13.7838 13.5728C14.4368 14.106 14.7483 14.9337 14.891 15.6126L15.3803 15.5098ZM14.1 13.1855L14.3907 13.5924C14.8686 13.2509 15.5404 13 16.5004 13V12.5V12C15.3548 12 14.4745 12.3035 13.8093 12.7787L14.1 13.1855Z" fill="currentColor"/>
+                    <path d="M7.50027 12.5L7.5003 12H7.50027V12.5ZM9.89969 13.1865L10.216 13.5737L10.7225 13.16L10.1904 12.7797L9.89969 13.1865ZM8.61942 15.5098L8.13011 15.4069L8.13009 15.407L8.61942 15.5098ZM3.63602 15.5127L3.14979 15.3962L3.14972 15.3964L3.63602 15.5127ZM7.50027 12.5L7.50025 13C8.45979 13 9.13077 13.2516 9.60898 13.5933L9.89969 13.1865L10.1904 12.7797C9.52558 12.3046 8.64644 12.0001 7.5003 12L7.50027 12.5ZM9.89969 13.1865L9.58334 12.7993C8.67041 13.5452 8.29136 14.6397 8.13011 15.4069L8.61942 15.5098L9.10872 15.6126C9.25131 14.9342 9.56321 14.1071 10.216 13.5737L9.89969 13.1865ZM8.61942 15.5098L8.13009 15.407C7.93837 16.3198 8.69681 17 9.50027 17V16.5V16C9.35926 16 9.24584 15.9427 9.17839 15.8693C9.1155 15.8008 9.08715 15.7153 9.10874 15.6125L8.61942 15.5098ZM9.50027 16.5V16H4.50027V16.5V17H9.50027V16.5ZM4.50027 16.5V16C4.35905 16 4.24747 15.9424 4.18323 15.8717C4.12435 15.8068 4.09884 15.7271 4.12231 15.629L3.63602 15.5127L3.14972 15.3964C2.92946 16.3177 3.70107 17 4.50027 17V16.5ZM3.63602 15.5127L4.12225 15.6292C4.25236 15.0864 4.5116 14.429 5.0179 13.912C5.51066 13.4088 6.27428 13 7.50027 13V12.5V12C6.02242 12 4.99586 12.5053 4.30344 13.2123C3.62454 13.9056 3.30357 14.7545 3.14979 15.3962L3.63602 15.5127Z" fill="currentColor"/>
+                    <path d="M12 12.5C14.3642 12.5 15.1314 14.3251 15.3804 15.5097C15.494 16.0501 15.0523 16.5 14.5 16.5H9.5C8.94772 16.5 8.50601 16.0501 8.61961 15.5097C8.86859 14.3251 9.63581 12.5 12 12.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M18.5 21.5H20C20.8284 21.5 21.5 20.8284 21.5 20V18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M18.5 2.5H20C20.8284 2.5 21.5 3.17157 21.5 4V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M5.5 21.5H4C3.17157 21.5 2.5 20.8284 2.5 20V18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M5.5 2.5H4C3.17157 2.5 2.5 3.17157 2.5 4V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>Team</span>
+            </span>
+            <svg class="nav-icon-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+
+        <div class="submenu" id="team-submenu">
+            <!-- 팀 목록 (구 myteams.html). 여기서 role별 뱃지(OWNER/ADMIN/MEMBER)를 보여줌.
+                 teamId가 필요 없는 유일한 서브메뉴 항목이라 맨 위에 배치. -->
+            <a href="/team" class="submenu-item" data-page="team-list">
+                <span>Show All Teams</span>
+            </a>
+            <!--
+                모델로 내려와야 완성됨. GlobalControllerAdvice에 role/userName처럼
+                currentTeamId도 추가하거나, 사용자가 팀을 하나만 갖고 있다는 전제로
+                그 팀의 id를 조회해서 넣어주는 방식이 필요.
+                지금은 teamId 없이 /team-info로 접속하면 TeamController가 /team으로
+                리다이렉트하게 되어있어 최소한 에러는 안 남.
+            -->
+            <a th:href="@{/team-info/{teamId}(teamId=${currentTeamId})}" class="submenu-item" data-page="team-info">
+                <span>Team Info</span>
+            </a>
+            <!-- Members: 초대 코드 생성, 팀원 관리. owner/admin만 접근 가능해야 함 -->
+            <a th:href="@{/team-members/{teamId}(teamId=${currentTeamId})}" class="submenu-item" data-page="team-members"
+               th:if="${role == 'ADMIN'}">
+                <span>Members</span>
+            </a>
+        </div>
+
+        <!-- Flow: 룰 엔진 관리 화면이라 admin/owner 전용. 일반 유저는 항목 자체가 안 보임.
+             TODO: 실제 라우팅 경로에 맞게 href 조정 -->
+        <a href="/flow"
+           class="nav-item"
+           data-page="flow"
+           th:if="${role == 'ADMIN'}">
+            <svg class="nav-icon" width="24" height="24" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="39.6555" y="19.8278" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 19.8278)" stroke="currentColor" stroke-width="2.46447"/>
+                <rect x="39.6555" y="37.4524" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 37.4524)" stroke="currentColor" stroke-width="2.46447"/>
+                <rect x="6.60938" y="15.4215" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(-90 6.60938 15.4215)" stroke="currentColor" stroke-width="2.46447"/>
+                <path d="M11.0156 17.6246V38.6882C11.0156 40.1827 11.0156 40.93 11.4799 41.3943C11.9442 41.8586 12.6915 41.8586 14.1861 41.8586H30.8434" stroke="currentColor" stroke-width="2.46447"/>
+                <path d="M11.0156 15.4215V21.0634C11.0156 22.558 11.0156 23.3053 11.4799 23.7696C11.9442 24.2339 12.6915 24.2339 14.1861 24.2339H30.8434" stroke="currentColor" stroke-width="2.46447"/>
+            </svg>
+            <span>Flow</span>
+        </a>
+
+        <a href="/subscribe"
+           class="nav-item"
+           data-page="subscribe">
+            <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M4 10h16" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <span>Subscribe</span>
+        </a>
+
+        <a href="/settings"
+           class="nav-item"
+           data-page="settings">
+            <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <span>Settings</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a th:href="@{/static}" class="nav-item" data-page="home">
+            <svg class="nav-icon" width="24" height="24" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.9167 32.9623C12.9167 29.4547 12.9167 27.701 13.6258 26.1594C14.3348 24.6178 15.6664 23.4765 18.3295 21.1938L20.9128 18.9795C25.7264 14.8536 28.1332 12.7906 31.0001 12.7906C33.867 12.7906 36.2738 14.8536 41.0873 18.9795L43.6707 21.1938C46.3338 23.4765 47.6654 24.6178 48.3744 26.1594C49.0834 27.701 49.0834 29.4547 49.0834 32.9623V43.9166C49.0834 48.7878 49.0834 51.2234 47.5701 52.7367C46.0569 54.25 43.6213 54.25 38.7501 54.25H23.2501C18.3789 54.25 15.9433 54.25 14.43 52.7367C12.9167 51.2234 12.9167 48.7878 12.9167 43.9166V32.9623Z" stroke="currentColor" stroke-width="2.87396"/>
+                <path d="M37.4582 54.25V41.624C37.4582 40.0367 36.1715 38.75 34.5842 38.75H27.4155C25.8282 38.75 24.5415 40.0367 24.5415 41.624V54.25" stroke="currentColor" stroke-width="2.87396" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Home</span>
+        </a>
+    </div>
+
+    <script>
+        (function () {
+            var path = window.location.pathname;
+
+            // 1) 일반 메뉴 + 서브메뉴 active 처리
+            document.querySelectorAll('.sidebar-nav [href], .sidebar-bottom [href]').forEach(function (link) {
+                if (link.getAttribute('href') === path) {
+                    link.classList.add('active');
+                }
+            });
+
+            // 2) Team 하위 메뉴 토글 + 현재 페이지가 하위 메뉴면 자동으로 펼치기
+            var teamToggle = document.querySelector('.nav-item-toggle[data-page="team"]');
+            var submenu = document.getElementById('team-submenu');
+
+            if (teamToggle && submenu) {
+                if (submenu.querySelector('.active')) {
+                    submenu.classList.add('open');
+                    teamToggle.classList.add('expanded');
+                    teamToggle.setAttribute('aria-expanded', 'true');
+                }
+
+                var toggleSubmenu = function () {
+                    var isOpen = submenu.classList.toggle('open');
+                    teamToggle.classList.toggle('expanded', isOpen);
+                    teamToggle.setAttribute('aria-expanded', String(isOpen));
+                };
+
+                teamToggle.addEventListener('click', toggleSubmenu);
+                teamToggle.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleSubmenu();
+                    }
+                });
+            }
+        })();
+    </script>
+
+</aside>

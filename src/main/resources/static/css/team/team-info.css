@@ -1,0 +1,243 @@
+/* ================================================================
+   team-info.css 에 추가할 스타일
+   (기존 .info-card-container, .stat-card 등은 그대로 두고 아래만 추가)
+   ================================================================ */
+
+.info-cards-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.info-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 36px;
+    box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.06);
+}
+
+.info-left-panel {
+    flex: 1;
+    min-width: 0;
+}
+
+.info-lists-panel {
+    flex: 1.4;
+    min-width: 0;
+    padding: 32px;
+}
+
+.stat-card-flat {
+    box-shadow: none;
+    border: 1px solid #f0f0f0;
+    padding: 20px;
+    border-radius: 14px;
+}
+
+#editTeamName[readonly],
+#editTeamDesc[readonly] {
+    background: #f7f7f7;
+    color: #888;
+    cursor: default;
+}
+
+/* ---------------- Building / Classroom 좌우 분할 ---------------- */
+.lists-split {
+    display: flex;
+    gap: 0;
+    min-height: 360px;
+}
+
+.list-half {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-divider {
+    width: 1px;
+    background: #f0f0f0;
+    margin: 0 24px;
+}
+
+.list-half-header h3 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+}
+
+.list-half-header .sub-text {
+    font-size: 12.5px;
+    color: #999;
+}
+
+.entity-list {
+    list-style: none;
+    margin: 16px 0;
+    padding: 0;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 320px;
+}
+
+.entity-list-item {
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    color: #444;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    border-bottom: 1px solid #f5f5f5;
+    list-style: none;
+}
+
+.entity-list-item:hover {
+    background: #FFF8F0;
+}
+
+.entity-list-item.selected {
+    background: #FFF3E8;
+    color: #FF9800;
+    font-weight: 600;
+}
+
+.entity-list-empty {
+    padding: 24px 0;
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+    list-style: none;
+}
+
+.list-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btn-outline-sm {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12.5px;
+    color: #555;
+    cursor: pointer;
+}
+
+.btn-outline-sm:hover {
+    background: #f7f7f7;
+}
+
+.btn-danger-outline {
+    color: #E5484D;
+    border-color: #f1abab;
+}
+
+.btn-danger-outline:hover {
+    background: #FFF7F7;
+}
+
+.btn-danger-outline:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ---------------- 추가 모달 (건물/강의실 공용) ---------------- */
+dialog.modal {
+    border: none;
+    border-radius: 16px;
+    padding: 0;
+    width: 420px;
+    max-width: 90vw;
+}
+
+dialog.modal::backdrop {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.modal-close {
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #999;
+}
+
+.modal-body {
+    padding: 20px 24px 24px;
+}
+
+.modal-field-label {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    margin: 12px 0 6px 0;
+}
+
+.modal-field-label:first-child {
+    margin-top: 0;
+}
+
+.modal-body input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-error {
+    color: #E5484D;
+    font-size: 12.5px;
+    margin-top: 10px;
+    min-height: 16px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.btn-primary {
+    background: #FF9800;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: #F08700;
+}
+
+.btn-outline {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    color: #555;
+    cursor: pointer;
+}

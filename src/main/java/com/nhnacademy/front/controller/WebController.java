@@ -10,35 +10,40 @@ public class WebController {
 
     @GetMapping("/")
     public String getHome() {
-        return "/start";
+        return "start";
     }
-
-//    @GetMapping("/llm")
-//    public String getLlm() {
-//        return "llm";
-//    }
-
-    @GetMapping("/login")
-    public String getLogin() {
-        return "/account/login";
-    }
-
-    @GetMapping("/signup")
-    public String getSign() { return "/account/signup"; }
 
     @GetMapping("/forgot")
-    public String getForgot() { return "/account/forgot"; }
+    public String getForgot() {
+        return "account/forgot";
+    }
 
     @GetMapping("/flowdiy")
-    public String getFlowdiy() { return "flow-diy"; }
-
-    @GetMapping("/mypage")
-    public String getMypage() { return "/mypage/mypage"; }
+    public String getFlowdiy() {
+        return "flow-diy";
+    }
 
     @GetMapping("/table")
-    public String getAlertHis() { return "basic/table"; }
+    public String getAlertHis() {
+        // basic/table -> layout/table 로 변경
+        return "layout/table";
+    }
 
     @GetMapping("/team")
-    public String getMyTeams() { return "/mypage/myteams"; }
+    public String getMyTeams() {
+        // sidebar-menu/team/team-list -> team/team-list 로 뎁스 축소
+        return "team/team-list";
+    }
+
+    @GetMapping("/alert-history")
+    public String getAlertHistory() {
+        return "alarms/alert-history";
+    }
+
+    @GetMapping("/settings")
+    public String getSettings() {
+        // sidebar-menu/settings/settings -> settings/settings 로 뎁스 축소
+        return "settings/settings";
+    }
 
 }

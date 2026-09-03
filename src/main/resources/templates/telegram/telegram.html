@@ -5,23 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>setting-telegram</title>
 
+    <link rel="stylesheet" href="/fonts/font.css">
     <link rel="stylesheet" th:href="@{/css/telegram.css}">
-    <link rel="stylesheet" th:href="@{/css/header-sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/header.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="application-name" content="4iren">
 </head>
 <body>
 <!-- 전체 레이아웃 래퍼 -->
 <div class="layout">
 
     <!-- 좌측 사이드바 -->
-    <div th:replace="~{/basic/sidebar :: sidebar}"></div>
+    <div th:replace="~{basic/sidebar :: sidebar}"></div>
 
     <!-- 우측 전체(헤더 + 메인 컨텐츠) -->
     <div class="main-wrap">
 
         <!-- 상단 헤더 -->
-        <div th:replace="~{/basic/header :: header}"></div>
+        <div th:replace="~{basic/header :: header('텔레그램')}"></div>
 
         <!-- 본문 내용 -->
         <div class="main-content">
@@ -65,8 +73,9 @@
                             <div class="telegram-bot-columns">
 
                                 <div th:replace="~{telegram/telegramBot :: telegram-bot('member', 'Member Bot')}"></div>
-
-                                <div th:if="${isAdmin}" th:replace="~{telegram/telegramBot :: telegram-bot('admin', 'Admin Bot')}"></div>
+                                <div th:if="${isAdmin}" style="display: contents;">
+                                    <div th:replace="~{telegram/telegramBot :: telegram-bot('admin', 'Admin Bot')}"></div>
+                                </div>
 
                             </div>
 

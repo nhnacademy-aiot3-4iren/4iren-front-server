@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <!--font-->
-    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/fonts/font.css">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/login.css">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" href="/css/account/login.css">
+    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
 </head>
 <body>
 
@@ -46,16 +46,16 @@
         <span class="subtitle">로그인</span>
     </div>
 
-    <form action="#" method="POST">
+    <form action="/login" method="POST">
         <div class="input-group">
-            <label for="username">아이디 or e-mail 주소</label>
-            <input type="text" id="username" placeholder="아이디 또는 이메일 주소">
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="loginId" placeholder="아이디">
         </div>
 
         <div class="input-group">
             <label for="password">비밀번호</label>
             <div class="password-wrapper">
-                <input type="password" id="password" placeholder="비밀번호">
+                <input type="password" id="password" name="password" placeholder="비밀번호" required>
                 <img src="/photo/icon/pw-eye.png" alt="비밀번호 보기" class="eye-icon-c" id="eye-icon">
             </div>
         </div>
@@ -85,7 +85,7 @@
 </main>  <!--login-wrapper-->
 
 <!--Footer-->
-<div th:replace="~{/basic/footer :: footer}"></div>
+<div th:replace="~{layout/footer :: footer}"></div>
 
 <script src="/js/eye.js"></script>
 </body>
