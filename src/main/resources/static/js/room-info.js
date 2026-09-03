@@ -76,6 +76,68 @@ function renderSubscription(subscribed, notificationEnabled) {
     }
 }
 
+// =======================================================
+// 강의실 정보 수정 모달 제어
+// =======================================================
+const openEditRoomModalBtn = document.getElementById('openEditRoomModalBtn');
+const editRoomModal = document.getElementById('editRoomModal');
+const closeEditRoomModalBtn = document.getElementById('closeEditRoomModalBtn');
+const cancelEditRoomModalBtn = document.getElementById('cancelEditRoomModalBtn');
+const editRoomForm = document.getElementById('editRoomForm');
+const editRoomError = document.getElementById('editRoomError');
+const saveEditRoomBtn = document.getElementById('saveEditRoomBtn');
+
+if (openEditRoomModalBtn && editRoomModal) {
+    openEditRoomModalBtn.addEventListener('click', () => {
+        if (editRoomError) editRoomError.textContent = '';
+        editRoomModal.showModal();
+    });
+}
+
+const closeEditRoomModal = () => editRoomModal && editRoomModal.close();
+if (closeEditRoomModalBtn) closeEditRoomModalBtn.addEventListener('click', closeEditRoomModal);
+if (cancelEditRoomModalBtn) cancelEditRoomModalBtn.addEventListener('click', closeEditRoomModal);
+
+if (editRoomForm) {
+    editRoomForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (editRoomError) editRoomError.textContent = '';
+
+        const roomName = document.getElementById('editRoomName').value.trim();
+        const description = document.getElementById('editRoomDesc').value.trim();
+
+        if (!roomName) {
+            editRoomError.textContent = '강의실 이름을 입력해주세요.';
+            return;
+        }
+
+        if (saveEditRoomBtn) {
+            saveEditRoomBtn.disabled = true;
+            saveEditRoomBtn.textContent = '저장 중...';
+        }
+
+        try {
+            await requestJson(`/api/front/teams/${teamId}/buildings/${buildingId}/rooms/${roomId}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    roomName,
+                    description: description || null
+                })
+            });
+
+            alert('강의실 정보가 성공적으로 수정되었습니다.');
+            closeEditRoomModal();
+            window.location.reload();
+        } catch (err) {
+            if (editRoomError) editRoomError.textContent = err.message || '저장 중 오류가 발생했습니다.';
+            if (saveEditRoomBtn) {
+                saveEditRoomBtn.disabled = false;
+                saveEditRoomBtn.textContent = '수정 저장';
+            }
+        }
+    });
+}
+
 async function requestJson(url, options = {}) {
     const response = await fetch(url, {
         headers: {

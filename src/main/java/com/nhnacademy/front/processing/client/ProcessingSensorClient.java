@@ -11,14 +11,14 @@ import java.util.List;
 public interface ProcessingSensorClient {
 
     @GetMapping("/sensors/buildings/{buildingId}")
-    List<SensorSummaryResponse> getSensorsByBuilding(@PathVariable("buildingId") Long buildingId);
+    List<SensorSummaryResponse> getSensorsByBuilding(@PathVariable Long buildingId);
 
     @GetMapping("/sensors/buildings/{buildingId}/unassigned")
-    List<SensorSummaryResponse> getUnassignedSensorsByBuilding(@PathVariable("buildingId") Long buildingId);
+    List<SensorSummaryResponse> getUnassignedSensorsByBuilding(@PathVariable Long buildingId);
 
     @PatchMapping("/sensors/rooms")
     void assignRooms(@RequestBody List<SensorRoomAssignmentRequest> requests);
 
-    @DeleteMapping("/rooms/{roomId}/sensors")
-    void unassignRoom(@PathVariable("roomId") Integer roomId);
+    @DeleteMapping("/sensors/rooms/{roomId}")
+    void unassignRoom(@PathVariable Integer roomId);
 }
