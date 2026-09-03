@@ -307,7 +307,20 @@
 <!-- 하단 푸터 -->
 <div th:replace="~{layout/footer :: footer}"></div>
 
+<!-- 카카오 주소 API -->
+<script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<!-- 필수 전역 변수 설정 (rooms.js 호환) -->
+<script th:inline="javascript">
+    const teamId = /*[[${team.teamId}]]*/ null;
+    const buildingId = /*[[${building.buildingId}]]*/ null;
+    window.teamId = teamId;
+    window.buildingId = buildingId;
+</script>
+
+<!-- 올바른 경로의 JS 파일 호출 -->
 <script th:src="@{/js/building-info.js}"></script>
 <script th:src="@{/js/rooms.js}"></script>
+<script th:src="@{/js/weather-policy.js}"></script>
 </body>
 </html>

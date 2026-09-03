@@ -1,3 +1,8 @@
+const containerElement = document.getElementById('roomInfoContainer') || document.getElementById('buildingInfoContainer');
+const teamId = containerElement ? containerElement.dataset.teamId : null;
+const buildingId = containerElement ? containerElement.dataset.buildingId : null;
+const roomId = containerElement ? containerElement.dataset.roomId : null;
+
 document.addEventListener('DOMContentLoaded', () => {
     const openSensorModalBtn = document.getElementById('openSensorModalBtn');
     const closeSensorModalBtn = document.getElementById('closeSensorModalBtn');
