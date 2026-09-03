@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${room != null} ? |플로우 - ${room.roomName()}| : '플로우'">플로우</title>
+    <link rel="stylesheet" th:href="@{/css/flow-list.css}">
+</head>
+<body>
+
+<!-- ================================================================
+     모델 속성
+       buildings      List<BuildingResponse>  팀의 건물 목록
+       openBuildingId Long   처음부터 펼쳐둘 건물 id (없으면 null)
+       openRooms      List<RoomResponse>  openBuildingId 건물의 강의실 목록
+       room           RoomDetailResponse  현재 강의실 (없으면 null → 안내 화면)
+       flows          List<FlowResponse>  현재 강의실의 플로우 목록
+     ================================================================ -->
+
+<div class="app" id="app">
+
+    <!-- ============================ 사이드바 ============================ -->
+    <aside class="sidebar"
+           th:attr="data-api-base=@{/flows/api},
+                    data-room-url-template=@{/rooms/__ROOM_ID__/flows}">
+
+        <button class="side-toggle" id="sideToggle" type="button"
+                aria-label="사이드바 접기/펼치기" aria-expanded="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M15 6l-6 6 6 6"/>
+            </svg>
+        </button>
+
+        <div class="fs-head">
+            <a th:href="@{/flow}" class="fs-logo">
+                <span class="fs-logo-mark" aria-hidden="true"></span>
+                <span class="fs-logo-text fs-label">Flow</span>
+            </a>
+        </div>
+
+        <div class="fs-search">
+            <label for="roomSearch" class="sr-only">강의실 검색</label>
+            <input type="search" id="roomSearch" placeholder="강의실 검색" autocomplete="off">
+            <button type="button" class="fs-search-icon" id="roomSearchIcon"
+                    aria-label="강의실 검색 열기" tabindex="-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+                </svg>
+            </button>
+            <p class="fs-search-empty fs-label" id="roomSearchEmpty" hidden>검색 결과가 없습니다</p>
+        </div>
+
+        <nav class="fs-tree" aria-label="건물 및 강의실">
+
+            <div class="fs-building"
+                 th:each="building : ${buildings}"
+                 th:attr="data-building-id=${building.buildingId()},
+                          data-building-name=${building.buildingName()}"
+                 th:classappend="${building.buildingId() == openBuildingId} ? 'is-open' : ''">
+
+                <button type="button" class="fs-building-btn"
+                        th:attr="aria-expanded=${building.buildingId() == openBuildingId},
+                                 aria-controls=|rooms-${building.buildingId()}|,
+                                 title=${building.buildingName()}">
+                    <span class="fs-caret" aria-hidden="true"></span>
+                    <span class="fs-building-name" th:text="${building.buildingName()}">건물</span>
+                </button>
+
+                <ul class="fs-rooms"
+                    th:id="|rooms-${building.buildingId()}|"
+                    th:hidden="${building.buildingId() != openBuildingId}"
+                    th:attr="data-loaded=${building.buildingId() == openBuildingId} ? 'true' : 'false'">
+
+                    <th:block th:if="${building.buildingId() == openBuildingId}">
+                        <li th:each="r : ${openRooms}" th:attr="data-room-name=${r.roomName()}">
+                            <a th:href="@{/rooms/{roomId}/flows(roomId=${r.roomId()})}"
+                               th:text="${r.roomName()}"
+                               th:title="${r.roomName()}"
+                               th:classappend="${room != null and r.roomId() == room.roomId()} ? 'is-current' : ''"
+                               th:attr="aria-current=${room != null and r.roomId() == room.roomId()} ? 'page' : null">강의실</a>
+                        </li>
+                        <li class="fs-rooms-empty" th:if="${#lists.isEmpty(openRooms)}">
+                            <span>등록된 강의실이 없습니다</span>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+
+            <p class="fs-tree-empty" th:if="${#lists.isEmpty(buildings)}">
+                등록된 건물이 없습니다.<br>
+                팀 정보에서 건물을 먼저 추가해 주세요.
+            </p>
+        </nav>
+
+        <div class="fs-foot">
+            <a th:href="@{/mypage}" class="fs-back" title="마이페이지로">
+                <span class="fs-back-icon" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>
+                    </svg>
+                </span>
+                <span class="fs-label">마이페이지로</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ============================ 본문 ============================ -->
+    <main class="main">
+
+        <div class="topbar">
+            <nav class="crumb" aria-label="현재 위치" th:if="${room != null}">
+                <span th:text="${room.buildingName()}">건물</span>
+                <span aria-hidden="true">/</span>
+                <strong th:text="${room.roomName()}">강의실</strong>
+            </nav>
+            <nav class="crumb" aria-label="현재 위치" th:if="${room == null}">
+                <strong>플로우</strong>
+            </nav>
+            <div class="topbar-right">
+                <span class="tag-admin">관리자 전용</span>
+            </div>
+        </div>
+
+        <!-- 강의실을 아직 고르지 않은 경우 -->
+        <div class="content" th:if="${room == null}">
+            <div class="pick-room">
+                <h2>강의실을 선택해 주세요</h2>
+                <p>왼쪽에서 건물을 펼쳐 강의실을 고르면 해당 강의실의 플로우를 볼 수 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- 강의실이 선택된 경우 -->
+        <div class="content"
+             th:if="${room != null}"
+             th:attr="data-room-id=${room.roomId()},
+                      data-api-base=@{/flows/api}">
+
+            <div class="page-head">
+                <div>
+                    <h1>플로우</h1>
+                    <p class="page-sub">
+                        <span id="flowCount" th:text="|전체 ${#lists.size(flows)}개|">전체 0개</span>
+                        <span> · 센서 조건으로 자동 알림 규칙을 관리합니다</span>
+                    </p>
+                </div>
+                <div class="actions">
+                    <button type="button" class="btn" id="openTemplateBtn">템플릿으로 생성</button>
+                    <a class="btn-solid"
+                       th:href="@{/rooms/{roomId}/flows/new(roomId=${room.roomId()})}">+ 새 플로우</a>
+                </div>
+            </div>
+
+            <div class="toolbar" th:if="${not #lists.isEmpty(flows)}">
+                <div class="seg" role="group" aria-label="상태 필터">
+                    <button type="button" data-filter="all" aria-pressed="true">전체</button>
+                    <button type="button" data-filter="on" aria-pressed="false">활성</button>
+                    <button type="button" data-filter="off" aria-pressed="false">비활성</button>
+                </div>
+                <input type="search" id="flowSearch" placeholder="플로우 이름 검색"
+                       aria-label="플로우 이름 검색">
+                <select id="flowSort" aria-label="정렬 기준">
+                    <option value="updated">최근 수정순</option>
+                    <option value="name">이름순</option>
+                    <option value="created">생성일순</option>
+                </select>
+            </div>
+
+            <ul class="flow-list" id="flowList" th:if="${not #lists.isEmpty(flows)}">
+                <li class="flow-row"
+                    th:each="flow : ${flows}"
+                    th:id="|flow-${flow.flowId()}|"
+                    th:attr="data-flow-id=${flow.flowId()},
+                             data-flow-name=${flow.flowName()},
+                             data-active=${flow.isActive()},
+                             data-schedule-count=${flow.scheduleCount()},
+                             data-created-at=${flow.createdAt()},
+                             data-updated-at=${flow.updatedAt()}"
+                    th:classappend="${flow.isActive()} ? '' : 'is-off'">
+
+                    <div class="row-top">
+                        <button type="button" class="caret" aria-expanded="false"
+                                th:attr="aria-controls=|panel-${flow.flowId()}|,
+                                         aria-label=|${flow.flowName()} 상세 펼치기|"></button>
+
+                        <div class="row-main">
+                            <div class="title-line">
+                                <a class="flow-name"
+                                   th:href="@{/rooms/{roomId}/flows/{flowId}(roomId=${room.roomId()},flowId=${flow.flowId()})}"
+                                   th:text="${flow.flowName()}">플로우 이름</a>
+                                <span class="badge" data-active-badge
+                                      th:classappend="${flow.isActive()} ? 'is-on' : ''"
+                                      th:text="${flow.isActive()} ? '활성' : '비활성'">상태</span>
+                                <span class="badge badge-always" data-always-badge
+                                      th:hidden="${!(flow.isActive() and flow.scheduleCount() == 0)}">상시 실행</span>
+                            </div>
+                            <p class="flow-desc" th:if="${flow.description() != null}"
+                               th:text="${flow.description()}">설명</p>
+                        </div>
+
+                        <time class="row-when" data-relative
+                              th:datetime="${flow.updatedAt()}"
+                              th:text="${flow.updatedAt()}">수정일</time>
+
+                        <button type="button" class="switch" role="switch"
+                                th:attr="aria-checked=${flow.isActive()},
+                                         aria-label=|${flow.flowName()} 활성화 전환|"><i></i></button>
+
+                        <div class="menu-wrap">
+                            <button type="button" class="kebab" aria-haspopup="true" aria-expanded="false"
+                                    th:attr="aria-label=|${flow.flowName()} 더보기|">⋯</button>
+                            <div class="menu" hidden>
+                                <a th:href="@{/rooms/{roomId}/flows/{flowId}(roomId=${room.roomId()},flowId=${flow.flowId()})}">편집</a>
+                                <button type="button" data-action="schedule">스케줄 관리</button>
+                                <hr>
+                                <button type="button" class="is-danger" data-action="delete">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-panel" hidden th:id="|panel-${flow.flowId()}|">
+                        <div class="panel-box">
+                            <div class="panel-head">
+                                <span>실행 스케줄</span>
+                                <button type="button" class="btn-sm" data-action="schedule">스케줄 관리</button>
+                            </div>
+                            <div class="schedule-chips" data-schedule-slot>
+                                <span class="skeleton"></span>
+                            </div>
+                            <div class="panel-meta">
+                                <span>
+                                    <span>생성 </span>
+                                    <time data-absolute th:datetime="${flow.createdAt()}"></time>
+                                    <span> · 수정 </span>
+                                    <time data-absolute th:datetime="${flow.updatedAt()}"></time>
+                                </span>
+                                <a class="btn-sm"
+                                   th:href="@{/rooms/{roomId}/flows/{flowId}(roomId=${room.roomId()},flowId=${flow.flowId()})}">편집기 열기</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="empty-state" th:if="${#lists.isEmpty(flows)}">
+                <div class="empty-mark" aria-hidden="true"></div>
+                <h2>이 강의실에는 아직 플로우가 없습니다</h2>
+                <p>센서 조건을 조합해 자동 알림 규칙을 만들어 보세요.</p>
+                <div class="actions">
+                    <button type="button" class="btn" id="openTemplateBtnEmpty">템플릿으로 생성</button>
+                    <a class="btn-solid"
+                       th:href="@{/rooms/{roomId}/flows/new(roomId=${room.roomId()})}">+ 새 플로우</a>
+                </div>
+            </div>
+
+            <p class="list-empty" id="filterEmpty" hidden>조건에 맞는 플로우가 없습니다.</p>
+        </div>
+    </main>
+</div>
+
+<!-- ============================ 모달 ============================ -->
+
+<dialog id="scheduleDialog" class="dlg dlg-lg">
+    <div class="dlg-head">
+        <h2>실행 스케줄</h2>
+        <p id="scheduleSub"></p>
+        <button type="button" class="dlg-close" data-schedule-close aria-label="닫기">✕</button>
+    </div>
+
+    <div class="dlg-body">
+
+        <div class="sc-add">
+            <h3>시간대 추가</h3>
+
+            <div class="sc-field">
+                <span class="sc-label" id="dayPickerLabel">요일</span>
+                <div class="sc-days" id="dayPicker" role="group" aria-labelledby="dayPickerLabel"></div>
+            </div>
+
+            <div class="sc-row">
+                <div class="sc-field">
+                    <label class="sc-label" for="scheduleStart">시작</label>
+                    <input type="time" id="scheduleStart" value="09:00" step="60">
+                </div>
+                <div class="sc-field">
+                    <label class="sc-label" for="scheduleEnd">종료</label>
+                    <input type="time" id="scheduleEnd" value="18:00" step="60">
+                </div>
+                <button type="button" class="btn" id="scheduleAdd">추가</button>
+            </div>
+
+            <p class="sc-msg" id="scheduleMsg" role="status" aria-live="polite" hidden></p>
+        </div>
+
+        <p class="sc-status" id="scheduleStatus"></p>
+
+        <h3 class="sc-section">등록된 시간대</h3>
+        <div class="sc-days-list" id="scheduleList"></div>
+
+        <div class="sc-timeline" id="scheduleTimeline"></div>
+
+        <p class="sc-pending" id="schedulePending" hidden></p>
+
+        <div class="sc-rules">
+            <strong>시간 규칙</strong>
+            <span>자정을 넘는 시간대는 만들 수 없습니다 (20:00 ~ 02:00 불가)</span>
+            <span>시작 시간은 종료 시간보다 빨라야 합니다 (09:00 ~ 09:00 불가)</span>
+            <span>같은 요일 안에서 시간대가 겹칠 수 없습니다 (맞닿는 것은 가능)</span>
+            <span>수정 기능이 없어 변경은 삭제 후 다시 추가합니다</span>
+        </div>
+    </div>
+
+    <div class="dlg-foot">
+        <span class="sc-foot-hint" id="scheduleFootHint"></span>
+        <button type="button" class="btn" data-schedule-close>닫기</button>
+        <button type="button" class="btn-solid" id="scheduleSave" disabled>변경사항 저장</button>
+    </div>
+</dialog>
+
+<dialog id="templateDialog" class="dlg">
+    <div class="dlg-head">
+        <h2>템플릿으로 플로우 만들기</h2>
+        <p th:if="${room != null}"
+           th:text="|${room.roomName()}의 센서로 사용할 수 있는 템플릿입니다.|">안내</p>
+        <button type="button" class="dlg-close" data-dialog-close aria-label="닫기">✕</button>
+    </div>
+    <div class="dlg-body" id="templateBody"></div>
+    <div class="dlg-foot">
+        <button type="button" class="btn" data-dialog-close>취소</button>
+        <button type="button" class="btn-solid" id="templateStart" disabled>이 템플릿으로 시작</button>
+    </div>
+</dialog>
+
+<dialog id="deleteDialog" class="dlg dlg-sm">
+    <div class="dlg-head">
+        <h2>플로우를 삭제할까요?</h2>
+        <p><strong id="deleteTargetName"></strong> 을(를) 삭제합니다.</p>
+    </div>
+    <div class="dlg-body">
+        <p class="callout">등록된 실행 스케줄도 함께 삭제되며 되돌릴 수 없습니다.</p>
+    </div>
+    <div class="dlg-foot">
+        <button type="button" class="btn" data-dialog-close>취소</button>
+        <button type="button" class="btn-danger" id="deleteConfirm">삭제</button>
+    </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script th:src="@{/js/flow-list.js}"></script>
+</body>
+</html>
