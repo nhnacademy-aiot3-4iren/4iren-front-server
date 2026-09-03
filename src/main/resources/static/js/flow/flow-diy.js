@@ -136,14 +136,14 @@
         try {
             if (FLOW_ID) {
                 const data = await request(`${API}/rooms/${ROOM_ID}/flows/${FLOW_ID}`);
-                sensorMeta = data.sensorMetaInfo || data.SensorMetaInfo || [];
+                sensorMeta = data.sensorMetaInfos || data.sensorMetaInfo || [];
                 document.getElementById('flowName').value = data.flowName || '';
                 document.getElementById('flowDescription').value = data.description || '';
                 setActive(Boolean(data.isActive));
                 loadGraph(data.nodes || [], data.connections || [], false);
             } else if (TEMPLATE_ID) {
                 const data = await request(`${API}/rooms/${ROOM_ID}/flow-templates/${TEMPLATE_ID}`);
-                sensorMeta = data.sensorMetaInfo || data.SensorMetaInfo || [];
+                sensorMeta = data.sensorMetaInfos || data.sensorMetaInfo || [];
                 document.getElementById('flowName').value = data.templateName || '';
                 document.getElementById('flowDescription').value = data.description || '';
                 // 템플릿의 nodeId는 템플릿 DB의 id이므로 전부 음수 임시 id로 바꾼다
@@ -151,7 +151,7 @@
                 toast('템플릿을 불러왔습니다. 값을 확인한 뒤 저장하세요.');
             } else {
                 const data = await request(`${API}/rooms/${ROOM_ID}/flows/form`);
-                sensorMeta = data.sensorMetaInfo || data.SensorMetaInfo || [];
+                sensorMeta = data.sensorMetaInfos || data.sensorMetaInfo || [];
             }
         } catch (err) {
             toast(err.message, true);

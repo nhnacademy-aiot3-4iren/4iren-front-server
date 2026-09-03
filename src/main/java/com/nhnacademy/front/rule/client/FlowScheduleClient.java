@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(
         name = "4iren-gateway",
         contextId = "flowScheduleClient",
-        path = "/api/rule/rooms/{room-id}/flows/{flow-id}/schedules"
+        path = "/api/rule/rooms"
 )
 public interface FlowScheduleClient {
     //플로우 스케줄 생성
-    @PostMapping
+    @PostMapping("/{room-id}/flows/{flow-id}/schedules")
     ResponseEntity<FlowScheduleCreateResponse> create(
             @PathVariable("room-id") Long roomId,
             @PathVariable("flow-id") Long flowId,
@@ -24,20 +24,20 @@ public interface FlowScheduleClient {
     );
 
     //특정 플로우의 스케줄 목록 조회
-    @GetMapping
+    @GetMapping("/{room-id}/flows/{flow-id}/schedules")
     ResponseEntity<FlowScheduleListResponse> getList(
             @PathVariable("room-id") Long roomId,
             @PathVariable("flow-id") Long flowId
     );
 
-    @GetMapping("/{schedule-id}")
+    @GetMapping("/{room-id}/flows/{flow-id}/schedules/{schedule-id}")
     ResponseEntity<FlowScheduleResponse> getDetail(
             @PathVariable("room-id") Long roomId,
             @PathVariable("flow-id") Long flowId,
             @PathVariable("schedule-id") Long scheduleId
     );
 
-    @DeleteMapping("/{schedule-id}")
+    @DeleteMapping("/{room-id}/flows/{flow-id}/schedules/{schedule-id}")
     ResponseEntity<Void> delete(
             @PathVariable("room-id") Long roomId,
             @PathVariable("flow-id") Long flowId,
