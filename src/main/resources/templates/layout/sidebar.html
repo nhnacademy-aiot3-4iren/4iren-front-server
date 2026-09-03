@@ -88,7 +88,7 @@
             </a>
             <!-- Members: 초대 코드 생성, 팀원 관리. owner/admin만 접근 가능해야 함 -->
             <a th:href="@{/team-members/{teamId}(teamId=${currentTeamId})}" class="submenu-item" data-page="team-members"
-               th:if="${role == 'ADMIN'}">
+               th:if="${role == 'ADMIN' or role == 'OWNER'}">
                 <span>Members</span>
             </a>
         </div>
@@ -99,7 +99,7 @@
            class="nav-item"
            data-page="flow"
            data-label="Flow"
-           th:if="${role == 'ADMIN'}">
+           th:if="${role == 'ADMIN' or role == 'OWNER'}">
             <svg class="nav-icon" width="24" height="24" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="39.6555" y="19.8278" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 19.8278)" stroke="currentColor" stroke-width="2.46447"/>
                 <rect x="39.6555" y="37.4524" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 37.4524)" stroke="currentColor" stroke-width="2.46447"/>
