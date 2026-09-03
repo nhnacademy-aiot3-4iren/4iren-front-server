@@ -333,13 +333,21 @@
                 slot.appendChild(chip);
             });
         }
-        updateAlwaysBadge(row, list.length === 0);
+        setScheduleCount(row, list.length);
     }
 
-    function updateAlwaysBadge(row, noSchedule) {
+    // 스케줄 개수는 서버가 내려준 data-schedule-count를 기준으로 하고,
+    // 스케줄을 다시 조회했거나 저장한 뒤에는 그 결과로 갱신한다.
+    function setScheduleCount(row, count) {
+        row.dataset.scheduleCount = String(count);
+        updateAlwaysBadge(row);
+    }
+
+    function updateAlwaysBadge(row) {
         const badge = row.querySelector('[data-always-badge]');
         if (!badge) return;
-        badge.hidden = !(noSchedule && row.dataset.active === 'true');
+        const count = Number(row.dataset.scheduleCount || 0);
+        badge.hidden = !(count === 0 && row.dataset.active === 'true');
     }
 
     document.querySelectorAll('.caret').forEach(btn => {
@@ -389,8 +397,7 @@
             badge.textContent = active ? '활성' : '비활성';
             badge.classList.toggle('is-on', active);
         }
-        const cached = scheduleCache.get(row.dataset.flowId);
-        updateAlwaysBadge(row, Array.isArray(cached) && cached.length === 0);
+        updateAlwaysBadge(row);
         applyFilters();
     }
 
@@ -957,6 +964,6 @@
 
         const panel = row.querySelector('.row-panel');
         if (panel && !panel.hidden) renderSchedules(row, cached);
-        updateAlwaysBadge(row, cached.length === 0);
+        setScheduleCount(row, cached.length);
     }
 })();

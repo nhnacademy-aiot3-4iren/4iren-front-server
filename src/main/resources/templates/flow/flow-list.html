@@ -175,6 +175,7 @@
                     th:attr="data-flow-id=${flow.flowId()},
                              data-flow-name=${flow.flowName()},
                              data-active=${flow.isActive()},
+                             data-schedule-count=${flow.scheduleCount()},
                              data-created-at=${flow.createdAt()},
                              data-updated-at=${flow.updatedAt()}"
                     th:classappend="${flow.isActive()} ? '' : 'is-off'">
@@ -192,7 +193,8 @@
                                 <span class="badge" data-active-badge
                                       th:classappend="${flow.isActive()} ? 'is-on' : ''"
                                       th:text="${flow.isActive()} ? '활성' : '비활성'">상태</span>
-                                <span class="badge badge-always" data-always-badge hidden>상시 실행</span>
+                                <span class="badge badge-always" data-always-badge
+                                      th:hidden="${!(flow.isActive() and flow.scheduleCount() == 0)}">상시 실행</span>
                             </div>
                             <p class="flow-desc" th:if="${flow.description() != null}"
                                th:text="${flow.description()}">설명</p>

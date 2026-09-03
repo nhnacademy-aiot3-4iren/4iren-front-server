@@ -42,14 +42,14 @@
         ALERT:     { category: 'action',    label: '알람(텔레그램)', maxIn: 1,      maxOut: 0 }
     };
 
-    // Operator enum은 명세에 목록이 없어 일반적인 비교 연산자로 구성했다.
-    // 백엔드 enum이 다르면 이 배열만 고치면 된다.
+    // com.nhnacademy.front.rule.enums.Operator 와 값이 일치해야 한다
     const OPERATORS = [
         { value: 'GT',  label: '초과 (>)' },
         { value: 'GTE', label: '이상 (>=)' },
         { value: 'LT',  label: '미만 (<)' },
         { value: 'LTE', label: '이하 (<=)' },
-        { value: 'EQ',  label: '같음 (=)' }
+        { value: 'EQ',  label: '같음 (=)' },
+        { value: 'NEQ', label: '같지 않음 (!=)' }
     ];
 
     const ALERT_TYPES = [
