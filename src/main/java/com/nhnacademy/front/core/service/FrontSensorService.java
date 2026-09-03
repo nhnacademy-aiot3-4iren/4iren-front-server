@@ -24,17 +24,19 @@ public class FrontSensorService {
         return processingSensorClient.getSensorsByBuilding(buildingId);
     }
 
+    public List<SensorSummaryResponse> getUnassignedSensorsByBuilding(Long buildingId) {
+        return processingSensorClient.getUnassignedSensorsByBuilding(buildingId);
+    }
+
     public void assignSensorsToRoom(Long teamId, Long buildingId, Long roomId, List<String> devEuis) {
-        // 1. Processing 서버에 Room 할당 (실제 센서 데이터/룰 매핑 용도)
+        // 1. Processing 에 Room 할당
         List<SensorRoomAssignmentRequest> processingRequests = devEuis.stream()
                 .map(devEui -> new SensorRoomAssignmentRequest(devEui, buildingId, roomId.intValue()))
                 .toList();
-
         processingSensorClient.assignRooms(processingRequests);
 
-        // 2. Core 서버에 SensorLocation 생성 (센서 조회 화면 등 단순 표시 싱크용)
+        // 2. Core 에 SensorLocation 생성 (전체 목록에서 위치정보 매핑)
         List<SensorSummaryResponse> allSensors = getSensorsByBuilding(buildingId);
-
         for (String devEui : devEuis) {
             String locationDetail = allSensors.stream()
                     .filter(s -> s.devEui().equals(devEui))
@@ -46,7 +48,6 @@ public class FrontSensorService {
                     })
                     .orElse("");
 
-            // DB 제한(100자)에 걸리지 않도록 자르기
             if (locationDetail.length() > 100) {
                 locationDetail = locationDetail.substring(0, 100);
             }

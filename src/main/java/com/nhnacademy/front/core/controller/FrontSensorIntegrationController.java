@@ -16,13 +16,13 @@ public class FrontSensorIntegrationController {
 
     private final FrontSensorService frontSensorService;
 
-    // 모달 창에서 빌딩에 속한 전체 센서 목록을 불러오기 위한 API
+    // 프론트엔드의 "센서 추가" 모달에서 호출 시, 미배정 센서만 조회되도록 변경
     @GetMapping("/sensors")
     public ResponseEntity<List<SensorSummaryResponse>> getSensorsByBuilding(
             @PathVariable Long teamId,
             @PathVariable Long buildingId
     ) {
-        return ResponseEntity.ok(frontSensorService.getSensorsByBuilding(buildingId));
+        return ResponseEntity.ok(frontSensorService.getUnassignedSensorsByBuilding(buildingId));
     }
 
     // 체크박스로 선택한 센서들을 룸에 일괄 등록(Core & Processing 이중 할당 연동)

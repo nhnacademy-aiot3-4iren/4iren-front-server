@@ -9,39 +9,28 @@ import com.nhnacademy.front.core.dto.room.RoomResponse;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionResponse;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionStatus;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionUpdateRequest;
+import com.nhnacademy.front.processing.client.ProcessingSensorClient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RoomService {
 
     private final CoreRoomClient coreRoomClient;
     private final CoreSubscriptionClient coreSubscriptionClient;
+    private final ProcessingSensorClient processingSensorClient;
 
-    public PageResponse<RoomDetailResponse> getRooms(
-            Long teamId,
-            Long buildingId,
-            Integer page,
-            Integer size,
-            String sort
-    ) {
+    public PageResponse<RoomDetailResponse> getRooms(Long teamId, Long buildingId, Integer page, Integer size, String sort) {
         PageResponse<RoomResponse> rooms = coreRoomClient.getRooms(teamId, buildingId, page, size, sort);
         List<RoomDetailResponse> details = rooms.content().stream()
                 .map(room -> coreRoomClient.getRoom(teamId, room.roomId()))
                 .toList();
-
-        return new PageResponse<>(
-                details,
-                rooms.page(),
-                rooms.size(),
-                rooms.totalElements(),
-                rooms.totalPages(),
-                rooms.first(),
-                rooms.last()
-        );
+        return new PageResponse<>(details, rooms.page(), rooms.size(), rooms.totalElements(), rooms.totalPages(), rooms.first(), rooms.last());
     }
 
     public RoomDetailResponse getRoom(Long teamId, Long roomId) {
@@ -53,7 +42,14 @@ public class RoomService {
     }
 
     public void deleteRoom(Long teamId, Long roomId) {
+        // Core 삭제가 성공한 경우에만 Processing 룸 전체 센서 일괄 해제를 트리거 (안전성 보장)
         coreRoomClient.deleteRoom(teamId, roomId);
+
+        try {
+            processingSensorClient.unassignRoom(roomId.intValue());
+        } catch (Exception e) {
+            log.error("Processing 룸 전체 센서 해제 실패. roomId: {}", roomId, e);
+        }
     }
 
     public RoomSubscriptionStatus getSubscriptionStatus(Long teamId, Long roomId) {
