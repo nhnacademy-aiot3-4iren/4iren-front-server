@@ -5,7 +5,9 @@ import com.nhnacademy.front.core.client.CoreSubscriptionClient;
 import com.nhnacademy.front.core.dto.PageResponse;
 import com.nhnacademy.front.core.dto.room.RoomCreateRequest;
 import com.nhnacademy.front.core.dto.room.RoomDetailResponse;
+import com.nhnacademy.front.core.dto.room.RoomMatchResponse;
 import com.nhnacademy.front.core.dto.room.RoomResponse;
+import com.nhnacademy.front.core.dto.room.RoomUpdateRequest;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionResponse;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionStatus;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionUpdateRequest;
@@ -25,20 +27,51 @@ public class RoomService {
     private final CoreSubscriptionClient coreSubscriptionClient;
     private final ProcessingSensorClient processingSensorClient;
 
-    public PageResponse<RoomDetailResponse> getRooms(Long teamId, Long buildingId, Integer page, Integer size, String sort) {
+    public PageResponse<RoomDetailResponse> getRooms(
+            Long teamId,
+            Long buildingId,
+            Integer page,
+            Integer size,
+            String sort
+    ) {
         PageResponse<RoomResponse> rooms = coreRoomClient.getRooms(teamId, buildingId, page, size, sort);
         List<RoomDetailResponse> details = rooms.content().stream()
                 .map(room -> coreRoomClient.getRoom(teamId, room.roomId()))
                 .toList();
-        return new PageResponse<>(details, rooms.page(), rooms.size(), rooms.totalElements(), rooms.totalPages(), rooms.first(), rooms.last());
+
+        return new PageResponse<>(
+                details,
+                rooms.page(),
+                rooms.size(),
+                rooms.totalElements(),
+                rooms.totalPages(),
+                rooms.first(),
+                rooms.last()
+        );
     }
 
     public RoomDetailResponse getRoom(Long teamId, Long roomId) {
         return coreRoomClient.getRoom(teamId, roomId);
     }
 
+    public List<RoomResponse> getAllRooms(Long teamId, Long buildingId) {
+        return coreRoomClient.getAllRooms(teamId, buildingId);
+    }
+
+    public List<RoomMatchResponse> searchRoomsInTeam(Long teamId, String roomName) {
+        return coreRoomClient.searchRoomsInTeam(teamId, roomName);
+    }
+
+    public RoomMatchResponse searchRoomInBuilding(Long teamId, Long buildingId, String roomName) {
+        return coreRoomClient.searchRoomInBuilding(teamId, buildingId, roomName);
+    }
+
     public RoomResponse createRoom(Long teamId, Long buildingId, RoomCreateRequest request) {
         return coreRoomClient.createRoom(teamId, buildingId, request);
+    }
+
+    public RoomResponse updateRoom(Long teamId, Long roomId, RoomUpdateRequest request) {
+        return coreRoomClient.updateRoom(teamId, roomId, request);
     }
 
     public void deleteRoom(Long teamId, Long roomId) {
@@ -53,18 +86,11 @@ public class RoomService {
     }
 
     public RoomSubscriptionStatus getSubscriptionStatus(Long teamId, Long roomId) {
-        int page = 0;
-        PageResponse<RoomSubscriptionResponse> subscriptions;
-
-        do {
-            subscriptions = coreSubscriptionClient.getSubscriptions(teamId, page, 100, "id,ASC");
-            for (RoomSubscriptionResponse subscription : subscriptions.content()) {
-                if (roomId.equals(subscription.roomId())) {
-                    return new RoomSubscriptionStatus(true, subscription.notificationEnabled());
-                }
+        for (RoomSubscriptionResponse subscription : coreSubscriptionClient.getAllSubscriptions(teamId)) {
+            if (roomId.equals(subscription.roomId())) {
+                return new RoomSubscriptionStatus(true, subscription.notificationEnabled());
             }
-            page++;
-        } while (!subscriptions.last());
+        }
 
         return RoomSubscriptionStatus.unsubscribed();
     }
@@ -81,21 +107,26 @@ public class RoomService {
             return statuses;
         }
 
-        int page = 0;
-        PageResponse<RoomSubscriptionResponse> subscriptions;
-
-        do {
-            subscriptions = coreSubscriptionClient.getSubscriptions(teamId, page, 100, "id,ASC");
-            for (RoomSubscriptionResponse subscription : subscriptions.content()) {
-                Long roomId = subscription.roomId();
-                if (pendingRoomIds.remove(roomId)) {
-                    statuses.put(roomId, new RoomSubscriptionStatus(true, subscription.notificationEnabled()));
-                }
+        for (RoomSubscriptionResponse subscription : coreSubscriptionClient.getAllSubscriptions(teamId)) {
+            Long roomId = subscription.roomId();
+            if (pendingRoomIds.remove(roomId)) {
+                statuses.put(roomId, new RoomSubscriptionStatus(true, subscription.notificationEnabled()));
             }
-            page++;
-        } while (!subscriptions.last() && !pendingRoomIds.isEmpty());
+            if (pendingRoomIds.isEmpty()) {
+                break;
+            }
+        }
 
         return statuses;
+    }
+
+    public PageResponse<RoomSubscriptionResponse> getSubscriptions(
+            Long teamId,
+            Integer page,
+            Integer size,
+            String sort
+    ) {
+        return coreSubscriptionClient.getSubscriptions(teamId, page, size, sort);
     }
 
     public List<RoomSubscriptionResponse> getAllSubscriptions(Long teamId) {

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>플로우 편집기</title>
+    <link rel="stylesheet" th:href="@{/css/flow/flow-diy.css}">
+</head>
+<body>
+
+<!-- ================================================================
+     모델 속성
+       room        RoomDetailResponse   현재 강의실
+       flow        FlowDetailResponse   수정 모드일 때만 (없으면 신규)
+       templateId  Long                 템플릿으로 시작할 때만
+       sensorMeta  List<SensorMetaInfo> 이 강의실이 지원하는 측정 타입
+     ================================================================ -->
+
+<div class="layout"
+     th:attr="data-room-id=${room.roomId()},
+              data-flow-id=${flow != null} ? ${flow.flowId()} : null,
+              data-template-id=${templateId},
+              data-api-base=@{/flows/api}">
+
+    <!-- ============================ 사이드바 ============================ -->
+    <aside class="sidebar">
+        <div class="side-head">
+            <a th:href="@{/rooms/{roomId}/flows(roomId=${room.roomId()})}" class="side-logo">
+                <span class="side-logo-mark" aria-hidden="true"></span>
+                <span class="side-logo-text">Flow</span>
+            </a>
+        </div>
+
+        <div class="side-scroll">
+
+            <p class="group-title">시작 노드</p>
+            <button type="button" class="node-item" id="startNodeItem"
+                    data-category="start" data-type="START" data-label="시작">
+                <span class="type-dot start"></span> 시작
+            </button>
+
+            <p class="group-title">조건 노드</p>
+            <button type="button" class="node-item"
+                    data-category="condition" data-type="THRESHOLD" data-label="임계치 판단">
+                <span class="type-dot condition"></span> 임계치
+            </button>
+            <button type="button" class="node-item"
+                    data-category="condition" data-type="AVERAGE" data-label="평균값 판단">
+                <span class="type-dot condition"></span> 평균값
+            </button>
+            <button type="button" class="node-item"
+                    data-category="condition" data-type="DURATION" data-label="지속시간 판단">
+                <span class="type-dot condition"></span> 지속시간
+            </button>
+            <button type="button" class="node-item"
+                    data-category="condition" data-type="GRADIENT" data-label="기울기 판단">
+                <span class="type-dot condition"></span> 기울기
+            </button>
+
+            <p class="group-title">논리 노드</p>
+            <button type="button" class="node-item"
+                    data-category="logic" data-type="OR" data-label="OR 조건">
+                <span class="type-dot logic"></span> OR
+            </button>
+
+            <p class="group-title">행동 노드</p>
+            <button type="button" class="node-item"
+                    data-category="action" data-type="ALERT" data-label="알람(텔레그램)">
+                <span class="type-dot action"></span> 알림(Telegram)
+            </button>
+
+            <div class="side-divider"></div>
+
+            <p class="group-title">연결</p>
+            <button type="button" class="node-item connection-item" data-branch="TRUE">
+                <span class="conn-dot true"></span> true
+            </button>
+            <button type="button" class="node-item connection-item" data-branch="FALSE">
+                <span class="conn-dot false"></span> false
+            </button>
+        </div>
+
+        <div class="side-foot">
+            <a th:href="@{/rooms/{roomId}/flows(roomId=${room.roomId()})}" class="side-back">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>
+                </svg>
+                <span>목록으로</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ============================ 본문 ============================ -->
+    <div class="main">
+
+        <div class="topbar">
+            <nav class="crumb" aria-label="현재 위치">
+                <a th:href="@{/rooms/{roomId}/flows(roomId=${room.roomId()})}"
+                   th:text="${room.roomName()}">강의실</a>
+                <span aria-hidden="true">/</span>
+            </nav>
+
+            <label class="sr-only" for="flowName">플로우 이름</label>
+            <input type="text" id="flowName" class="flow-name-input"
+                   placeholder="플로우 이름" maxlength="50"
+                   th:value="${flow != null} ? ${flow.flowName()} : ''">
+
+            <button type="button" class="btn-sm" id="flowMetaBtn">설명</button>
+
+            <div class="topbar-right">
+                <div class="active-toggle">
+                    <span>활성화</span>
+                    <button type="button" class="switch" id="flowActive" role="switch"
+                            th:attr="aria-checked=${flow != null} ? ${flow.isActive()} : false"
+                            aria-label="플로우 활성화"><i></i></button>
+                </div>
+                <button type="button" class="btn-solid" id="saveBtn">저장</button>
+            </div>
+        </div>
+
+        <div class="banner" id="banner" hidden>
+            <span id="bannerText"></span>
+            <button type="button" class="btn-sm" id="bannerCancel">취소 (ESC)</button>
+        </div>
+
+        <div class="errors" id="errorBox" hidden>
+            <strong>저장할 수 없습니다</strong>
+            <ul id="errorList"></ul>
+        </div>
+
+        <div class="canvas-wrap">
+            <div class="canvas" id="canvas">
+                <p class="canvas-hint" id="canvasHint">
+                    아직 배치된 노드가 없습니다<br>
+                    왼쪽에서 노드를 <b>선택</b>한 뒤 이 영역을 <b>클릭</b>해 배치하세요
+                </p>
+                <svg id="connection-svg">
+                    <defs>
+                        <marker id="arrow-true" markerWidth="6" markerHeight="6" refX="5" refY="2.5"
+                                orient="auto" markerUnits="strokeWidth">
+                            <path d="M0.5,0.5 L4.5,2.5 L0.5,4.5" fill="#2fa37f"/>
+                        </marker>
+                        <marker id="arrow-false" markerWidth="6" markerHeight="6" refX="5" refY="2.5"
+                                orient="auto" markerUnits="strokeWidth">
+                            <path d="M0.5,0.5 L4.5,2.5 L0.5,4.5" fill="#d9694a"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================ 노드 설정 패널 ============================ -->
+    <aside class="config-panel" id="configPanel" hidden>
+        <div class="cfg-head">
+            <div>
+                <h2 id="cfgTitle">노드 설정</h2>
+                <p id="cfgSubtitle"></p>
+            </div>
+            <button type="button" class="cfg-close" id="cfgClose" aria-label="닫기">✕</button>
+        </div>
+        <div class="cfg-body" id="cfgBody"></div>
+        <p class="cfg-msg" id="cfgMsg" hidden></p>
+        <div class="cfg-foot">
+            <button type="button" class="btn" id="cfgDelete">노드 삭제</button>
+            <button type="button" class="btn-solid" id="cfgApply">적용</button>
+        </div>
+    </aside>
+</div>
+
+<div class="ghost-node" id="ghostNode"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<dialog id="metaDialog" class="dlg">
+    <form method="dialog" style="padding:22px 24px">
+        <h2 style="font-size:17px;font-weight:600;margin-bottom:14px">플로우 설명</h2>
+        <label class="sr-only" for="flowDescription">설명</label>
+        <textarea id="flowDescription" maxlength="255"
+                  placeholder="이 플로우가 무엇을 하는지 적어 주세요 (선택, 최대 255자)"
+                  th:text="${flow != null} ? ${flow.description()} : ''"></textarea>
+        <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:16px">
+            <button type="submit" class="btn-solid" value="ok">확인</button>
+        </div>
+    </form>
+</dialog>
+
+<script th:src="@{/js/flow/flow-diy.js}"></script>
+</body>
+</html>

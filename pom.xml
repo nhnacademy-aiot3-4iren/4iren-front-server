@@ -60,6 +60,16 @@
             <artifactId>jackson-databind-nullable</artifactId>
             <version>0.2.11</version>
         </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>echarts</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>sortablejs</artifactId>
+            <version>1.15.7</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>

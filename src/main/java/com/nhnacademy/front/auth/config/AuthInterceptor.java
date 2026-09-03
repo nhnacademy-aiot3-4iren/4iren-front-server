@@ -4,8 +4,9 @@ import com.nhnacademy.front.auth.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.context.annotation.Lazy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -59,10 +60,16 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
         }
 
-        // 인증 쿠키가 모두 없으면 로그인 페이지로 리다이렉트
+        // 인증 쿠키가 모두 없으면 API는 401, HTML 페이지는 로그인 화면으로 응답한다.
         if (!hasAccessToken && !hasRefreshToken) {
-            log.info("인증 쿠키가 존재하지 않음. 로그인 페이지로 이동합니다. URI: {}", request.getRequestURI());
-            response.sendRedirect("/login");
+            String requestUri = request.getRequestURI();
+            if (requestUri.startsWith("/api/front/")) {
+                log.info("인증 쿠키가 없는 Front API 요청을 거부합니다. URI: {}", requestUri);
+                response.sendError(HttpStatus.UNAUTHORIZED.value());
+            } else {
+                log.info("인증 쿠키가 존재하지 않음. 로그인 페이지로 이동합니다. URI: {}", requestUri);
+                response.sendRedirect("/login");
+            }
             return false; // 컨트롤러 실행 중단
         }
 

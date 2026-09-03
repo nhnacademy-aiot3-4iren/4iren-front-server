@@ -2,8 +2,12 @@ package com.nhnacademy.front.auth.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.VirtualThreadTaskExecutor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.time.Duration;
 
 /**
  * 인터셉터 등록 및 경로 제외 설정
@@ -12,7 +16,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
+    private static final Duration MVC_ASYNC_TIMEOUT = Duration.ofMinutes(35);
+
     private final AuthInterceptor authInterceptor;
+
+    private final VirtualThreadTaskExecutor mvcAsyncTaskExecutor =
+            new VirtualThreadTaskExecutor("front-mvc-async-");
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -30,5 +39,12 @@ public class WebConfig implements WebMvcConfigurer {
                         "/video/**", // video 관련 출력 허용
                         "/account/forgot" // 임시 비밀번호 설정 페이지
                 );
+    }
+
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.setTaskExecutor(mvcAsyncTaskExecutor);
+        // Core SSE 연결(30분)이 Front의 MVC async timeout보다 먼저 종료되도록 여유를 둔다.
+        configurer.setDefaultTimeout(MVC_ASYNC_TIMEOUT.toMillis());
     }
 }

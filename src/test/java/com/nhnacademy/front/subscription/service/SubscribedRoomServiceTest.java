@@ -3,11 +3,15 @@ package com.nhnacademy.front.subscription.service;
 import com.nhnacademy.front.core.dto.room.RoomDetailResponse;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionResponse;
 import com.nhnacademy.front.core.dto.team.TeamResponse;
+import com.nhnacademy.front.core.dto.team.TeamRole;
+import com.nhnacademy.front.core.dto.team.TeamStatus;
+import com.nhnacademy.front.core.dto.team.TeamStatusCause;
 import com.nhnacademy.front.core.service.RoomService;
 import com.nhnacademy.front.core.service.TeamService;
 import com.nhnacademy.front.subscription.dto.SubscribedRoomResponse;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,7 +59,7 @@ class SubscribedRoomServiceTest {
     }
 
     private TeamResponse team(Long teamId) {
-        return new TeamResponse(teamId, "Team " + teamId, null, null);
+        return new TeamResponse(teamId, "Team " + teamId, null, TeamStatus.ACTIVE, TeamStatusCause.ADMIN_SUSPENDED, LocalDateTime.now(), TeamRole.ADMIN);
     }
 
     private RoomSubscriptionResponse subscription(Long roomId) {
