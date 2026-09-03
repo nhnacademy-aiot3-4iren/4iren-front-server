@@ -1,7 +1,7 @@
 package com.nhnacademy.front.processing.controller;
 
-import com.nhnacademy.front.processing.dto.mqtt.MqttBrokerCreateRequest;
 import com.nhnacademy.front.processing.dto.mqtt.MqttBrokerInfoDto;
+import com.nhnacademy.front.processing.dto.mqtt.MqttBrokerRegisterRequest;
 import com.nhnacademy.front.processing.service.MqttBrokerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +27,15 @@ public class MqttBrokerController {
     @PostMapping
     public ResponseEntity<MqttBrokerInfoDto> registerBroker(@PathVariable Long teamId,
                                                             @PathVariable Long buildingId,
-                                                            @Valid @RequestBody MqttBrokerCreateRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(mqttBrokerService.registerBroker(request));
+                                                            @Valid @RequestBody MqttBrokerRegisterRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(mqttBrokerService.registerBroker(buildingId, request));
     }
 
     // 3. 빌딩 MQTT 설정 수정
     @PutMapping
     public ResponseEntity<MqttBrokerInfoDto> updateBroker(@PathVariable Long teamId,
                                                           @PathVariable Long buildingId,
-                                                          @Valid @RequestBody MqttBrokerCreateRequest request) {
+                                                          @Valid @RequestBody MqttBrokerRegisterRequest request) {
         return ResponseEntity.ok(mqttBrokerService.updateBroker(buildingId, request));
     }
 }
