@@ -5,6 +5,7 @@ import com.nhnacademy.front.core.dto.PageResponse;
 import com.nhnacademy.front.core.dto.building.BuildingCreateRequest;
 import com.nhnacademy.front.core.dto.building.BuildingDetailResponse;
 import com.nhnacademy.front.core.dto.building.BuildingResponse;
+import com.nhnacademy.front.core.dto.building.BuildingUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +38,16 @@ public class BuildingService {
         return coreBuildingClient.getBuilding(teamId, buildingId);
     }
 
+    public List<BuildingResponse> getAllBuildings(Long teamId) {
+        return coreBuildingClient.getAllBuildings(teamId);
+    }
+
     public BuildingResponse createBuilding(Long teamId, BuildingCreateRequest request) {
         return coreBuildingClient.createBuilding(teamId, request);
+    }
+
+    public BuildingResponse updateBuilding(Long teamId, Long buildingId, BuildingUpdateRequest request) {
+        return coreBuildingClient.updateBuilding(teamId, buildingId, request);
     }
 
     public void deleteBuilding(Long teamId, Long buildingId) {

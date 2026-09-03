@@ -115,6 +115,92 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
 }
 
+.building-detail-link {
+    flex: 0 0 auto;
+    background: #4a7dff;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.asset-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
+.asset-delete-btn {
+    flex: 0 0 auto;
+    background: #ffffff;
+    color: #d64a4a;
+    border: 1px solid #f0b7b7;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.asset-delete-btn:disabled {
+    opacity: 0.65;
+    cursor: default;
+}
+
+.device-power-btn {
+    flex: 0 0 auto;
+    background: #ffffff;
+    color: #4a7dff;
+    border: 1px solid #b9ccff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.device-power-btn:disabled {
+    opacity: 0.65;
+    cursor: default;
+}
+
+.room-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    flex: 0 0 auto;
+}
+
+.room-subscription-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-width: 188px;
+}
+
+.room-subscription-text {
+    margin: 0;
+    color: #737791;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.room-subscription-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
 .building-main {
     display: flex;
     align-items: center;

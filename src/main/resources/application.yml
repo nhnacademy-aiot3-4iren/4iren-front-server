@@ -1,3 +1,5 @@
+
+
 spring:
   application:
     name: 4iren-front
@@ -38,8 +40,29 @@ eureka:
 app:
   cookie:
     secure: true
+
+dashboard:
+  refresh-interval: 30s
+  thresholds:
+    temperature:
+      warning-min: 18
+      warning-max: 28
+      danger-min: 14
+      danger-max: 32
+    humidity:
+      warning-min: 30
+      warning-max: 70
+      danger-min: 20
+      danger-max: 80
+    co2:
+      warning-max: 1000
+      danger-max: 1500
+
 management:
   endpoints:
     web:
       exposure:
         include: health, info, prometheus
+
+server:
+  port: 8181

@@ -82,6 +82,34 @@ document.querySelectorAll('.device-delete-btn').forEach(button => {
     });
 });
 
+document.querySelectorAll('.device-power-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+        const deviceId = button.dataset.deviceId;
+        const powerState = button.dataset.nextPowerState;
+
+        try {
+            button.disabled = true;
+            const response = await fetch(
+                `/api/front/teams/${teamId}/rooms/${roomId}/devices/${deviceId}/power-state`,
+                {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ powerState })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
+
+            window.location.reload();
+        } catch (error) {
+            alert(error.message || '장치 전원 상태를 변경하지 못했습니다.');
+            button.disabled = false;
+        }
+    });
+});
+
 function closeDeviceModal() {
     deviceModalOverlay.classList.remove('active');
     deviceNameInput.value = '';

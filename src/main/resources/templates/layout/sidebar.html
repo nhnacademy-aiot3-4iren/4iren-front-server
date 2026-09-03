@@ -3,7 +3,7 @@
      - 사용법: <div th:replace="~{sidebar :: sidebar}"></div>
      - mypage, team 등 공통으로 사용
      - active 상태는 브라우저에서 JS가 현재 URL을 보고 판단 (컨트롤러 수정 불필요)
-     - role, userName은 GlobalControllerAdvice가 모든 페이지에 자동으로 내려줌
+     - role, loginId는 GlobalControllerAdvice가 모든 페이지에 자동으로 내려줌
        (role 값은 "ADMIN" 또는 "NORMAL" 둘 중 하나 - owner도 시스템상으로는 ADMIN이라
         role만으로는 owner/admin을 구분할 수 없음)
      - 변경 사항 정리:
@@ -22,24 +22,47 @@
      ================================================================ -->
 <aside xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar" class="sidebar">
 
+    <!-- 접기/펼치기 버튼 -->
+    <button class="side-toggle" type="button"
+            aria-label="사이드바 접기/펼치기"
+            aria-expanded="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 6l-6 6 6 6"/>
+        </svg>
+    </button>
+
     <div class="sidebar-logo">
         <a th:href="@{/}">
-            <img src="/photo/logo.png" alt="Logo">
+            <img class="logo-full" src="/photo/logo.png" alt="4iren">
+            <img class="logo-icon" src="/photo/icon/4iren-icon.png" alt="4iren">
         </a>
     </div>
 
     <div class="user-info-block">
         <span class="user-role"
               th:text="${role}"
-              th:attr="data-role=${#strings.toLowerCase(role)}">ADMIN</span>
-        <p class="user-name" th:text="${userName}">jae na</p>
+              th:attr="data-role=${#strings.toLowerCase(role)}"></span>
+        <p class="user-name" th:text="${userName}"></p>
     </div>
 
     <nav class="sidebar-nav">
 
+        <a th:href="${currentTeamId != null ? '/teams/' + currentTeamId + '/dashboard' : '/dashboard'}"
+           class="nav-item"
+           data-page="dashboard">
+            <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M8 20V10M13 20v-6M18 20V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Dashboard</span>
+        </a>
+
         <a href="/mypage"
            class="nav-item"
-           data-page="profile">
+           data-page="profile"
+           data-label="Profile">
             <svg class="nav-icon nav-icon-profile" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18.5 9.5V8.7C18.5 7.57989 18.5 7.01984 18.282 6.59202C18.0903 6.21569 17.7843 5.90973 17.408 5.71799C16.9802 5.5 16.4201 5.5 15.3 5.5H7.7C6.57989 5.5 6.01984 5.5 5.59202 5.71799C5.21569 5.90973 4.90973 6.21569 4.71799 6.59202C4.5 7.01984 4.5 7.57989 4.5 8.7V12.3C4.5 13.4201 4.5 13.9802 4.71799 14.408C4.90973 14.7843 5.21569 15.0903 5.59202 15.282C6.01984 15.5 6.57989 15.5 7.7 15.5H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 <path d="M7.5 12.5H11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -47,12 +70,14 @@
                 <circle cx="17.5" cy="13.5" r="2" stroke="currentColor" stroke-width="1.5"/>
                 <path d="M19.5 18.5C19.5 18.5 19 17.5 17.5 17.5C16 17.5 15.5 18.5 15.5 18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <span>Profile</span>
+            <span class="nav-label">Profile</span>
         </a>
 
-        <!-- Team: 더 이상 이동 링크가 아니라, 하위 메뉴(Team Info/Members)를 여닫는 토글 버튼 -->
+        <!-- Team: 이동 링크가 아니라 하위 메뉴를 여닫는 토글 버튼.
+             접힌 상태에서 누르면 사이드바가 펼쳐지면서 서브메뉴가 같이 열림 -->
         <div class="nav-item nav-item-toggle"
              data-page="team"
+             data-label="Team"
              role="button"
              tabindex="0"
              aria-expanded="false"
@@ -70,7 +95,7 @@
                     <path d="M5.5 21.5H4C3.17157 21.5 2.5 20.8284 2.5 20V18.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                     <path d="M5.5 2.5H4C3.17157 2.5 2.5 3.17157 2.5 4V5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
-                <span>Team</span>
+                <span class="nav-label">Team</span>
             </span>
             <svg class="nav-icon-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -101,10 +126,11 @@
         </div>
 
         <!-- Flow: 룰 엔진 관리 화면이라 admin/owner 전용. 일반 유저는 항목 자체가 안 보임.
-             TODO: 실제 라우팅 경로에 맞게 href 조정 -->
+             실제 라우팅 경로에 맞게 href 조정 -->
         <a href="/flow"
            class="nav-item"
            data-page="flow"
+           data-label="Flow"
            th:if="${role == 'ADMIN'}">
             <svg class="nav-icon" width="24" height="24" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="39.6555" y="19.8278" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 19.8278)" stroke="currentColor" stroke-width="2.46447"/>
@@ -113,67 +139,120 @@
                 <path d="M11.0156 17.6246V38.6882C11.0156 40.1827 11.0156 40.93 11.4799 41.3943C11.9442 41.8586 12.6915 41.8586 14.1861 41.8586H30.8434" stroke="currentColor" stroke-width="2.46447"/>
                 <path d="M11.0156 15.4215V21.0634C11.0156 22.558 11.0156 23.3053 11.4799 23.7696C11.9442 24.2339 12.6915 24.2339 14.1861 24.2339H30.8434" stroke="currentColor" stroke-width="2.46447"/>
             </svg>
-            <span>Flow</span>
+            <span class="nav-label">Flow</span>
         </a>
 
+        <!-- My Classroom: 라벨/아이콘은 프리뷰 기준, 경로는 기존 /rooms/subscriptions 유지 -->
         <a href="/rooms/subscriptions"
            class="nav-item"
-           data-page="subscribe">
-            <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M4 10h16" stroke="currentColor" stroke-width="1.5"/>
+           data-page="subscribe"
+           data-label="My Classroom">
+            <svg class="nav-icon nav-icon-classroom" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 6.5V18.5" stroke="currentColor" stroke-linecap="round"/>
+                <path d="M20.5 6.5V18.5" stroke="currentColor" stroke-linecap="round"/>
+                <path d="M3.5 6.5V18.5" stroke="currentColor" stroke-linecap="round"/>
+                <path d="M20.5 18.5C20.5 18.5 19.5 16.5 16 16.5C12.5 16.5 12 18.5 12 18.5" stroke="currentColor" stroke-linecap="round"/>
+                <path d="M3.5 18.5C3.5 18.5 4.5 16.5 8 16.5C11.5 16.5 12 18.5 12 18.5" stroke="currentColor" stroke-linecap="round"/>
+                <path d="M20.5 6.5C20.5 6.5 19.5 4.5 16 4.5C12.5 4.5 12 6.5 12 6.5" stroke="currentColor" stroke-linecap="round"/>
+                <path d="M3.5 6.5C3.5 6.5 4.5 4.5 8 4.5C11.5 4.5 12 6.5 12 6.5" stroke="currentColor" stroke-linecap="round"/>
             </svg>
-            <span>Subscribe</span>
+            <span class="nav-label">My Classroom</span>
         </a>
 
         <a href="/settings"
            class="nav-item"
-           data-page="settings">
+           data-page="settings"
+           data-label="Settings">
             <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
                 <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
             </svg>
-            <span>Settings</span>
+            <span class="nav-label">Settings</span>
         </a>
 
     </nav>
 
     <div class="sidebar-bottom">
-        <a th:href="@{/static}" class="nav-item" data-page="home">
+        <a th:href="@{/}" class="nav-item" data-page="home">
             <svg class="nav-icon" width="24" height="24" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12.9167 32.9623C12.9167 29.4547 12.9167 27.701 13.6258 26.1594C14.3348 24.6178 15.6664 23.4765 18.3295 21.1938L20.9128 18.9795C25.7264 14.8536 28.1332 12.7906 31.0001 12.7906C33.867 12.7906 36.2738 14.8536 41.0873 18.9795L43.6707 21.1938C46.3338 23.4765 47.6654 24.6178 48.3744 26.1594C49.0834 27.701 49.0834 29.4547 49.0834 32.9623V43.9166C49.0834 48.7878 49.0834 51.2234 47.5701 52.7367C46.0569 54.25 43.6213 54.25 38.7501 54.25H23.2501C18.3789 54.25 15.9433 54.25 14.43 52.7367C12.9167 51.2234 12.9167 48.7878 12.9167 43.9166V32.9623Z" stroke="currentColor" stroke-width="2.87396"/>
                 <path d="M37.4582 54.25V41.624C37.4582 40.0367 36.1715 38.75 34.5842 38.75H27.4155C25.8282 38.75 24.5415 40.0367 24.5415 41.624V54.25" stroke="currentColor" stroke-width="2.87396" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span>Home</span>
+            <span class="nav-label">Home</span>
         </a>
     </div>
 
     <script>
         (function () {
-            var path = window.location.pathname;
+            var sidebar = document.currentScript
+                ? document.currentScript.closest('.sidebar')
+                : document.querySelector('.sidebar');
+            if (!sidebar) return;
+
+            var STORAGE_KEY = 'sidebar-collapsed';
+            var toggleBtn = sidebar.querySelector('.side-toggle');
+            var teamToggle = sidebar.querySelector('.nav-item-toggle[data-page="team"]');
+            var submenu = sidebar.querySelector('#team-submenu');
+
+            function readStore() {
+                try { return window.localStorage.getItem(STORAGE_KEY); } catch (e) { return null; }
+            }
+
+            function writeStore(value) {
+                try { window.localStorage.setItem(STORAGE_KEY, value); } catch (e) { /* 저장 불가 환경은 무시 */ }
+            }
 
             // 1) 일반 메뉴 + 서브메뉴 active 처리
+            var path = window.location.pathname;
             document.querySelectorAll('.sidebar-nav [href], .sidebar-bottom [href]').forEach(function (link) {
                 if (link.getAttribute('href') === path) {
                     link.classList.add('active');
                 }
             });
 
-            // 2) Team 하위 메뉴 토글 + 현재 페이지가 하위 메뉴면 자동으로 펼치기
-            var teamToggle = document.querySelector('.nav-item-toggle[data-page="team"]');
-            var submenu = document.getElementById('team-submenu');
+            // 2) 접힘 상태 복원 (첫 페인트에서 애니메이션이 튀지 않도록 no-transition 사용)
+            if (readStore() === 'collapsed') {
+                sidebar.classList.add('no-transition', 'is-collapsed');
+                if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+                window.requestAnimationFrame(function () {
+                    window.requestAnimationFrame(function () {
+                        sidebar.classList.remove('no-transition');
+                    });
+                });
+            }
 
+            function setCollapsed(collapsed) {
+                sidebar.classList.toggle('is-collapsed', collapsed);
+                if (toggleBtn) toggleBtn.setAttribute('aria-expanded', String(!collapsed));
+                writeStore(collapsed ? 'collapsed' : 'expanded');
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function () {
+                    setCollapsed(!sidebar.classList.contains('is-collapsed'));
+                });
+            }
+
+            // 3) Team 하위 메뉴 토글 + 현재 페이지가 하위 메뉴면 자동으로 펼치기
             if (teamToggle && submenu) {
+                function setSubmenuOpen(open) {
+                    submenu.classList.toggle('open', open);
+                    teamToggle.classList.toggle('expanded', open);
+                    teamToggle.setAttribute('aria-expanded', String(open));
+                }
+
                 if (submenu.querySelector('.active')) {
-                    submenu.classList.add('open');
-                    teamToggle.classList.add('expanded');
-                    teamToggle.setAttribute('aria-expanded', 'true');
+                    setSubmenuOpen(true);
                 }
 
                 var toggleSubmenu = function () {
-                    var isOpen = submenu.classList.toggle('open');
-                    teamToggle.classList.toggle('expanded', isOpen);
-                    teamToggle.setAttribute('aria-expanded', String(isOpen));
+                    // 접힌 상태에서는 서브메뉴를 띄울 자리가 없으므로 사이드바를 먼저 펼침
+                    if (sidebar.classList.contains('is-collapsed')) {
+                        setCollapsed(false);
+                        setSubmenuOpen(true);
+                        return;
+                    }
+                    setSubmenuOpen(!submenu.classList.contains('open'));
                 };
 
                 teamToggle.addEventListener('click', toggleSubmenu);

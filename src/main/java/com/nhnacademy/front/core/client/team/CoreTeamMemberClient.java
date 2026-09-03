@@ -3,8 +3,6 @@ package com.nhnacademy.front.core.client.team;
 import com.nhnacademy.front.core.dto.PageResponse;
 import com.nhnacademy.front.core.dto.team.member.TeamJoinRequest;
 import com.nhnacademy.front.core.dto.team.member.TeamMemberResponse;
-import com.nhnacademy.front.core.dto.team.member.TeamMemberRoleChangeRequest;
-import com.nhnacademy.front.core.dto.team.member.TeamOwnerChangeRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,19 +22,6 @@ public interface CoreTeamMemberClient {
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "size", defaultValue = "20") Integer size,
             @RequestParam(name = "sort", defaultValue = "id,ASC") String sort
-    );
-
-    @PatchMapping("/teams/{teamId}/members/{teamMemberId}/role")
-    TeamMemberResponse changeTeamMemberRole(
-            @PathVariable("teamId") Long teamId,
-            @PathVariable("teamMemberId") Long teamMemberId,
-            @RequestBody TeamMemberRoleChangeRequest request
-    );
-
-    @PatchMapping("/teams/{teamId}/owner")
-    TeamMemberResponse transferTeamOwnership(
-            @PathVariable("teamId") Long teamId,
-            @RequestBody TeamOwnerChangeRequest request
     );
 
     @DeleteMapping("/teams/{teamId}/members/{teamMemberId}")
