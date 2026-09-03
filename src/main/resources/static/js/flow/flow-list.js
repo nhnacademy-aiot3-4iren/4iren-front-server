@@ -109,7 +109,7 @@
        ================================================================ */
 
     function roomUrl(roomId) {
-        return ROOM_URL.replace('__ROOM_ID__', roomId);
+        return ROOM_URL.replace('ROOM_ID_PLACEHOLDER', roomId);
     }
 
     document.querySelectorAll('.fs-building-btn').forEach(btn => {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<!--    <title th:text="${room != null} ? 플로우 - ${room.roomName()} : '플로우'">플로우</title>-->
+    <title>플로우</title>
     <link rel="stylesheet" th:href="@{/css/flow/flow-list.css}">
 </head>
 <body>
@@ -21,8 +21,8 @@
 
     <!-- ============================ 사이드바 ============================ -->
     <aside class="sidebar"
-           th:attr="data-api-base=@{/flows/api},
-                    data-room-url-template=@{/rooms/__ROOM_ID__/flows}">
+           th:attr="data-api-base=@{/flows/api}"
+           data-room-url-template="/rooms/ROOM_ID_PLACEHOLDER/flows">
 
         <button class="side-toggle" id="sideToggle" type="button"
                 aria-label="사이드바 접기/펼치기" aria-expanded="true">
