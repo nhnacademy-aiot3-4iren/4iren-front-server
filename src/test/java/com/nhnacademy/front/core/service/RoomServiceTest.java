@@ -3,6 +3,7 @@ package com.nhnacademy.front.core.service;
 import com.nhnacademy.front.core.client.CoreRoomClient;
 import com.nhnacademy.front.core.client.CoreSubscriptionClient;
 import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionResponse;
+import com.nhnacademy.front.processing.client.ProcessingSensorClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -18,7 +19,9 @@ class RoomServiceTest {
     void getsCurrentUsersSubscriptionsFromPublicAllEndpoint() {
         CoreRoomClient roomClient = mock(CoreRoomClient.class);
         CoreSubscriptionClient subscriptionClient = mock(CoreSubscriptionClient.class);
-        RoomService service = new RoomService(roomClient, subscriptionClient);
+        ProcessingSensorClient sensorClient = mock(ProcessingSensorClient.class);
+
+        RoomService service = new RoomService(roomClient, subscriptionClient, sensorClient);
         List<RoomSubscriptionResponse> subscriptions = List.of(
                 new RoomSubscriptionResponse(100L, 10L, true)
         );

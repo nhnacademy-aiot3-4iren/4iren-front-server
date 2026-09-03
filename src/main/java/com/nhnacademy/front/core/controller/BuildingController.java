@@ -4,6 +4,7 @@ import com.nhnacademy.front.core.dto.PageResponse;
 import com.nhnacademy.front.core.dto.building.BuildingDetailResponse;
 import com.nhnacademy.front.core.dto.device.DeviceResponse;
 import com.nhnacademy.front.core.dto.room.RoomDetailResponse;
+import com.nhnacademy.front.core.dto.subscription.RoomSubscriptionStatus;
 import com.nhnacademy.front.core.dto.team.TeamDetailResponse;
 import com.nhnacademy.front.core.service.*;
 import com.nhnacademy.front.processing.dto.sensor.SensorSummaryResponse;
@@ -14,9 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -48,11 +47,9 @@ public class BuildingController {
     }
 
     @GetMapping("/teams/{teamId}/buildings/{buildingId}")
-    public String buildingDetailPage(
-            @PathVariable Long teamId,
-            @PathVariable Long buildingId,
-            Model model
-    ) {
+    public String buildingDetailPage(@PathVariable Long teamId,
+                                     @PathVariable Long buildingId,
+                                     Model model) {
         TeamDetailResponse team = teamService.getTeam(teamId);
         BuildingDetailResponse building = buildingService.getBuilding(teamId, buildingId);
 
@@ -64,6 +61,11 @@ public class BuildingController {
                 rooms = roomPage.content();
             }
         } catch (Exception ignored) {}
+
+        Map<Long, RoomSubscriptionStatus> roomSubscriptionStatuses = new HashMap<>();
+        if(!rooms.isEmpty()) {
+            roomSubscriptionStatuses = roomService.getSubscriptionStatuses(teamId, rooms.stream().map(RoomDetailResponse::roomId).toList());
+        }
 
         // 2. 해당 건물에 등록된 전체 센서 목록 조회
         List<SensorSummaryResponse> sensors = Collections.emptyList();
@@ -92,6 +94,7 @@ public class BuildingController {
         model.addAttribute("team", team);
         model.addAttribute("building", building);
         model.addAttribute("rooms", rooms);
+        model.addAttribute("roomSubscriptionStatuses", roomSubscriptionStatuses);
         model.addAttribute("sensors", sensors);
         model.addAttribute("buildingDevices", buildingDevices);
 

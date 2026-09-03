@@ -18,20 +18,24 @@ public class MqttBrokerController {
 
     // 1. 빌딩의 현재 MQTT 설정값 조회 (모달 열릴 때 자동 채우기)
     @GetMapping
-    public ResponseEntity<MqttBrokerInfoDto> getBroker(
-            @PathVariable Long teamId,
-            @PathVariable Long buildingId
-    ) {
+    public ResponseEntity<MqttBrokerInfoDto> getBroker(@PathVariable Long teamId,
+                                                       @PathVariable Long buildingId) {
         return ResponseEntity.ok(mqttBrokerService.getBrokerByBuilding(buildingId));
     }
 
-    // 2. 빌딩 MQTT 설정 등록 및 수정
+    // 2. 빌딩 MQTT 설정 등록
     @PostMapping
-    public ResponseEntity<MqttBrokerInfoDto> registerBroker(
-            @PathVariable Long teamId,
-            @PathVariable Long buildingId,
-            @Valid @RequestBody MqttBrokerCreateRequest request
-    ) {
+    public ResponseEntity<MqttBrokerInfoDto> registerBroker(@PathVariable Long teamId,
+                                                            @PathVariable Long buildingId,
+                                                            @Valid @RequestBody MqttBrokerCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(mqttBrokerService.registerBroker(request));
+    }
+
+    // 3. 빌딩 MQTT 설정 수정
+    @PutMapping
+    public ResponseEntity<MqttBrokerInfoDto> updateBroker(@PathVariable Long teamId,
+                                                          @PathVariable Long buildingId,
+                                                          @Valid @RequestBody MqttBrokerCreateRequest request) {
+        return ResponseEntity.ok(mqttBrokerService.updateBroker(buildingId, request));
     }
 }

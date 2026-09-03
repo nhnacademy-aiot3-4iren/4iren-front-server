@@ -23,4 +23,8 @@ public class MqttBrokerService {
     public MqttBrokerInfoDto registerBroker(MqttBrokerCreateRequest request) {
         return processingMqttClient.registerBroker(request);
     }
+
+    public MqttBrokerInfoDto updateBroker(Long buildingId, MqttBrokerCreateRequest request) {
+        return processingMqttClient.updateBroker(buildingId, request);
+    }
 }
