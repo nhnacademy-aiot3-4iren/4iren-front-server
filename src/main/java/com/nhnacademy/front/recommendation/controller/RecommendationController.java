@@ -16,7 +16,7 @@ public class RecommendationController {
 
     @GetMapping("/llm")
     public String getLlmPage() {
-        return "/llm/llm";
+        return "llm/llm";
     }
 
     @PostMapping("/llm/answer")
