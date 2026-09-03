@@ -1,100 +1,30 @@
 .subscribed-room-page {
-    max-width: 960px;
-    margin: 0 auto;
-}
-
-.subscribed-room-header {
-    margin-bottom: 28px;
-}
-
-.page-eyebrow {
-    margin: 0 0 8px;
-    color: #6f8b3d;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-}
-
-.subscribed-room-header h1 {
-    margin: 0;
-    color: #263323;
-    font-size: 30px;
-}
-
-.subscribed-room-header > p:last-child {
-    margin: 10px 0 0;
-    color: #6b7469;
+    box-sizing: border-box;
 }
 
 .subscribed-room-list {
-    display: grid;
     gap: 14px;
 }
 
 .subscribed-room-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 92px;
-    padding: 20px 24px;
-    border: 1px solid #e0e7dc;
-    border-radius: 14px;
-    background: #fff;
     color: inherit;
     text-decoration: none;
-    box-shadow: 0 5px 18px rgba(43, 60, 38, 0.06);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .subscribed-room-card:hover,
 .subscribed-room-card:focus-visible {
-    border-color: #9bb46f;
-    box-shadow: 0 9px 24px rgba(43, 60, 38, 0.11);
-    transform: translateY(-1px);
+    border-color: #dbe4f0;
+    box-shadow: 0 7px 22px rgba(0, 0, 0, 0.06);
     outline: none;
 }
 
-.room-card-copy {
-    display: grid;
-    gap: 7px;
-}
-
-.room-card-copy strong {
-    color: #283525;
-    font-size: 19px;
-}
-
-.room-card-copy > span {
-    color: #737d70;
-    font-size: 14px;
-}
-
-.room-card-arrow {
-    color: #718a49;
-    font-size: 34px;
-    line-height: 1;
-}
-
 .subscribed-room-empty {
-    padding: 64px 24px;
-    border: 1px dashed #cfd9c8;
-    border-radius: 14px;
-    background: #fafcf8;
-    color: #687265;
-    text-align: center;
+    background: #ffffff;
+    border: 1px solid #edf0f5;
+    border-radius: 8px;
 }
 
 .subscribed-room-empty p {
     margin: 0;
-}
-
-@media (max-width: 640px) {
-    .subscribed-room-header h1 {
-        font-size: 25px;
-    }
-
-    .subscribed-room-card {
-        min-height: 82px;
-        padding: 17px 18px;
-    }
 }
