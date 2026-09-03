@@ -30,9 +30,7 @@ public interface CoreSubscriptionClient {
     );
 
     @GetMapping("/{teamId}/room-subscriptions/all")
-    List<RoomSubscriptionResponse> getAllSubscriptions(
-            @PathVariable("teamId") Long teamId
-    );
+    List<RoomSubscriptionResponse> getAllSubscriptions(@PathVariable("teamId") Long teamId);
 
     @PatchMapping("/{teamId}/rooms/{roomId}/subscription")
     RoomSubscriptionResponse updateSubscription(

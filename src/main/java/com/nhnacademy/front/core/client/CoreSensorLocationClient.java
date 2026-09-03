@@ -7,6 +7,8 @@ import com.nhnacademy.front.core.dto.sensor.SensorLocationUpdateRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(
         name = "4iren-gateway",
         contextId = "coreSensorLocationClient",
@@ -28,6 +30,12 @@ public interface CoreSensorLocationClient {
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             @RequestParam(name = "size", defaultValue = "20") Integer size,
             @RequestParam(name = "sort", defaultValue = "id,ASC") String sort
+    );
+
+    @GetMapping("/{teamId}/rooms/{roomId}/sensor-locations/all")
+    List<SensorLocationResponse> getAllSensorLocations(
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("roomId") Long roomId
     );
 
     @GetMapping("/{teamId}/sensor-locations/{sensorLocationId}")

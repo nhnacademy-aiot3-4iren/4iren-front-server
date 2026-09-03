@@ -2,10 +2,13 @@ package com.nhnacademy.front.core.client;
 
 import com.nhnacademy.front.core.dto.PageResponse;
 import com.nhnacademy.front.core.dto.device.DeviceCreateRequest;
+import com.nhnacademy.front.core.dto.device.DevicePowerStateUpdateRequest;
 import com.nhnacademy.front.core.dto.device.DeviceResponse;
 import com.nhnacademy.front.core.dto.device.DeviceUpdateRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FeignClient(
         name = "4iren-gateway",
@@ -30,6 +33,12 @@ public interface CoreDeviceClient {
             @RequestParam(name = "sort", defaultValue = "id,ASC") String sort
     );
 
+    @GetMapping("/{teamId}/rooms/{roomId}/devices/all")
+    List<DeviceResponse> getAllDevices(
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("roomId") Long roomId
+    );
+
     @GetMapping("/{teamId}/devices/{deviceId}")
     DeviceResponse getDevice(
             @PathVariable("teamId") Long teamId,
@@ -41,6 +50,13 @@ public interface CoreDeviceClient {
             @PathVariable("teamId") Long teamId,
             @PathVariable("deviceId") Long deviceId,
             @RequestBody DeviceUpdateRequest request
+    );
+
+    @PatchMapping("/{teamId}/devices/{deviceId}/power-state")
+    DeviceResponse updateDevicePowerState(
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("deviceId") Long deviceId,
+            @RequestBody DevicePowerStateUpdateRequest request
     );
 
     @DeleteMapping("/{teamId}/devices/{deviceId}")

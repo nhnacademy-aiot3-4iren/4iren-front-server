@@ -4,12 +4,15 @@ import com.nhnacademy.front.core.dto.PageResponse;
 import com.nhnacademy.front.core.dto.building.BuildingCreateRequest;
 import com.nhnacademy.front.core.dto.building.BuildingDetailResponse;
 import com.nhnacademy.front.core.dto.building.BuildingResponse;
+import com.nhnacademy.front.core.dto.building.BuildingUpdateRequest;
 import com.nhnacademy.front.core.service.BuildingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +31,11 @@ public class CoreBuildingRestController {
         return ResponseEntity.ok(buildingService.getBuildings(teamId, page, size, sort));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<BuildingResponse>> getAllBuildings(@PathVariable Long teamId) {
+        return ResponseEntity.ok(buildingService.getAllBuildings(teamId));
+    }
+
     @PostMapping
     public ResponseEntity<BuildingResponse> createBuilding(
             @PathVariable Long teamId,
@@ -42,6 +50,15 @@ public class CoreBuildingRestController {
             @PathVariable Long buildingId
     ) {
         return ResponseEntity.ok(buildingService.getBuilding(teamId, buildingId));
+    }
+
+    @PatchMapping("/{buildingId}")
+    public ResponseEntity<BuildingResponse> updateBuilding(
+            @PathVariable Long teamId,
+            @PathVariable Long buildingId,
+            @Valid @RequestBody BuildingUpdateRequest request
+    ) {
+        return ResponseEntity.ok(buildingService.updateBuilding(teamId, buildingId, request));
     }
 
     @DeleteMapping("/{buildingId}")

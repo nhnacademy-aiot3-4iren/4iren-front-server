@@ -3,46 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - 4iren</title>
+    <title>4iren - Dashboard</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="stylesheet" href="/fonts/font.css">
-    <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
     <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
-    <link rel="stylesheet" th:href="@{/css/basic/layout.css}">
-    <link rel="stylesheet" th:href="@{/css/dashboard/dashboard.css}">
-    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="stylesheet" th:href="@{/css/dashboard-list.css}">
 </head>
-<body>
+<body class="dashboard-page">
 <div class="layout">
-    <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
     <div class="main-content-area">
-        <header th:replace="~{layout/header :: header('Dashboard')}"></header>
-        <main class="content dashboard-content dashboard-list-content">
-            <section class="dashboard-intro">
-                <div>
-                    <h1>Dashboard</h1>
-                    <p>여러 공간의 환경 상태를 한눈에 확인하세요.</p>
+        <div th:replace="~{layout/header :: header('Dashboard')}"></div>
+
+        <main class="dashboard-content"
+              th:attr="data-team-id=${currentTeam != null ? currentTeam.teamId : ''}">
+            <section class="dashboard-toolbar"
+                     th:if="${currentTeam != null}"
+                     aria-label="대시보드 도구 모음">
+                <div class="team-picker">
+                    <select id="team-selector" aria-label="대시보드 팀 선택">
+                        <option th:each="team : ${teams}"
+                                th:value="${team.teamId}"
+                                th:text="${team.teamName}"
+                                th:selected="${team.teamId == currentTeam.teamId}">Team</option>
+                    </select>
+                </div>
+
+                <div class="dashboard-actions">
+                    <div class="refresh-control" aria-label="대시보드 갱신 정보">
+                        <span class="refresh-state" id="refresh-state">데이터 불러오는 중</span>
+                        <button class="refresh-button" id="refresh-dashboard" type="button"
+                                aria-label="대시보드 새로고침" title="새로고침">
+                            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 6v5h-5"/><path d="M4 18v-5h5"/><path d="M18.5 9A7 7 0 006 6.5L4 11M5.5 15A7 7 0 0018 17.5l2-4.5"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="primary-action" id="open-subscribe-modal" type="button">
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                        공간 추가
+                    </button>
                 </div>
             </section>
 
-            <section class="room-count-card" aria-label="구독 공간 수">
-                <span class="room-count-icon" aria-hidden="true">⌂</span>
-                <div><p>구독 공간</p><strong id="room-count">-</strong><span>개</span></div>
+            <section class="no-team-state" th:if="${currentTeam == null}">
+                <div class="state-icon" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <path d="M4 20V8l8-4 8 4v12"/><path d="M9 20v-5h6v5M8 10h.01M12 10h.01M16 10h.01"/>
+                    </svg>
+                </div>
+                <h3>먼저 팀을 만들어 주세요</h3>
+                <p>대시보드는 팀에 등록된 공간을 기준으로 구성됩니다.</p>
+                <a class="primary-action" href="/team">팀 관리로 이동</a>
             </section>
 
-            <section class="dashboard-panel room-list-panel" aria-labelledby="room-list-title">
-                <div class="panel-heading">
-                    <div><p class="panel-eyebrow">SPACES</p><h2 id="room-list-title">구독 공간 목록</h2></div>
-                    <p>최근 15분 평균</p>
-                </div>
-                <div class="room-list-state" id="room-list-state">공간을 불러오는 중입니다.</div>
-                <div class="room-rows" id="room-rows" hidden></div>
-            </section>
+            <th:block th:if="${currentTeam != null}">
+                <section class="widget-panel" aria-labelledby="widget-panel-title">
+                    <div class="widget-panel-header">
+                        <div>
+                            <h3 id="widget-panel-title">환경 추이</h3>
+                            <p>공간과 환경 지표의 시간에 따른 변화를 확인하세요.</p>
+                        </div>
+                        <button class="secondary-action widget-add-button" id="open-widget-modal" type="button">
+                            <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/><path d="M2 19h22"/>
+                            </svg>
+                            차트 추가
+                        </button>
+                    </div>
+
+                    <div class="widget-grid" id="widget-grid" aria-live="polite"></div>
+
+                    <div class="widget-empty" id="widget-empty">
+                        <span aria-hidden="true">
+                            <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                <path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/><path d="M2 19h22"/>
+                            </svg>
+                        </span>
+                        <div><strong>표시할 차트가 없습니다</strong><p>차트를 추가하면 공간별 센서 추이를 비교할 수 있습니다.</p></div>
+                    </div>
+                </section>
+
+                <section class="room-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>공간 현황</h3>
+                            <p>선택한 지표의 공간별 최근 15분 평균입니다.</p>
+                        </div>
+                        <div class="dashboard-filters">
+                            <label class="dashboard-search" for="dashboard-search-input">
+                                <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+                                </svg>
+                                <input id="dashboard-search-input" type="search" maxlength="100" placeholder="공간 또는 건물 검색">
+                            </label>
+                            <button class="secondary-action" id="open-room-metric-modal" type="button">
+                                <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg>
+                                표시 지표 설정
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="loading-list" id="dashboard-loading" aria-label="대시보드 불러오는 중">
+                        <div class="loading-row"></div>
+                        <div class="loading-row"></div>
+                        <div class="loading-row"></div>
+                    </div>
+
+                    <div class="room-list" id="room-list" aria-live="polite"></div>
+
+                    <div class="panel-state" id="dashboard-empty" hidden>
+                        <div class="state-icon" aria-hidden="true">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                <rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 8V5h8v3M8 12h3M13 12h3M8 16h3M13 16h3"/>
+                            </svg>
+                        </div>
+                        <h4>모니터링 중인 공간이 없습니다</h4>
+                        <p>팀의 공간을 검색해 구독하면 환경 측정값이 여기에 표시됩니다.</p>
+                        <button class="primary-action" id="open-subscribe-modal-empty" type="button">첫 공간 추가하기</button>
+                    </div>
+
+                    <div class="panel-state" id="dashboard-no-results" hidden>
+                        <h4>조건에 맞는 공간이 없습니다</h4>
+                        <p>다른 공간 또는 건물 이름으로 검색해 보세요.</p>
+                    </div>
+
+                    <div class="panel-state error-state" id="dashboard-error" hidden>
+                        <h4>대시보드를 불러오지 못했습니다</h4>
+                        <p id="dashboard-error-message">잠시 후 다시 시도해 주세요.</p>
+                        <button class="secondary-action" id="retry-dashboard" type="button">다시 시도</button>
+                    </div>
+
+                    <div class="pagination" id="dashboard-pagination" hidden>
+                        <span id="pagination-count">0개 공간</span>
+                        <div>
+                            <button id="previous-page" type="button" aria-label="이전 페이지">이전</button>
+                            <span id="pagination-page">1 / 1</span>
+                            <button id="next-page" type="button" aria-label="다음 페이지">다음</button>
+                        </div>
+                    </div>
+                </section>
+            </th:block>
         </main>
     </div>
 </div>
-<div th:replace="~{layout/footer :: footer}"></div>
-<script src="/js/dashboard/dashboard-list.js"></script>
+
+<div class="modal-overlay" id="subscribe-modal" hidden>
+    <section class="subscribe-modal" role="dialog" aria-modal="true" aria-labelledby="subscribe-modal-title">
+        <header>
+            <div>
+                <p class="eyebrow">ADD SPACE</p>
+                <h3 id="subscribe-modal-title">모니터링 공간 추가</h3>
+            </div>
+            <button class="modal-close" id="close-subscribe-modal" type="button" aria-label="닫기">
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+        </header>
+
+        <form class="room-search-form" id="room-search-form">
+            <label for="room-search-input">팀에 등록된 공간 또는 건물 이름</label>
+            <div>
+                <input id="room-search-input" type="search" maxlength="50" required placeholder="예: 305호, 세미나실">
+                <button class="primary-action" id="room-search-button" type="submit">검색</button>
+            </div>
+            <p>검색 결과에서 공간을 선택하면 내 대시보드에 추가됩니다.</p>
+        </form>
+
+        <div class="search-result-state" id="room-search-guide">
+            공간이나 건물 이름을 입력해 검색해 주세요.
+        </div>
+        <div class="search-result-list" id="room-search-results" aria-live="polite"></div>
+        <div class="search-result-pagination" id="room-search-pagination" hidden>
+            <button id="room-search-previous" type="button">이전</button>
+            <span id="room-search-page"></span>
+            <button id="room-search-next" type="button">다음</button>
+        </div>
+    </section>
+</div>
+
+<div class="modal-overlay" id="widget-modal" hidden>
+    <section class="subscribe-modal widget-modal" role="dialog" aria-modal="true" aria-labelledby="widget-modal-title">
+        <header>
+            <div>
+                <p class="eyebrow">ADD CHART</p>
+                <h3 id="widget-modal-title">차트 추가</h3>
+            </div>
+            <button class="modal-close" id="close-widget-modal" type="button" aria-label="닫기">
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+        </header>
+
+        <form class="widget-form" id="widget-form">
+            <label for="widget-room-select">공간</label>
+            <select id="widget-room-select" required>
+                <option value="">공간을 불러오는 중입니다</option>
+            </select>
+
+            <label for="widget-metric-select">환경 지표</label>
+            <select id="widget-metric-select" required disabled>
+                <option value="">공간을 먼저 선택해 주세요</option>
+            </select>
+
+            <label for="widget-period-select">조회 기간</label>
+            <select id="widget-period-select" required>
+                <option value="24H">최근 24시간</option>
+                <option value="7D">최근 7일</option>
+                <option value="30D">최근 30일</option>
+            </select>
+
+            <p class="widget-form-message" id="widget-form-message" role="alert" hidden></p>
+
+            <div class="widget-form-actions">
+                <button class="secondary-action" id="cancel-widget-modal" type="button">취소</button>
+                <button class="primary-action" id="add-widget" type="submit" disabled>추가</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<div class="modal-overlay" id="room-metric-modal" hidden>
+    <section class="subscribe-modal metric-modal" role="dialog" aria-modal="true" aria-labelledby="room-metric-modal-title">
+        <header>
+            <div>
+                <p class="eyebrow">DISPLAY METRICS</p>
+                <h3 id="room-metric-modal-title">표시 지표 설정</h3>
+            </div>
+            <button class="modal-close" id="close-room-metric-modal" type="button" aria-label="닫기">
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+        </header>
+
+        <form class="metric-form" id="room-metric-form">
+            <p class="metric-form-guide">공간 현황에서 비교할 지표를 최대 4개까지 선택할 수 있습니다.</p>
+            <div class="metric-option-list" id="room-metric-options"></div>
+            <p class="widget-form-message" id="room-metric-form-message" role="alert" hidden></p>
+            <div class="widget-form-actions">
+                <span class="metric-selection-count"><strong id="room-metric-selected-count">0</strong> / 4개 선택</span>
+                <button class="secondary-action" id="cancel-room-metric-modal" type="button">취소</button>
+                <button class="primary-action" id="save-room-metrics" type="submit">적용</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<div class="dashboard-toast" id="dashboard-toast" role="status" aria-live="polite" hidden></div>
+
+<script th:src="@{/webjars/echarts/6.0.0/dist/echarts.min.js}"></script>
+<script th:src="@{/webjars/sortablejs/1.15.7/Sortable.min.js}"></script>
+<script th:src="@{/js/dashboard-list.js}"></script>
 </body>
 </html>
