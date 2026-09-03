@@ -110,22 +110,6 @@ public class CoreTeamRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{teamId}/invitation-codes")
-    public ResponseEntity<List<TeamInvitationCodeSummaryResponse>> getInvitationCodes(
-            @PathVariable Long teamId
-    ) {
-        return ResponseEntity.ok(teamService.getInvitationCodes(teamId));
-    }
-
-    @DeleteMapping("/{teamId}/invitation-codes/{invitationCodeId}")
-    public ResponseEntity<Void> deactivateInvitationCode(
-            @PathVariable Long teamId,
-            @PathVariable Long invitationCodeId
-    ) {
-        teamService.deactivateInvitationCode(teamId, invitationCodeId);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("/memberships")
     public ResponseEntity<TeamMemberResponse> joinTeam(@Valid @RequestBody TeamJoinRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(teamService.joinTeam(request));

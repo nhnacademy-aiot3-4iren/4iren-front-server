@@ -30,11 +30,6 @@ public interface CoreTeamInvitationCodeClient {
             @RequestBody TeamInvitationCodeCreateRequest request
     );
 
-    @GetMapping("/{teamId}/invitation-codes")
-    List<TeamInvitationCodeSummaryResponse> getInvitationCodes(
-            @PathVariable("teamId") Long teamId
-    );
-
     @DeleteMapping("/{teamId}/invitation-codes/{invitationCodeId}")
     void deactivateInvitationCode(
             @PathVariable("teamId") Long teamId,
