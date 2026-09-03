@@ -13,6 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
     <link rel="stylesheet" th:href="@{/css/myteams.css}">
     <link rel="stylesheet" th:href="@{/css/team/buildings.css}">
+    <link rel="stylesheet" th:href="@{/css/team/responsive-row.css}">
 
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -23,7 +24,10 @@
 </head>
 <body>
 <!-- 전체 레이아웃: 사이드바(좌측) + 메인 작업 영역(우측) -->
-<div class="layout">
+<div class="layout" id="roomInfoContainer"
+     th:data-team-id="${team.teamId}"
+     th:data-building-id="${building.buildingId}"
+     th:data-room-id="${room.roomId}">
     <!-- 1. 사이드바 프래그먼트 -->
     <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
@@ -173,112 +177,110 @@
                 </div>
             </section>
 
-            <!-- ======================================================= -->
-            <!-- 하단 섹션: Installed Sensors & Installed Devices -->
-            <!-- ======================================================= -->
+            <!-- 반응형 하단 영역: Installed Sensors & Installed Devices -->
+            <div class="responsive-cards-row">
 
-            <!-- 1. Installed Sensors (Full Width Card) -->
-            <div class="info-card" style="margin-top: 24px; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0;">
+                <!-- 1. Installed Sensors -->
+                <div class="info-card" style="padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
+                        <div>
+                            <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 0 0 4px 0;">Installed Sensors</h3>
+                            <span style="font-size: 0.85rem; color: #64748b;" th:text="|총 ${#lists.size(sensorLocations)}개의 센서|">총 0개의 센서</span>
+                        </div>
+                        <div>
+                            <button type="button" id="openSensorModalBtn"
+                                    th:if="${team.myRole != null && team.myRole.isManager()}"
+                                    style="padding: 8px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; border: 1px solid #cbd5e1; background: #fff; color: #334155; font-weight: 600; transition: background 0.2s;"
+                                    onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+                                + Sensor 등록
+                            </button>
+                        </div>
+                    </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
-                    <div>
-                        <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 0 0 4px 0;">Installed Sensors</h3>
-                        <span style="font-size: 0.85rem; color: #64748b;" th:text="|총 ${#lists.size(sensorLocations)}개의 센서|">총 0개의 센서</span>
-                    </div>
-                    <div>
-                        <!-- 센서 "등록" 버튼 -->
-                        <button type="button" id="openSensorModalBtn"
-                                th:if="${team.myRole != null && team.myRole.isManager()}"
-                                style="padding: 8px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; border: 1px solid #cbd5e1; background: #fff; color: #334155; font-weight: 600; transition: background 0.2s;"
-                                onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
-                            + Sensor 등록
-                        </button>
-                    </div>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+                        <li th:each="s : ${sensorLocations}"
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #fff; transition: border-color 0.2s;"
+                            onmouseover="this.style.borderColor='#fb923c'" onmouseout="this.style.borderColor='#e2e8f0'">
+
+                            <!-- 좌측: 아이콘 및 센서 정보 -->
+                            <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
+                                <div style="width: 44px; height: 44px; background: #f8fafc; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #f1f5f9; flex-shrink: 0;">
+                                    <img src="/photo/icon/connection-icon.png" alt="sensor" style="width: 22px; opacity: 0.7;">
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                    <strong style="font-size: 16px; color: #0f172a; overflow: hidden; text-overflow: ellipsis;" th:text="${s.devEui}">24e124785c389010</strong>
+                                    <p style="margin: 0; font-size: 12px; color: #64748b; overflow: hidden; text-overflow: ellipsis;" th:text="${#strings.defaultString(s.locationDetail, '위치 상세 정보 없음')}">위치 상세</p>
+                                </div>
+                            </div>
+
+                            <!-- 우측: ID 뱃지 및 삭제 버튼 -->
+                            <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+                                <span style="display: inline-block; padding: 4px 10px; background: #f1f5f9; color: #475569; border-radius: 6px; font-size: 12px; font-weight: 700; border: 1px solid #e2e8f0;" th:text="|ID ${s.sensorLocationId}|">ID 1</span>
+                                <button class="sensor-delete-btn" type="button"
+                                        th:if="${team.myRole != null && team.myRole.isManager()}"
+                                        th:attr="data-sensor-location-id=${s.sensorLocationId},data-dev-eui=${s.devEui}"
+                                        style="padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; border: 1px solid #fecaca; color: #ef4444; background: #fff; cursor: pointer; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='#fff'">삭제</button>
+                            </div>
+                        </li>
+
+                        <li th:if="${#lists.isEmpty(sensorLocations)}" style="padding: 40px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                            강의실에 등록된 센서가 없습니다.
+                        </li>
+                    </ul>
                 </div>
 
-                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
-                    <li th:each="s : ${sensorLocations}"
-                        style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #fff; transition: border-color 0.2s;"
-                        onmouseover="this.style.borderColor='#fb923c'" onmouseout="this.style.borderColor='#e2e8f0'">
-
-                        <!-- 좌측: 아이콘 및 센서 정보 -->
-                        <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
-                            <div style="width: 44px; height: 44px; background: #f8fafc; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #f1f5f9; flex-shrink: 0;">
-                                <img src="/photo/icon/connection-icon.png" alt="sensor" style="width: 22px; opacity: 0.7;">
-                            </div>
-                            <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-                                <strong style="font-size: 16px; color: #0f172a; overflow: hidden; text-overflow: ellipsis;" th:text="${s.devEui}">24e124785c389010</strong>
-                                <p style="margin: 0; font-size: 12px; color: #64748b; overflow: hidden; text-overflow: ellipsis;" th:text="${#strings.defaultString(s.locationDetail, '위치 상세 정보 없음')}">위치 상세</p>
-                            </div>
+                <!-- 2. Installed Devices -->
+                <div class="info-card" style="padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
+                        <div>
+                            <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 0 0 4px 0;">Installed Devices</h3>
+                            <span style="font-size: 0.85rem; color: #64748b;" th:text="|총 ${#lists.size(devices)}개의 디바이스|">총 0개의 디바이스</span>
                         </div>
-
-                        <!-- 우측: ID 뱃지 및 삭제 버튼 -->
-                        <div style="display: flex; align-items: center; gap: 16px; flex-shrink: 0;">
-                            <span style="display: inline-block; padding: 4px 10px; background: #f1f5f9; color: #475569; border-radius: 6px; font-size: 12px; font-weight: 700; border: 1px solid #e2e8f0;" th:text="|ID ${s.sensorLocationId}|">ID 1</span>
-                            <button class="sensor-delete-btn" type="button"
+                        <div>
+                            <!-- 장치 "추가" 버튼 -->
+                            <button type="button" id="openDeviceModalBtn"
                                     th:if="${team.myRole != null && team.myRole.isManager()}"
-                                    th:attr="data-sensor-location-id=${s.sensorLocationId},data-dev-eui=${s.devEui}"
-                                    style="padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; border: 1px solid #fecaca; color: #ef4444; background: #fff; cursor: pointer; transition: all 0.2s;"
-                                    onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='#fff'">삭제</button>
+                                    style="padding: 8px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; border: 1px solid #cbd5e1; background: #fff; color: #334155; font-weight: 600; transition: background 0.2s;"
+                                    onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+                                + Device 추가
+                            </button>
                         </div>
-                    </li>
-
-                    <li th:if="${#lists.isEmpty(sensorLocations)}" style="padding: 40px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
-                        강의실에 등록된 센서가 없습니다.
-                    </li>
-                </ul>
-            </div>
-
-            <!-- 2. Installed Devices (Full Width Card) -->
-            <div class="info-card" style="margin-top: 24px; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0;">
-
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
-                    <div>
-                        <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 0 0 4px 0;">Installed Devices</h3>
-                        <span style="font-size: 0.85rem; color: #64748b;" th:text="|총 ${#lists.size(devices)}개의 디바이스|">총 0개의 디바이스</span>
                     </div>
-                    <div>
-                        <!-- 장치 "추가" 버튼 -->
-                        <button type="button" id="openDeviceModalBtn"
-                                th:if="${team.myRole != null && team.myRole.isManager()}"
-                                style="padding: 8px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; border: 1px solid #cbd5e1; background: #fff; color: #334155; font-weight: 600; transition: background 0.2s;"
-                                onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
-                            + Device 추가
-                        </button>
-                    </div>
+
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+                        <li th:each="d : ${devices}"
+                            style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #fff; transition: border-color 0.2s;"
+                            onmouseover="this.style.borderColor='#fb923c'" onmouseout="this.style.borderColor='#e2e8f0'">
+
+                            <!-- 좌측: 아이콘 및 장치 정보 -->
+                            <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
+                                <div style="width: 44px; height: 44px; background: #f8fafc; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #f1f5f9; flex-shrink: 0;">
+                                    <img src="/photo/icon/node-icon.png" alt="device" style="width: 22px; opacity: 0.7;">
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                    <strong style="font-size: 16px; color: #0f172a; overflow: hidden; text-overflow: ellipsis;" th:text="${d.deviceName}">에어컨</strong>
+                                    <span style="font-size: 12px; color: #64748b; overflow: hidden; text-overflow: ellipsis;" th:text="|Device ID ${d.deviceId}|">Device ID 1</span>
+                                </div>
+                            </div>
+
+                            <!-- 우측: Device 뱃지 및 삭제 버튼 -->
+                            <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+                                <span style="display: inline-block; padding: 4px 10px; background: #e0f2fe; color: #2563eb; border-radius: 6px; font-size: 12px; font-weight: 700; border: 1px solid #bae6fd;">Device</span>
+                                <button class="device-delete-btn" type="button"
+                                        th:if="${team.myRole != null && team.myRole.isManager()}"
+                                        th:attr="data-device-id=${d.deviceId},data-device-name=${d.deviceName}"
+                                        style="padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; border: 1px solid #fecaca; color: #ef4444; background: #fff; cursor: pointer; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='#fff'">삭제</button>
+                            </div>
+                        </li>
+
+                        <li th:if="${#lists.isEmpty(devices)}" style="padding: 40px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                            강의실에 등록된 장치가 없습니다.
+                        </li>
+                    </ul>
                 </div>
 
-                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
-                    <li th:each="d : ${devices}"
-                        style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #fff; transition: border-color 0.2s;"
-                        onmouseover="this.style.borderColor='#fb923c'" onmouseout="this.style.borderColor='#e2e8f0'">
-
-                        <!-- 좌측: 아이콘 및 장치 정보 -->
-                        <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
-                            <div style="width: 44px; height: 44px; background: #f8fafc; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #f1f5f9; flex-shrink: 0;">
-                                <img src="/photo/icon/node-icon.png" alt="device" style="width: 22px; opacity: 0.7;">
-                            </div>
-                            <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-                                <strong style="font-size: 16px; color: #0f172a; overflow: hidden; text-overflow: ellipsis;" th:text="${d.deviceName}">에어컨</strong>
-                                <span style="font-size: 12px; color: #64748b; overflow: hidden; text-overflow: ellipsis;" th:text="|Device ID ${d.deviceId}|">Device ID 1</span>
-                            </div>
-                        </div>
-
-                        <!-- 우측: Device 뱃지 및 삭제 버튼 -->
-                        <div style="display: flex; align-items: center; gap: 16px; flex-shrink: 0;">
-                            <span style="display: inline-block; padding: 4px 10px; background: #e0f2fe; color: #2563eb; border-radius: 6px; font-size: 12px; font-weight: 700; border: 1px solid #bae6fd;">Device</span>
-                            <button class="device-delete-btn" type="button"
-                                    th:if="${team.myRole != null && team.myRole.isManager()}"
-                                    th:attr="data-device-id=${d.deviceId},data-device-name=${d.deviceName}"
-                                    style="padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; border: 1px solid #fecaca; color: #ef4444; background: #fff; cursor: pointer; transition: all 0.2s;"
-                                    onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='#fff'">삭제</button>
-                        </div>
-                    </li>
-
-                    <li th:if="${#lists.isEmpty(devices)}" style="padding: 40px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
-                        강의실에 등록된 장치가 없습니다.
-                    </li>
-                </ul>
             </div>
 
         </main>
@@ -422,17 +424,10 @@
 <!-- 하단 푸터 -->
 <div th:replace="~{layout/footer :: footer}"></div>
 
-<!-- 외부 JS 파일에서 사용할 변수 바인딩 및 스크립트 병합 -->
-<script th:inline="javascript">
-    const teamId = /*[[${team.teamId}]]*/ null;
-    const buildingId = /*[[${building.buildingId}]]*/ null;
-    const roomId = /*[[${room.roomId}]]*/ null;
-</script>
-<script src="/js/room-info.js"></script>
-<script src="/js/weather-policy.js"></script>
-
-<!-- 센서 및 장치 제어를 위한 기존 js 파일 추가 로드 -->
-<script src="/js/sensor-locations.js"></script>
-<script src="/js/devices.js"></script>
+<script th:src="@{/js/room-info-context.js}"></script>
+<script th:src="@{/js/room-info.js}"></script>
+<script th:src="@{/js/weather-policy.js}"></script>
+<script th:src="@{/js/sensor-locations.js}"></script>
+<script th:src="@{/js/devices.js}"></script>
 </body>
 </html>
