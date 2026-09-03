@@ -574,3 +574,30 @@ dialog.modal::backdrop {
         margin: 16px 0;
     }
 }
+/* 8. 주소 입력 + 검색 버튼 한 줄 배치 (건물 추가 모달 - 카카오/다음 우편번호 검색) */
+.address-input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.address-input-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+.address-input-row button {
+    flex-shrink: 0;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.address-input-row button:hover {
+    background: #f8fafc;
+}
