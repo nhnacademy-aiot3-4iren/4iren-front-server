@@ -4,6 +4,6 @@ public record DeviceResponse(
         Long deviceId,
         Long roomId,
         String deviceName,
-        DevicePowerState powerState
+        DeviceAction action
 ) {
 }

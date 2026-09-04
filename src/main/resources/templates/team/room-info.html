@@ -272,7 +272,19 @@
 
                             <!-- 우측: Device 뱃지 및 삭제 버튼 -->
                             <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
-                                <span style="display: inline-block; padding: 4px 10px; background: #e0f2fe; color: #2563eb; border-radius: 6px; font-size: 12px; font-weight: 700; border: 1px solid #bae6fd;">Device</span>
+                                <span class="device-action-badge"
+                                      th:classappend="${d.action != null && d.action.name() == 'ON'} ? ' on' : ' off'"
+                                      th:text="${d.action != null ? d.action : 'OFF'}">OFF</span>
+                                <button class="btn-outline-sm device-history-btn" type="button"
+                                        th:attr="data-device-id=${d.deviceId},data-device-name=${d.deviceName}">
+                                    이력
+                                </button>
+                                <button class="btn-outline-sm device-action-btn" type="button"
+                                        th:if="${team.myRole != null && team.myRole.isManager()}"
+                                        th:attr="data-device-id=${d.deviceId},data-current-action=${d.action != null ? d.action : 'OFF'}"
+                                        th:text="${d.action != null && d.action.name() == 'ON' ? '끄기' : '켜기'}">
+                                    켜기
+                                </button>
                                 <button class="device-delete-btn" type="button"
                                         th:if="${team.myRole != null && team.myRole.isManager()}"
                                         th:attr="data-device-id=${d.deviceId},data-device-name=${d.deviceName}"
@@ -453,6 +465,56 @@
         </div>
     </div>
 </div>
+
+<dialog class="device-history-dialog" id="deviceHistoryDialog" aria-labelledby="deviceHistoryTitle">
+    <div class="device-history-modal">
+        <div class="device-history-header">
+            <div>
+                <span>Device Action History</span>
+                <h2 id="deviceHistoryTitle">기기 동작 이력</h2>
+                <p id="deviceHistorySubtitle">기기의 ON/OFF 변경 이력을 조회합니다.</p>
+            </div>
+            <button type="button" class="device-history-close-btn" id="closeDeviceHistoryBtn" aria-label="닫기">&times;</button>
+        </div>
+        <div class="device-history-filters">
+            <label>
+                요일
+                <select id="deviceHistoryDayOfWeek">
+                    <option value="">전체</option>
+                    <option value="MON">월</option>
+                    <option value="TUE">화</option>
+                    <option value="WED">수</option>
+                    <option value="THU">목</option>
+                    <option value="FRI">금</option>
+                    <option value="SAT">토</option>
+                    <option value="SUN">일</option>
+                </select>
+            </label>
+            <label>
+                시작
+                <input type="datetime-local" id="deviceHistoryStartAt" step="1">
+            </label>
+            <label>
+                종료
+                <input type="datetime-local" id="deviceHistoryEndAt" step="1">
+            </label>
+            <button type="button" class="device-history-search-btn" id="searchDeviceHistoryBtn">조회</button>
+        </div>
+        <p class="device-history-message" id="deviceHistoryMessage" role="status" aria-live="polite"></p>
+        <div class="device-history-table-wrap">
+            <table class="device-history-table">
+                <thead>
+                <tr>
+                    <th>시간</th>
+                    <th>요일</th>
+                    <th>동작</th>
+                </tr>
+                </thead>
+                <tbody id="deviceHistoryTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</dialog>
 
 <!-- 하단 푸터 -->
 <div th:replace="~{layout/footer :: footer}"></div>

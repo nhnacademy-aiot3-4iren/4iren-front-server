@@ -1,7 +1,6 @@
 package com.nhnacademy.front.core.dto.device;
 
-public enum DevicePowerState {
+public enum DeviceAction {
     ON,
-    OFF,
-    UNKNOWN
+    OFF
 }
