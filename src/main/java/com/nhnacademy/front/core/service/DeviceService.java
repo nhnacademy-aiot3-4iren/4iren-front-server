@@ -46,12 +46,13 @@ public class DeviceService {
 
     public List<DeviceActionHistoryResponse> getDeviceActionHistories(
             Long teamId,
+            Long roomId,
             Long deviceId,
             Weekday dayOfWeek,
             LocalDateTime startAt,
             LocalDateTime endAt
     ) {
-        return coreDeviceClient.getDeviceActionHistories(teamId, deviceId, dayOfWeek, startAt, endAt);
+        return coreDeviceClient.getDeviceActionHistories(teamId, roomId, deviceId, dayOfWeek, startAt, endAt);
     }
 
     public DeviceActionHistoryResponse getDeviceActionHistory(Long teamId, Long historyId) {

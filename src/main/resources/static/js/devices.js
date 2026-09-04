@@ -135,6 +135,19 @@ document.querySelectorAll('.device-history-btn').forEach(button => {
     });
 });
 
+document.querySelectorAll('.device-history-all-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+        selectedHistoryDeviceId = null;
+        selectedHistoryDeviceName = '';
+        if (deviceHistorySubtitle) {
+            deviceHistorySubtitle.textContent = '이 강의실에 설치된 전체 기기의 ON/OFF 변경 이력을 조회합니다.';
+        }
+        clearDeviceHistoryFilters();
+        openDeviceHistoryDialog();
+        await loadDeviceActionHistories();
+    });
+});
+
 if (closeDeviceHistoryBtn) {
     closeDeviceHistoryBtn.addEventListener('click', closeDeviceHistoryDialog);
 }
@@ -200,7 +213,7 @@ function closeDeviceHistoryDialog() {
 }
 
 async function loadDeviceActionHistories() {
-    if (!selectedHistoryDeviceId || !deviceHistoryTableBody) return;
+    if (!Number.isFinite(Number(teamId)) || !Number.isFinite(Number(roomId)) || !deviceHistoryTableBody) return;
 
     try {
         if (searchDeviceHistoryBtn) searchDeviceHistoryBtn.disabled = true;
@@ -227,12 +240,13 @@ async function loadDeviceActionHistories() {
 
 function deviceActionHistoryUrl(deviceId) {
     const params = new URLSearchParams();
+    if (deviceId) params.set('deviceId', deviceId);
     if (deviceHistoryDayOfWeek?.value) params.set('dayOfWeek', deviceHistoryDayOfWeek.value);
     if (deviceHistoryStartAt?.value) params.set('startAt', toLocalDateTime(deviceHistoryStartAt.value));
     if (deviceHistoryEndAt?.value) params.set('endAt', toLocalDateTime(deviceHistoryEndAt.value));
 
     const query = params.toString();
-    return `/api/front/teams/${teamId}/devices/${deviceId}/action-histories${query ? `?${query}` : ''}`;
+    return `/api/front/teams/${teamId}/rooms/${roomId}/device-action-histories${query ? `?${query}` : ''}`;
 }
 
 function toLocalDateTime(value) {
@@ -241,12 +255,13 @@ function toLocalDateTime(value) {
 
 function renderDeviceActionHistories(histories) {
     if (!Array.isArray(histories) || histories.length === 0) {
-        deviceHistoryTableBody.innerHTML = '<tr><td colspan="3">조회된 이력이 없습니다.</td></tr>';
+        deviceHistoryTableBody.innerHTML = '<tr><td colspan="4">조회된 이력이 없습니다.</td></tr>';
         return;
     }
 
     deviceHistoryTableBody.innerHTML = histories.map(history => `
         <tr>
+            <td>${escapeHtml(history.deviceName || `Device ${history.deviceId || '-'}`)}</td>
             <td>${escapeHtml(formatRecordedAt(history.recordedAt))}</td>
             <td>${escapeHtml(formatWeekday(history.dayOfWeek))}</td>
             <td><span class="device-action-badge ${history.action === 'ON' ? 'on' : 'off'}">${escapeHtml(history.action)}</span></td>

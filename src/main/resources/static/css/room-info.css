@@ -326,6 +326,36 @@
     border: 0;
 }
 
+#roomInfoContainer .device-history-all-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 8px 14px;
+    border: 1px solid #fdba74;
+    border-radius: 8px;
+    background: #fff7ed;
+    color: #ea580c;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+#roomInfoContainer .device-history-all-btn:hover {
+    border-color: #fb923c;
+    background: #ffedd5;
+    color: #c2410c;
+}
+
+#roomInfoContainer .device-history-all-btn:disabled {
+    cursor: default;
+    opacity: 0.65;
+}
+
 @media (max-width: 640px) {
     .building-summary {
         align-items: flex-end;
