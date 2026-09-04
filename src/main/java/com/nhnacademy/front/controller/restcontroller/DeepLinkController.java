@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 텔레그램 딥링크 연동 프록시 컨트롤러.
  * 브라우저 JS가 호출하는 엔드포인트로, 게이트웨이 뒤 Notification 서버로 그대로 전달한다.
+ * /api/front 하위에 둬야 한다 — 최상위 /telegram은 nginx가 웹훅 수신용으로 notification-service에
+ * 직접 우회시키는 경로라 프론트 서버의 이 컨트롤러까지 도달하지 못한다.
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/telegram")
+@RequestMapping("/api/front/telegram")
 public class DeepLinkController {
 
     private final NotiDeepLinkClient notiDeepLinkClient;
