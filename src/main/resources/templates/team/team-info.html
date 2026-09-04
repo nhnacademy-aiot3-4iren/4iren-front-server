@@ -326,6 +326,14 @@
 
 <!-- 카카오/다음 우편번호(도로명 주소) 검색 API -->
 <script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<script th:inline="javascript">
+    var teamId = /*[[${team.teamId}]]*/ null;
+    var roomId = null;
+    window.teamId = teamId;
+    window.roomId = roomId;
+</script>
+
 <!-- 분리된 팀 정보 관리 스크립트 -->
 <script th:src="@{/js/team-info.js}"></script>
 <script src="/js/weather-policy.js"></script>
