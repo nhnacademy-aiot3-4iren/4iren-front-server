@@ -61,18 +61,12 @@
                             <p th:text="|Device ID ${device.deviceId}|">Device ID</p>
                             <p>
                                 전원 상태:
-                                <strong th:text="${device.powerState}">UNKNOWN</strong>
+                                <strong class="device-action-text" th:text="${device.action}">OFF</strong>
                             </p>
                             <address th:text="${room.roomName}">Classroom Name</address>
                         </div>
                     </div>
                     <div class="asset-actions">
-                        <button class="btn-outline-sm device-power-btn" type="button"
-                                th:if="${team.myRole != null && team.myRole.isManager()}"
-                                th:attr="data-device-id=${device.deviceId},data-next-power-state=${device.powerState != null && device.powerState.name() == 'ON' ? 'OFF' : 'ON'}"
-                                th:text="${device.powerState != null && device.powerState.name() == 'ON' ? '전원 끄기' : '전원 켜기'}">
-                            전원 켜기
-                        </button>
                         <button class="asset-delete-btn device-delete-btn" type="button"
                                 th:if="${team.myRole != null && team.myRole.isManager()}"
                                 th:attr="data-device-id=${device.deviceId},data-device-name=${device.deviceName}">
