@@ -38,7 +38,7 @@
             <!-- 상단 헤더 섹션: 뒤로가기 링크, 건물 이름, MQTT 모달 열기 버튼, 건물 ID 요약 -->
             <div class="building-page-header">
                 <div>
-                    <a class="back-link" th:href="@{/teams/{teamId}/buildings(teamId=${team.teamId})}">Building List</a>
+                    <a class="back-link" th:href="@{/team-info/{teamId}(teamId=${team.teamId})}">‹ Team Info</a>
                     <h2>Building Info</h2>
                     <p th:text="${team.teamName}">Team Name</p>
                 </div>
@@ -107,7 +107,7 @@
                                 </div>
                                 <!-- 해당 강의실의 디바이스 관리 페이지로 바로가기 -->
                                 <a class="device-link-btn"
-                                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${d.roomId})}">
+                                   th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}(teamId=${team.teamId}, buildingId=${building.buildingId}, roomId=${d.roomId})}">
                                     이동
                                 </a>
                             </li>
