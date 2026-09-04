@@ -75,7 +75,7 @@ const timerIntervals = {};   // 카운트다운 타이머 관리 (아래 타이�
  * linked:true 면 '연동됨' 화면, false면 '연동 전' 화면으로 분기
  */
 function checkInitialStatus(botType) {
-    fetch(`/telegram/${botType}/link-status`, { method: 'GET' })
+    fetch(`/api/front/telegram/${botType}/link-status`, { method: 'GET' })
         .then(res => {
             if (!res.ok) throw new Error(`상태 확인 실패 (status: ${res.status})`);
             return res.json();
@@ -91,7 +91,7 @@ function checkInitialStatus(botType) {
 
 /**
  * '연동하기' / '재연동하기' / '다시 연동하기' 버튼 클릭 시 실행
- * POST /telegram/{botType}/link-token 호출 → 딥링크 발급 → 새 창 오픈 → pending 상태 전환 → 타이머+폴링 시작
+ * POST /api/front/telegram/{botType}/link-token 호출 → 딥링크 발급 → 새 창 오픈 → pending 상태 전환 → 타이머+폴링 시작
  */
 function requestTelegramLink(botType) {
     const startBtn = document.getElementById(`startLinkBtn-${botType}`);
@@ -107,7 +107,7 @@ function requestTelegramLink(botType) {
     //    -> 브라우저가 사용자 제스처로 인정해서 팝업 차단을 피할 수 있음
     const popup = window.open('', '_blank');  //< 빈페이지를 띄움
 
-    fetch(`/telegram/${botType}/link-token`, { method: 'POST' })
+    fetch(`/api/front/telegram/${botType}/link-token`, { method: 'POST' })
         .then(res => {
             if (!res.ok) {
                 return res.json().then(err => {
@@ -162,7 +162,7 @@ function startPolling(botType) {
  * (폴링에서도 쓰고, visibilitychange 복귀 시 즉시 확인용으로도 재사용)
  */
 function checkLinkStatusOnce(botType) {
-    fetch(`/telegram/${botType}/link-status`, { method: 'GET' })
+    fetch(`/api/front/telegram/${botType}/link-status`, { method: 'GET' })
         .then(res => {
             if (!res.ok) throw new Error(`상태 확인 실패 (status: ${res.status})`);
             return res.json();

@@ -35,6 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
         dialog.close(); // 닫을 때 포커스는 브라우저가 열기 전 요소로 자동 복원
     }
 
+    // 틸트 카드("Do You want Make a Team?") 클릭 -> NORMAL은 결제 유도, 그 외엔 팀 페이지로
+    const teamPromoCard = document.getElementById('teamPromoCard');
+    if (teamPromoCard) {
+        teamPromoCard.addEventListener('click', () => {
+            window.location.href = teamPromoCard.dataset.role === 'NORMAL' ? '/payment/plans' : '/team';
+        });
+    }
+
     openBtn.addEventListener('click', openModal);
     closeBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
