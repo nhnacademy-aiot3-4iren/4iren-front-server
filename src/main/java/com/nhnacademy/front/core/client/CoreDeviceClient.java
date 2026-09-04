@@ -1,13 +1,17 @@
 package com.nhnacademy.front.core.client;
 
 import com.nhnacademy.front.core.dto.PageResponse;
+import com.nhnacademy.front.core.dto.device.DeviceActionHistoryResponse;
+import com.nhnacademy.front.core.dto.device.DeviceActionRequest;
 import com.nhnacademy.front.core.dto.device.DeviceCreateRequest;
-import com.nhnacademy.front.core.dto.device.DevicePowerStateUpdateRequest;
 import com.nhnacademy.front.core.dto.device.DeviceResponse;
 import com.nhnacademy.front.core.dto.device.DeviceUpdateRequest;
+import com.nhnacademy.front.core.dto.device.Weekday;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @FeignClient(
@@ -52,11 +56,28 @@ public interface CoreDeviceClient {
             @RequestBody DeviceUpdateRequest request
     );
 
-    @PatchMapping("/{teamId}/devices/{deviceId}/power-state")
-    DeviceResponse updateDevicePowerState(
+    @PostMapping("/{teamId}/devices/{deviceId}/action-histories")
+    void createDeviceActionHistory(
             @PathVariable("teamId") Long teamId,
             @PathVariable("deviceId") Long deviceId,
-            @RequestBody DevicePowerStateUpdateRequest request
+            @RequestBody DeviceActionRequest request
+    );
+
+    @GetMapping("/{teamId}/devices/{deviceId}/action-histories")
+    List<DeviceActionHistoryResponse> getDeviceActionHistories(
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("deviceId") Long deviceId,
+            @RequestParam(name = "dayOfWeek", required = false) Weekday dayOfWeek,
+            @RequestParam(name = "startAt", required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startAt,
+            @RequestParam(name = "endAt", required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endAt
+    );
+
+    @GetMapping("/{teamId}/action-histories/{historyId}")
+    DeviceActionHistoryResponse getDeviceActionHistory(
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("historyId") Long historyId
     );
 
     @DeleteMapping("/{teamId}/devices/{deviceId}")
