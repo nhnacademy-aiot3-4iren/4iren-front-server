@@ -128,6 +128,11 @@
     const findNode = id => nodes.find(n => n.nodeId === id);
     const nodeEl = id => canvas.querySelector(`.placed-node[data-node-id="${id}"]`);
 
+    function readSensorMeta(data) {
+        if (!data) return [];
+        return data.sensorMetaInfos || data.sensorMetaInfoList || data.sensorMetaInfo || [];
+    }
+
     /* ================================================================
        초기 로딩
        ================================================================ */
@@ -136,14 +141,14 @@
         try {
             if (FLOW_ID) {
                 const data = await request(`${API}/rooms/${ROOM_ID}/flows/${FLOW_ID}`);
-                sensorMeta = data.sensorMetaInfos || data.sensorMetaInfo || [];
+                sensorMeta = readSensorMeta(data);
                 document.getElementById('flowName').value = data.flowName || '';
                 document.getElementById('flowDescription').value = data.description || '';
                 setActive(Boolean(data.isActive));
                 loadGraph(data.nodes || [], data.connections || [], false);
             } else if (TEMPLATE_ID) {
                 const data = await request(`${API}/rooms/${ROOM_ID}/flow-templates/${TEMPLATE_ID}`);
-                sensorMeta = data.sensorMetaInfos || data.sensorMetaInfo || [];
+                sensorMeta = readSensorMeta(data);
                 document.getElementById('flowName').value = data.templateName || '';
                 document.getElementById('flowDescription').value = data.description || '';
                 // 템플릿의 nodeId는 템플릿 DB의 id이므로 전부 음수 임시 id로 바꾼다
@@ -151,7 +156,7 @@
                 toast('템플릿을 불러왔습니다. 값을 확인한 뒤 저장하세요.');
             } else {
                 const data = await request(`${API}/rooms/${ROOM_ID}/flows/form`);
-                sensorMeta = data.sensorMetaInfos || data.sensorMetaInfo || [];
+                sensorMeta = readSensorMeta(data);
             }
         } catch (err) {
             toast(err.message, true);
@@ -612,9 +617,9 @@
             return '<option value="">사용 가능한 센서가 없습니다</option>';
         }
         return sensorMeta.map(m => {
-            const v = m.measurementType || m.MeasurementType;
-            const name = m.displayName || v;
-            const unit = m.symbol || m.unit || '';
+            const v = m.measurementType || m.metricCode || m.MeasurementType;
+            const name = m.displayName || m.unitDisplayName || v;
+            const unit = m.symbol || m.unit || m.unitDisplayName || '';
             return `<option value="${v}"${v === selected ? ' selected' : ''}>${name}${unit ? ' (' + unit + ')' : ''}</option>`;
         }).join('');
     }
@@ -687,8 +692,8 @@
         if (measure && unit) {
             const fill = () => {
                 const found = sensorMeta.find(m =>
-                    (m.measurementType || m.MeasurementType) === measure.value);
-                if (found && !unit.value) unit.value = found.symbol || found.unit || '';
+                    (m.measurementType || m.metricCode || m.MeasurementType) === measure.value);
+                if (found && !unit.value) unit.value = found.symbol || found.unit || found.unitDisplayName || '';
             };
             fill();
             measure.addEventListener('change', () => { unit.value = ''; fill(); });
