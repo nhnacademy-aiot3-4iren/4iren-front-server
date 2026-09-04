@@ -243,7 +243,10 @@
                             <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 0 0 4px 0;">Installed Devices</h3>
                             <span style="font-size: 0.85rem; color: #64748b;" th:text="|총 ${#lists.size(devices)}개의 디바이스|">총 0개의 디바이스</span>
                         </div>
-                        <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button class="device-history-all-btn" type="button">
+                                전체 이력
+                            </button>
                             <!-- 장치 "추가" 버튼 -->
                             <button type="button" id="openDeviceModalBtn"
                                     th:if="${team.myRole != null && team.myRole.isManager()}"
@@ -505,6 +508,7 @@
             <table class="device-history-table">
                 <thead>
                 <tr>
+                    <th>기기</th>
                     <th>시간</th>
                     <th>요일</th>
                     <th>동작</th>

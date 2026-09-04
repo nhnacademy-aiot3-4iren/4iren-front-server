@@ -63,10 +63,11 @@ public interface CoreDeviceClient {
             @RequestBody DeviceActionRequest request
     );
 
-    @GetMapping("/{teamId}/devices/{deviceId}/action-histories")
+    @GetMapping("/{teamId}/rooms/{roomId}/device-action-histories")
     List<DeviceActionHistoryResponse> getDeviceActionHistories(
             @PathVariable("teamId") Long teamId,
-            @PathVariable("deviceId") Long deviceId,
+            @PathVariable("roomId") Long roomId,
+            @RequestParam(name = "deviceId", required = false) Long deviceId,
             @RequestParam(name = "dayOfWeek", required = false) Weekday dayOfWeek,
             @RequestParam(name = "startAt", required = false)
             @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startAt,
