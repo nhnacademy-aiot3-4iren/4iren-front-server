@@ -2,13 +2,16 @@ package com.nhnacademy.front.core.service;
 
 import com.nhnacademy.front.core.client.CoreDeviceClient;
 import com.nhnacademy.front.core.dto.PageResponse;
+import com.nhnacademy.front.core.dto.device.DeviceActionHistoryResponse;
+import com.nhnacademy.front.core.dto.device.DeviceActionRequest;
 import com.nhnacademy.front.core.dto.device.DeviceCreateRequest;
-import com.nhnacademy.front.core.dto.device.DevicePowerStateUpdateRequest;
 import com.nhnacademy.front.core.dto.device.DeviceResponse;
 import com.nhnacademy.front.core.dto.device.DeviceUpdateRequest;
+import com.nhnacademy.front.core.dto.device.Weekday;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,12 +40,23 @@ public class DeviceService {
         return coreDeviceClient.updateDevice(teamId, deviceId, request);
     }
 
-    public DeviceResponse updateDevicePowerState(
+    public void createDeviceActionHistory(Long teamId, Long deviceId, DeviceActionRequest request) {
+        coreDeviceClient.createDeviceActionHistory(teamId, deviceId, request);
+    }
+
+    public List<DeviceActionHistoryResponse> getDeviceActionHistories(
             Long teamId,
+            Long roomId,
             Long deviceId,
-            DevicePowerStateUpdateRequest request
+            Weekday dayOfWeek,
+            LocalDateTime startAt,
+            LocalDateTime endAt
     ) {
-        return coreDeviceClient.updateDevicePowerState(teamId, deviceId, request);
+        return coreDeviceClient.getDeviceActionHistories(teamId, roomId, deviceId, dayOfWeek, startAt, endAt);
+    }
+
+    public DeviceActionHistoryResponse getDeviceActionHistory(Long teamId, Long historyId) {
+        return coreDeviceClient.getDeviceActionHistory(teamId, historyId);
     }
 
     public void deleteDevice(Long teamId, Long deviceId) {

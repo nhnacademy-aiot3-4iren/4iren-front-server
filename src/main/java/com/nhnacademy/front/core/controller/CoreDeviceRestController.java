@@ -2,7 +2,6 @@ package com.nhnacademy.front.core.controller;
 
 import com.nhnacademy.front.core.dto.PageResponse;
 import com.nhnacademy.front.core.dto.device.DeviceCreateRequest;
-import com.nhnacademy.front.core.dto.device.DevicePowerStateUpdateRequest;
 import com.nhnacademy.front.core.dto.device.DeviceResponse;
 import com.nhnacademy.front.core.dto.device.DeviceUpdateRequest;
 import com.nhnacademy.front.core.service.DeviceService;
@@ -64,15 +63,6 @@ public class CoreDeviceRestController {
             @Valid @RequestBody DeviceUpdateRequest request
     ) {
         return ResponseEntity.ok(deviceService.updateDevice(teamId, deviceId, request));
-    }
-
-    @PatchMapping("/{deviceId}/power-state")
-    public ResponseEntity<DeviceResponse> updateDevicePowerState(
-            @PathVariable Long teamId,
-            @PathVariable Long deviceId,
-            @Valid @RequestBody DevicePowerStateUpdateRequest request
-    ) {
-        return ResponseEntity.ok(deviceService.updateDevicePowerState(teamId, deviceId, request));
     }
 
     @DeleteMapping("/{deviceId}")
