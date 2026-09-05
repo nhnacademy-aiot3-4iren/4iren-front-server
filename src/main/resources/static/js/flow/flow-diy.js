@@ -794,7 +794,7 @@
         const c = node.nodeConfig || {};
         if (node.nodeType === 'START' || node.nodeType === 'OR') return true;
         if (node.nodeType === 'ALERT') {
-            return Boolean(c.channel && c.alertTitle && c.alertType);
+            return Boolean( c.alertTitle && c.alertType);
         }
         if (!c.measurementType || !c.unit || !c.operator) return false;
         if (node.nodeType === 'AVERAGE') return c.average != null && c.windowSec > 0;

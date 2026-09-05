@@ -11,14 +11,14 @@
 <!-- ================================================================
      모델 속성
        room        RoomDetailResponse   현재 강의실
-       flow        FlowDetailResponse   수정 모드일 때만 (없으면 신규)
+       flowId      Long                 수정 모드일 때만
        templateId  Long                 템플릿으로 시작할 때만
        sensorMeta  List<SensorMetaInfo> 이 강의실이 지원하는 측정 타입
      ================================================================ -->
 
 <div class="layout"
      th:attr="data-room-id=${room.roomId()},
-              data-flow-id=${flow != null} ? ${flow.flowId()} : null,
+              data-flow-id=${flowId},
               data-template-id=${templateId},
               data-api-base=@{/flows/api}">
 
