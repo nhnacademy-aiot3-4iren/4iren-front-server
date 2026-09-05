@@ -666,7 +666,8 @@
             } else if (node.nodeType === 'AVERAGE') {
                 html += field('평균값', `<input type="number" step="any" id="cfgValue" value="${c.average != null ? c.average : ''}">`);
             } else if (node.nodeType === 'GRADIENT') {
-                html += field('기울기', `<input type="number" step="any" id="cfgValue" value="${c.gradiant != null ? c.gradiant : ''}">`);
+                const gradientValue = c.gradient;
+                html += field('기울기', `<input type="number" step="any" id="cfgValue" value="${gradientValue != null ? gradientValue : ''}">`);
             } else {
                 html += field('기준값', `<input type="number" step="any" id="cfgValue" value="${c.threshold != null ? c.threshold : ''}">`);
             }
@@ -739,7 +740,7 @@
             if (value == null) return cfgSay('기준이 될 값을 입력하세요.', true);
 
             if (node.nodeType === 'AVERAGE') cfg.average = value;
-            else if (node.nodeType === 'GRADIENT') cfg.gradiant = value;
+            else if (node.nodeType === 'GRADIENT') cfg.gradient = value;
             else cfg.threshold = value;
 
             if (node.nodeType === 'AVERAGE' || node.nodeType === 'GRADIENT') {
@@ -798,7 +799,7 @@
         }
         if (!c.measurementType || !c.unit || !c.operator) return false;
         if (node.nodeType === 'AVERAGE') return c.average != null && c.windowSec > 0;
-        if (node.nodeType === 'GRADIENT') return c.gradiant != null && c.windowSec > 0;
+        if (node.nodeType === 'GRADIENT') return c.gradient != null && c.windowSec > 0;
         if (node.nodeType === 'DURATION') return c.threshold != null && c.durationSec > 0;
         return c.threshold != null;
     }
