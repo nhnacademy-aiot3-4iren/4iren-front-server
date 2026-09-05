@@ -83,6 +83,7 @@ public class FlowPageController {
                            @PathVariable("flowId") Long flowId,
                            Model model) {
         model.addAttribute("room", flowService.getRoom(roomId));
+        model.addAttribute("flow", null);
         model.addAttribute("flowId", flowId);
         model.addAttribute("templateId", null);
         return VIEW_BUILDER;
