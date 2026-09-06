@@ -1,8 +1,6 @@
 package com.nhnacademy.front.rule.dto.flow;
 
-import com.nhnacademy.front.rule.dto.jsoninfo.NodeConfig;
-import com.nhnacademy.front.rule.enums.MeasurementType;
-import com.nhnacademy.front.rule.enums.NodeType;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -23,9 +21,9 @@ public record RoomTemplateDetailResponse(
 
             String nodeName,
 
-            NodeType nodeType,
+            String nodeType,
 
-            NodeConfig nodeConfig
+            JsonNode nodeConfig
     ){}
     record ConnectionResponse (
             Long connectionId,
@@ -34,7 +32,7 @@ public record RoomTemplateDetailResponse(
             String branchType
     ) {}
     record SensorMetaInfo(
-            MeasurementType measurementType,
+            String measurementType,
             String displayName,
             String description,
             String symbol

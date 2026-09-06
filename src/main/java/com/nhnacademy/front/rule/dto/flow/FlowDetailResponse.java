@@ -1,11 +1,7 @@
 package com.nhnacademy.front.rule.dto.flow;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.nhnacademy.front.rule.dto.jsoninfo.NodeConfig;
-import com.nhnacademy.front.rule.enums.MeasurementType;
-import com.nhnacademy.front.rule.enums.NodeType;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public record FlowDetailResponse (
@@ -34,9 +30,9 @@ public record FlowDetailResponse (
 
             String nodeName,
 
-            NodeType nodeType,
+            String nodeType,
 
-            NodeConfig nodeConfig
+            JsonNode nodeConfig
     ){}
     record ConnectionResponse (
             Long connectionId,
@@ -45,7 +41,7 @@ public record FlowDetailResponse (
             String branchType
     ) {}
     record SensorMetaInfo(
-            MeasurementType measurementType,
+            String measurementType,
             String displayName,
             String description,
             String symbol
