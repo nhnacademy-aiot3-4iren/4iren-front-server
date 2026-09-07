@@ -1,7 +1,6 @@
 package com.nhnacademy.front.rule.dto.flow;
 
-import com.nhnacademy.front.rule.dto.jsoninfo.NodeConfig;
-import com.nhnacademy.front.rule.enums.NodeType;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -36,10 +35,10 @@ public record FlowCreateRequest(
             String nodeName,
 
             @NotNull
-            NodeType nodeType,
+            String nodeType,
 
             @NotNull
-            NodeConfig nodeConfig
+            JsonNode nodeConfig
     ) {
     }
     record ConnectionInfo(

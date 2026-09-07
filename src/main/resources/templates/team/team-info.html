@@ -38,16 +38,26 @@
 
                 <!-- [좌측 패널] 팀 이름/설명 수정 및 멤버 수 요약 카드 -->
                 <div class="info-card info-left-panel">
-                    <div class="info-header">
+                    <div class="info-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
                             <h2>Team Info</h2>
                             <span class="role-admin" th:text="${team.myRole}">Admin</span>
                         </div>
-                        <button class="weather-policy-open-btn" type="button" id="openWeatherPolicyBtn"
-                                th:if="${team.myRole != null && team.myRole.isManager()}"
-                                aria-haspopup="dialog" aria-controls="weatherPolicyDialog">
-                            외부날씨 정책 설정
-                        </button>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <!-- 대시보드 바로가기 버튼 추가 -->
+                            <a th:href="@{/teams/{teamId}/dashboard(teamId=${team.teamId})}"
+                               style="text-decoration: none; padding: 7px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; background: #3b82f6; color: #fff; transition: background 0.2s; display: inline-flex; align-items: center; gap: 4px;"
+                               onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+                                대시보드
+                            </a>
+
+                            <!-- 기존 외부날씨 정책 설정 버튼 -->
+                            <button class="weather-policy-open-btn" type="button" id="openWeatherPolicyBtn"
+                                    th:if="${team.myRole != null && team.myRole.isManager()}"
+                                    aria-haspopup="dialog" aria-controls="weatherPolicyDialog">
+                                외부날씨 정책 설정
+                            </button>
+                        </div>
                     </div>
 
                     <!-- 팀 정보 입력 폼 -->
@@ -316,6 +326,14 @@
 
 <!-- 카카오/다음 우편번호(도로명 주소) 검색 API -->
 <script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<script th:inline="javascript">
+    var teamId = /*[[${team.teamId}]]*/ null;
+    var roomId = null;
+    window.teamId = teamId;
+    window.roomId = roomId;
+</script>
+
 <!-- 분리된 팀 정보 관리 스크립트 -->
 <script th:src="@{/js/team-info.js}"></script>
 <script src="/js/weather-policy.js"></script>

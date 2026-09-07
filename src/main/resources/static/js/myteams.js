@@ -22,8 +22,10 @@ const joinTeamCloseBtn = document.getElementById('joinTeamCloseBtn');
 
 let currentInviteCode = '';
 
+// DOM 로드 완료 시 팀 목록 조회
 document.addEventListener('DOMContentLoaded', loadTeams);
 
+// 1. 팀 생성 모달 열기
 openBtn.addEventListener('click', () => {
     if (openBtn.dataset.role === 'NORMAL') {
         window.location.href = '/payment/plans';
@@ -32,6 +34,7 @@ openBtn.addEventListener('click', () => {
     modalOverlay.classList.add('active');
 });
 
+// 2. 초대 코드로 가입 모달 제어
 openJoinTeamBtn.addEventListener('click', () => {
     joinTeamModal.classList.add('active');
     joinCodeInput.focus();
@@ -45,6 +48,7 @@ joinCodeInput.addEventListener('input', () => {
 
 joinTeamSubmitBtn.addEventListener('click', joinTeam);
 
+// 3. 팀 생성 요청
 closeBtn.addEventListener('click', async () => {
     const nameValue = teamNameInput.value.trim();
     const descValue = teamDescInput.value.trim();
@@ -76,6 +80,7 @@ closeBtn.addEventListener('click', async () => {
     }
 });
 
+// 4. 팀 목록 조회
 async function loadTeams() {
     try {
         const page = await requestJson('/api/front/teams?size=50');
@@ -86,6 +91,7 @@ async function loadTeams() {
     }
 }
 
+// 5. 팀 목록 렌더링
 function renderTeams(teams) {
     teamListContainer.innerHTML = '';
 
@@ -100,51 +106,80 @@ function renderTeams(teams) {
     teams.forEach(team => teamListContainer.appendChild(createTeamCard(team)));
 }
 
-// 역할값 → 뱃지에 쓸 라벨/클래스 매핑
-// team.myRole은 "OWNER" / "ADMIN" / "NORMAL" 중 하나로 내려옴 (TeamRole enum)
-// 화면 표기는 일반 유저를 "MEMBER"로 부르기로 했으므로 NORMAL만 라벨을 바꿔줌
+// 역할 뱃지 생성 함수
 function getRoleBadge(myRole) {
     const label = myRole === 'NORMAL' ? 'MEMBER' : myRole;
     const cssClass = 'role-badge-' + (myRole || 'normal').toLowerCase();
     return `<span class="role-badge ${cssClass}">${label}</span>`;
 }
 
+// 6. 팀 카드 생성 (초대코드 모달 버튼 + 대시보드/상세 이동 a태그 링크)
 function createTeamCard(team) {
     const card = document.createElement('div');
     card.className = 'team-card';
+    card.style.display = 'flex';
+    card.style.justifyContent = 'space-between';
+    card.style.alignItems = 'center';
+    card.style.padding = '15px 30px';
+    card.style.marginBottom = '18px';
+
     const canManageTeam = team.myRole === 'OWNER' || team.myRole === 'ADMIN';
 
     card.innerHTML = `
-      <div class="team-info">
-        <div class="team-header-row">
-          <span class="team-card-name">${escapeHtml(team.teamName || '')}</span>
+      <!-- 좌측 정보 영역 -->
+      <div style="display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 0; padding-right: 24px;">
+        
+        <!-- 1줄: 팀명 + 뱃지 + 설명 -->
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <h3 style="margin: 0; font-size: 22px; font-weight: 700; color: #1e293b;">${escapeHtml(team.teamName)}</h3>
           ${getRoleBadge(team.myRole)}
-          <span class="team-card-desc">${escapeHtml(team.description || '')}</span>
+          <span style="font-size: 14px; color: #64748b;">${escapeHtml(team.description || '')}</span>
         </div>
-        <div class="team-meta-row">
+
+        <!-- 2줄: 주황색 구분선 -->
+        <div style="height: 2px; background-color: #f97316; width: 95%; max-width: 1000px; border-radius: 2px;"></div>
+
+        <!-- 3줄: 건물 및 강의실 개수 -->
+        <div style="display: flex; align-items: center; gap: 24px; font-size: 14px; color: #475569; font-weight: 500;">
           <span><img src="/photo/icon/buidling-icon.png" alt="건물" class="meta-icon"> 건물 : 총 ${team.buildingCount ?? 0}개</span>
           <span><img src="/photo/icon/door-icon.png" alt="강의실" class="meta-icon classroom-icon-img"> 강의실 : 총 ${team.roomCount ?? 0}개</span>
         </div>
+
       </div>
-      <div class="team-actions">
-        ${canManageTeam ? '<button class="btn-outline-orange invite-gen-btn" type="button">초대 코드 생성</button>' : ''}
-        <button class="btn-solid-blue detail-btn" type="button">팀 상세 정보</button>
+
+      <!-- 우측 버튼 그룹: 초대 코드 생성 | 대시보드 | 팀 상세 정보 -->
+      <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+        ${canManageTeam ? `
+          <button type="button" class="invite-gen-btn" 
+                  style="border: 1.5px solid #f97316; background-color: #ffffff; color: #f97316; border-radius: 24px; padding: 0 18px; height: 40px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;">
+            초대 코드 생성
+          </button>` : ''}
+        <a href="/teams/${team.teamId}/dashboard" class="dashboard-btn" 
+                  style="text-decoration: none; border: 1.5px solid #3b82f6; background-color: #ffffff; color: #3b82f6; border-radius: 24px; padding: 0 18px; height: 40px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;">
+
+          대시보드
+        </a>
+        <a href="/team-info/${team.teamId}" class="detail-btn" 
+           style="text-decoration: none; border: none; background-color: #3b82f6; color: #ffffff; border-radius: 24px; padding: 0 20px; height: 40px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; transition: background 0.2s;"
+           onmouseover="this.style.backgroundColor='#2563eb'" onmouseout="this.style.backgroundColor='#3b82f6'">
+          팀 상세 정보
+        </a>
       </div>
     `;
 
-    const inviteGenBtn = card.querySelector('.invite-gen-btn');
-    if (inviteGenBtn) {
-        inviteGenBtn.addEventListener('click', () => {
+    // 초대 코드 생성 모달 이벤트만 단독 바인딩
+    const inviteBtn = card.querySelector('.invite-gen-btn');
+    if (inviteBtn) {
+        inviteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             openInviteModal(team.teamId, team.teamName);
         });
     }
-    card.querySelector('.detail-btn').addEventListener('click', () => {
-        window.location.href = `/team-info/${team.teamId}`;
-    });
 
     return card;
 }
 
+// 7. 초대 코드 모달 열기
 async function openInviteModal(teamId, teamName) {
     inviteTeamName.textContent = teamName;
     inviteCodeModal.classList.add('active');
@@ -182,6 +217,7 @@ copyCodeBtn.addEventListener('click', () => {
 inviteConfirmBtn.addEventListener('click', () => inviteCodeModal.classList.remove('active'));
 inviteCloseBtn.addEventListener('click', () => inviteCodeModal.classList.remove('active'));
 
+// 8. 초대 코드로 팀 가입
 async function joinTeam() {
     const invitationCode = joinCodeInput.value.trim();
 
@@ -213,6 +249,7 @@ function closeJoinTeamModal() {
     joinCodeInput.value = '';
 }
 
+// 9. Fetch 유틸 함수
 async function requestJson(url, options = {}) {
     const response = await fetch(url, {
         headers: {
@@ -244,4 +281,3 @@ function escapeHtml(value) {
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
 }
-

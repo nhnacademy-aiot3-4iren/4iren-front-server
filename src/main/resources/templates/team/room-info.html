@@ -40,10 +40,9 @@
             <!-- 상단 네비게이션 및 강의실 식별자 / 외부 날씨 정책 버튼 -->
             <div class="building-page-header">
                 <div>
-                    <!-- 상위 강의실 목록 화면으로 복귀하는 링크 -->
                     <a class="back-link"
-                       th:href="@{/teams/{teamId}/buildings/{buildingId}/rooms(teamId=${team.teamId}, buildingId=${building.buildingId})}">
-                        Classroom List
+                       th:href="@{/teams/{teamId}/buildings/{buildingId}(teamId=${team.teamId}, buildingId=${building.buildingId})}">
+                        ‹ Building Info
                     </a>
                     <h2>Classroom Info</h2>
                     <p>
@@ -153,7 +152,15 @@
             </section>
 
             <!-- 강의실 메타 정보 패널 -->
-            <section class="building-info-panel">
+            <section class="building-info-panel" style="position: relative;">
+                <!-- 1. 카드 맨 우측 상단으로 이동한 수정 버튼 -->
+                <button class="info-edit-btn" type="button" id="openEditRoomModalBtn"
+                        th:if="${team.myRole != null && team.myRole.isManager()}"
+                        style="position: absolute; top: 24px; right: 24px; padding: 6px 14px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; transition: background 0.2s;"
+                        onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+                    ✎ 수정
+                </button>
+
                 <div class="building-info-main">
                     <div class="building-info-title">
                         <div class="building-icon room-icon">
@@ -163,11 +170,6 @@
                             <h3 th:text="${room.roomName}">Classroom Name</h3>
                             <p th:text="${#strings.defaultString(room.description, '등록된 설명이 없습니다.')}">Description</p>
                         </div>
-                        <!-- 매니저(ADMIN/OWNER) 전용: 강의실 정보 수정 모달을 여는 버튼 -->
-                        <button class="info-edit-btn" type="button" id="openEditRoomModalBtn"
-                                th:if="${team.myRole != null && team.myRole.isManager()}">
-                            ✎ 수정
-                        </button>
                     </div>
 
                     <dl class="building-detail-list">

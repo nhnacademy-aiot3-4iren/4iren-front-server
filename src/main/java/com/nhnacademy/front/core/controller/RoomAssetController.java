@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collections;
 import java.util.List;
@@ -68,47 +67,6 @@ public class RoomAssetController {
         model.addAttribute("devices", devices);
 
         return "team/room-info";
-    }
-
-    @GetMapping("/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/devices")
-    public String deviceListPage(
-            @PathVariable Long teamId,
-            @PathVariable Long buildingId,
-            @PathVariable Long roomId,
-            @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @RequestParam(name = "size", defaultValue = "20") Integer size,
-            @RequestParam(name = "sort", defaultValue = "id,ASC") String sort,
-            Model model
-    ) {
-        addRoomContext(teamId, buildingId, roomId, model);
-        PageResponse<DeviceResponse> devices = deviceService.getDevices(teamId, roomId, page, size, sort);
-
-        model.addAttribute("devices", devices);
-        model.addAttribute("size", size);
-        model.addAttribute("sort", sort);
-
-        return "team/devices";
-    }
-
-    @GetMapping("/teams/{teamId}/buildings/{buildingId}/rooms/{roomId}/sensor-locations")
-    public String sensorLocationListPage(
-            @PathVariable Long teamId,
-            @PathVariable Long buildingId,
-            @PathVariable Long roomId,
-            @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @RequestParam(name = "size", defaultValue = "20") Integer size,
-            @RequestParam(name = "sort", defaultValue = "id,ASC") String sort,
-            Model model
-    ) {
-        addRoomContext(teamId, buildingId, roomId, model);
-        PageResponse<SensorLocationResponse> sensorLocations =
-                sensorLocationService.getSensorLocations(teamId, roomId, page, size, sort);
-
-        model.addAttribute("sensorLocations", sensorLocations);
-        model.addAttribute("size", size);
-        model.addAttribute("sort", sort);
-
-        return "team/sensor-locations";
     }
 
     private TeamDetailResponse addRoomContext(Long teamId, Long buildingId, Long roomId, Model model) {

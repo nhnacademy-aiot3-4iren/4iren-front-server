@@ -489,7 +489,7 @@
 
         try {
             const data = await request(`${API}/rooms/${ROOM_ID}/flow-templates`);
-            renderTemplates((data && data.templateResponseList) || []);
+            renderTemplates((data && data.roomTemplateResponseList) || []);
         } catch (err) {
             templateBody.innerHTML = '';
             const p = document.createElement('p');

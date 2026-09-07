@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
@@ -26,25 +25,6 @@ public class BuildingController {
     private final RoomService roomService;
     private final FrontSensorService frontSensorService;
     private final DeviceService deviceService;
-
-    @GetMapping("/teams/{teamId}/buildings")
-    public String buildingListPage(
-            @PathVariable Long teamId,
-            @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @RequestParam(name = "size", defaultValue = "20") Integer size,
-            @RequestParam(name = "sort", defaultValue = "id,ASC") String sort,
-            Model model
-    ) {
-        TeamDetailResponse team = teamService.getTeam(teamId);
-        PageResponse<BuildingDetailResponse> buildings = buildingService.getBuildings(teamId, page, size, sort);
-
-        model.addAttribute("team", team);
-        model.addAttribute("buildings", buildings);
-        model.addAttribute("size", size);
-        model.addAttribute("sort", sort);
-
-        return "team/buildings";
-    }
 
     @GetMapping("/teams/{teamId}/buildings/{buildingId}")
     public String buildingDetailPage(@PathVariable Long teamId,
