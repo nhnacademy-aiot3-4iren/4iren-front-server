@@ -1,5 +1,5 @@
 /* ================================================================
-   Team Info 페이지 전용 스타일시트 (team-info.css)
+   Team Info 스타일시트 (team-info.css)
    ================================================================ */
 
 /* 1. 전체 가로 2단 카드 레이아웃 (좌측 팀정보 / 우측 건물·강의실 분할 리스트) */
@@ -68,14 +68,21 @@
 .input-section {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 20px;
     margin-bottom: 20px;
+    flex: 1;           /* 추가: 남는 공간 차지 */
+    min-height: 0;     /* 추가: flex 자식이 넘치지 않게 */
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+.input-section .form-group:last-child {
+    flex: 1;
+    min-height: 0;
 }
 
 .form-group label {
@@ -127,6 +134,7 @@
 #editTeamDesc {
     width: 100%;
     min-height: 90px;
+    flex: 1;           /* 추가 */
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 12px 14px;
@@ -208,6 +216,9 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+    flex: 1;
+    justify-content: center;   /* 내용을 세로 중앙에 */
+    max-height: 150px;
 }
 
 .stat-header {
@@ -311,7 +322,7 @@
     padding: 0;
     flex: 1;
     overflow-y: auto;
-    max-height: 320px;
+    max-height: none;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -557,8 +568,15 @@ dialog.modal::backdrop {
 /* 7. 반응형 디자인 */
 @media (max-width: 1024px) {
     .info-cards-row {
-        flex-direction: column;
+        display: flex;
+        gap: 24px;
+        align-items: stretch;
+        width: 100%;
+        box-sizing: border-box;
+        flex: 1;           /* 추가 */
+        min-height: 0;     /* 추가 */
     }
+
     .info-left-panel,
     .info-lists-panel {
         max-width: 100%;
@@ -600,4 +618,10 @@ dialog.modal::backdrop {
 
 .address-input-row button:hover {
     background: #f8fafc;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    padding: 32px 40px;
 }

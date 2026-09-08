@@ -12,19 +12,22 @@
 }
 
 .telegram-icon-img {
-    margin-top: 10px;
+    display: block;
+    width: 28px;
+    height: 28px;
 }
 
 .telegram-title {
-    margin-bottom: 10px;
+    margin: 0;
+    font-weight: 600;
 }
 
-/*Telegram알림상태 밑줄*/
 .telegram-divider {
     border: none;
     border-top: 1px solid #00ADEC;
-    margin: -10px 0 32px 0;
+    margin: 0 0 32px 0;
 }
+
 /* 유저랑 어드민 봇 박스들이 들어갈 자리 (눈에는 보이지 않음)*/
 .telegram-bot-columns {
     display: flex;
@@ -120,7 +123,7 @@
     position: absolute;
     inset: 0;
     background-color: var(--clr);
-    transform: translateX(calc(-100% + 60px));
+    transform: translateX(calc(-100% + 50px));
     transition: transform .3s ease;
     z-index: 0;
 }

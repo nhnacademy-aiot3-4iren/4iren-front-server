@@ -1,3 +1,4 @@
+/*forgotpw.css*/
 * {
     margin: 0;
     padding: 0;
@@ -14,22 +15,147 @@ body {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
-
-    /* 배경: 좌측 오렌지 -> 우측 화이트 그라데이션 */
     background: linear-gradient(90deg, #FFCB94 0%, #f3bda6 55%, #F9DED0 78%, #FFFFFF 100%);
-
     display: flex;
     flex-direction: column;
-    justify-content: center;   /* 세로 중앙정렬 */
-    align-items: center;       /* 가로 중앙정렬 */
 }
 
 .forgot-wrapper {
-    width: 1512px;      /* 로그인 페이지와 동일한 고정 무대 */
-    height: 100vh;
-    min-height: 700px;
+    width: 100%;
+    min-height: 100vh;
     position: relative;
+    overflow: hidden;
     flex-shrink: 0;
+}
+
+
+/* ==========================================
+   배경 장식 도형 (오른쪽 빈 공간)
+   - 전부 z-index: 0 / pointer-events: none
+   - 크기·위치가 vw 기준이라 화면이 커지면 같이 커짐
+========================================== */
+
+/* 크고 흐린 빛 번짐 2개 */
+.deco-glow {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.deco-glow-1 {
+    right: -8%;
+    top: -14%;
+    width: 52vw;
+    height: 52vw;
+    background: radial-gradient(circle at 34% 30%,
+    rgba(255, 255, 255, 0.55),
+    rgba(255, 255, 255, 0) 62%);
+}
+
+.deco-glow-2 {
+    right: 6%;
+    bottom: -16%;
+    width: 44vw;
+    height: 44vw;
+    background: radial-gradient(circle at 50% 50%,
+    rgba(240, 140, 70, 0.16),
+    rgba(240, 140, 70, 0) 65%);
+}
+
+/* 입체 구체 4개 */
+.deco-orb {
+    position: absolute;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 큰 주황 구체 (오른쪽 위) */
+.deco-orb-1 {
+    right: 9%;
+    top: 16%;
+    width: clamp(90px, 11vw, 180px);
+    background: radial-gradient(circle at 32% 28%, #ffe0bd 0%, #f7ab6a 55%, #e28941 100%);
+    box-shadow:
+            0 30px 55px rgba(190, 105, 50, 0.22),
+            inset -8px -12px 24px rgba(180, 95, 45, 0.25);
+    animation: floatA 7s ease-in-out infinite;
+}
+
+/* 작은 흰 구체 (가운데) */
+.deco-orb-2 {
+    right: 26%;
+    top: 38%;
+    width: clamp(46px, 5.5vw, 88px);
+    background: radial-gradient(circle at 34% 30%, #ffffff 0%, #ffeede 60%, #fbd6bd 100%);
+    box-shadow:
+            0 18px 34px rgba(190, 105, 50, 0.16),
+            inset -6px -8px 16px rgba(200, 140, 105, 0.18);
+    animation: floatB 9s ease-in-out infinite;
+}
+
+/* 중간 살구 구체 (오른쪽 아래) */
+.deco-orb-3 {
+    right: 15%;
+    bottom: 20%;
+    width: clamp(60px, 7vw, 120px);
+    background: radial-gradient(circle at 30% 26%, #fff3e6 0%, #f6c39a 62%, #e7a778 100%);
+    box-shadow:
+            0 26px 44px rgba(190, 105, 50, 0.18),
+            inset -7px -10px 20px rgba(190, 120, 80, 0.2);
+    animation: floatA 11s ease-in-out infinite;
+}
+
+/* 가장 작은 구체 (왼쪽 아래) */
+.deco-orb-4 {
+    right: 34%;
+    bottom: 11%;
+    width: clamp(30px, 3.4vw, 54px);
+    background: radial-gradient(circle at 34% 30%, #ffffff, #f9dcc6);
+    box-shadow: 0 12px 22px rgba(190, 105, 50, 0.14);
+    animation: floatB 8s ease-in-out infinite;
+}
+
+/* 알약 모양 */
+.deco-pill {
+    position: absolute;
+    right: 4%;
+    bottom: 38%;
+    width: clamp(70px, 9vw, 150px);
+    height: clamp(24px, 3vw, 48px);
+    border-radius: 999px;
+    background: linear-gradient(140deg, #ffffff 0%, #ffeadb 100%);
+    box-shadow: 0 20px 36px rgba(190, 105, 50, 0.14);
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatPill 13s ease-in-out infinite;
+}
+
+@keyframes floatA {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-18px); }
+}
+
+@keyframes floatB {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(14px); }
+}
+
+/* 알약은 기울기(-14deg)를 유지해야 해서 별도 keyframe 사용 */
+@keyframes floatPill {
+    0%, 100% { transform: rotate(-14deg) translateY(0); }
+    50%      { transform: rotate(-14deg) translateY(-18px); }
+}
+
+/* 모션 최소화 설정을 쓰는 사용자는 애니메이션 정지 */
+@media (prefers-reduced-motion: reduce) {
+    .deco-orb,
+    .deco-pill {
+        animation: none;
+    }
 }
 
 
@@ -40,8 +166,9 @@ body {
     position: absolute;
     top: 32px;
     left: 32px;
-    width: 130px;
+    width: 40px;
     z-index: 20;
+    opacity: 65%;
 }
 
 .brand-logo img {
@@ -56,12 +183,13 @@ body {
 
 .forgot-girl {
     position: absolute;
-    left: -1%;
-    bottom: -1%;
-    z-index: 0;
-    width: 530px;
-    max-width: 90vw;
-    height: 700px;
+    left: 3%;
+    bottom: -15%;
+    z-index: 1;
+    width: min(34vw, 700px);
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
 }
 
 /* ==========================================
@@ -114,6 +242,10 @@ body {
     color: #333;
     outline: none;
     transition: border 0.2s;
+}
+
+.enter-id input:focus {
+    border-color: #4A90E2;
 }
 
 /*label의 글자 스타일 공통 설정*/
@@ -214,6 +346,30 @@ body {
     color: #BBB;
 }
 
+/* ==========================================
+   에러 / 성공 메시지
+========================================== */
+.forgot-error,
+.forgot-success {
+    margin: 4px 0 0;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.forgot-error {
+    background-color: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #DC2626;
+}
+
+.forgot-success {
+    background-color: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    color: #16A34A;
+}
 
 /*버튼*/
 .verify-btn {
@@ -282,4 +438,29 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   반응형 (모바일)
+========================================== */
+@media (max-width: 900px) {
+    .deco-orb,
+    .deco-pill,
+    .forgot-girl {
+        display: none;
+    }
+
+    .forgot-box {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin: 80px auto;
+        width: 92vw;
+        padding: 36px 24px;
+    }
+
+    .Main-text h1 {
+        font-size: 38px;
+    }
 }
