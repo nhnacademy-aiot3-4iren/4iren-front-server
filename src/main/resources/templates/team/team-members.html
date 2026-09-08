@@ -6,7 +6,6 @@
     <title>Team Members</title>
 
     <link rel="stylesheet" href="/fonts/font.css">
-    <link rel="stylesheet" th:href="@{/css/myteams.css}">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
     <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
@@ -20,86 +19,93 @@
 
     <div th:replace="~{layout/sidebar :: sidebar}"></div>
 
-    <div class="main-wrap">
-
+    <div class="main-content-area">
         <div th:replace="~{layout/header :: header('Team Members')}"></div>
-
-        <main class="main-content">
+        <main class="content">
 
             <div class="info-card-container members-page">
 
                 <!-- ============================================== -->
-                <!-- 초대 코드 -->
-                <!-- team-info.html과 같은 team.myRole.isManager() 조건 재사용,
-                     API는 myteams.js의 openInviteModal 로직과 동일 -->
+                <!-- 페이지 헤더 (제목 + 팀 이름 칩) -->
+                <!-- ============================================== -->
+                <div class="members-page-header">
+                    <h2>Members</h2>
+                    <span class="team-chip" th:text="${team.teamName}">Team Name</span>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- 카드 1: 초대 코드 발급 -->
+                <!-- ============================================== -->
+                <section class="members-card"
+                         th:if="${team.myRole != null && team.myRole.isManager()}">
+
+                    <div class="setting-row">
+                        <div class="setting-row-text">
+                            <strong>초대 코드</strong>
+                            <p>새로운 8자리 초대 코드를 발급합니다. 발급 즉시 1회 확인할 수 있으며, 24시간 후 만료됩니다.</p>
+                            <p class="policy-note">활성 팀에서만 발급할 수 있습니다</p>
+                        </div>
+                        <button type="button" class="btn-primary" id="createInviteCodeBtn">코드 생성</button>
+                    </div>
+
+                    <div class="code-squares" id="codeSquaresContainer" hidden>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                        <div class="code-square"></div>
+                    </div>
+                    <button type="button" class="btn-outline-sm" id="copyInviteCodeBtn" hidden>복사</button>
+
+                </section>
+
+                <!-- ============================================== -->
+                <!-- 카드 2: 초대 코드 발급 내역 -->
+                <!-- ============================================== -->
+                <section class="members-card"
+                         th:if="${team.myRole != null && team.myRole.isManager()}">
+
+                    <h3 class="panel-subtitle">초대 코드 발급 내역</h3>
+                    <p class="invitation-code-policy">실제 초대 코드는 발급 직후에만 확인할 수 있습니다.</p>
+
+                    <table class="members-table invitation-code-table">
+                        <thead>
+                        <tr>
+                            <th>발급일</th>
+                            <th>만료일</th>
+                            <th>상태</th>
+                            <th class="col-action">관리</th>
+                        </tr>
+                        </thead>
+                        <tbody id="invitationCodesTableBody">
+                        <tr class="empty-row">
+                            <td colspan="4">초대 코드 발급 내역을 불러오는 중입니다.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </section>
+
+                <!-- ============================================== -->
+                <!-- 카드 3: 팀원 목록
+                     실제 API: GET /api/front/teams/{teamId}/members (page/size/sort)
+                     TeamMemberResponse = { teamMemberId, teamId, userId }
+                     ※ userId → 이름 변환 API가 아직 없어서 지금은 userId를 그대로 표시함.
+                        나중에 이름 조회 API가 생기면 renderMembers()의 표시 부분만
+                        바꾸면 됨 (fetchUserNames 같은 함수를 추가해서 매핑). -->
                 <!-- ============================================== -->
                 <section class="members-card">
-                    <div class="members-card-header">
-                        <div>
-                            <h2>Members</h2>
-                            <p class="sub-text" th:text="${team.teamName}">Team Name</p>
-                        </div>
-                    </div>
 
-                    <div class="invitation-management"
-                         th:if="${team.myRole != null && team.myRole.isManager()}">
-                        <div class="setting-row">
-                            <div class="setting-row-text">
-                                <strong>초대 코드</strong>
-                                <p>새로운 8자리 초대 코드를 발급합니다. (활성 팀에서만 가능)</p>
-                            </div>
-                            <button type="button" class="btn-primary" id="createInviteCodeBtn">코드 생성</button>
-                        </div>
-
-                        <div class="code-squares" id="codeSquaresContainer" hidden>
-                            <div class="code-square"></div>
-                            <div class="code-square"></div>
-                            <div class="code-square"></div>
-                            <div class="code-square"></div>
-                            <div class="code-square"></div>
-                            <div class="code-square"></div>
-                            <div class="code-square"></div>
-                            <div class="code-square"></div>
-                        </div>
-                        <button type="button" class="btn-outline-sm" id="copyInviteCodeBtn" hidden>복사</button>
-
-                        <div class="info-section-divider"></div>
-
-                        <h3 class="panel-subtitle">초대 코드 발급 내역</h3>
-                        <p class="invitation-code-policy">실제 초대 코드는 발급 직후에만 확인할 수 있습니다.</p>
-                        <table class="members-table invitation-code-table">
-                            <thead>
-                            <tr>
-                                <th>발급일</th>
-                                <th>만료일</th>
-                                <th>상태</th>
-                                <th>관리</th>
-                            </tr>
-                            </thead>
-                            <tbody id="invitationCodesTableBody">
-                            <tr class="empty-row">
-                                <td colspan="4">초대 코드 발급 내역을 불러오는 중입니다.</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="info-section-divider"></div>
-
-                    <!-- ============================================== -->
-                    <!-- 팀원 목록
-                         실제 API: GET /api/front/teams/{teamId}/members (page/size/sort)
-                         TeamMemberResponse = { teamMemberId, teamId, userId }
-                         ※ userId → 이름 변환 API가 아직 없어서 지금은 userId를 그대로 표시함.
-                            나중에 이름 조회 API가 생기면 renderMembers()의 표시 부분만
-                            바꾸면 됨 (fetchUserNames 같은 함수를 추가해서 매핑). -->
-                    <!-- ============================================== -->
                     <h3 class="panel-subtitle">팀원 목록</h3>
+
                     <table class="members-table">
                         <thead>
                         <tr>
                             <th>User ID</th>
-                            <th>관리</th>
+                            <th class="col-action">관리</th>
                         </tr>
                         </thead>
                         <tbody id="membersTableBody">
@@ -110,10 +116,11 @@
                     </table>
 
                     <nav class="building-pagination" id="membersPagination" hidden>
-                        <a href="#" id="membersPrevBtn">Previous</a>
+                        <button type="button" id="membersPrevBtn">Previous</button>
                         <span id="membersPageIndicator">1 / 1</span>
-                        <a href="#" id="membersNextBtn">Next</a>
+                        <button type="button" id="membersNextBtn">Next</button>
                     </nav>
+
                 </section>
 
             </div>

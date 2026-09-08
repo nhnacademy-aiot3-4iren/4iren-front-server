@@ -1,12 +1,10 @@
 .site-footer {
     width: 100%;
-    max-height: 240px;
+    max-height: 140px;
     min-height: 50px;
-    flex-shrink: 0; /* sticky footer 구조에서 footer가 눌려 찌그러지지 않도록 */
-
+    flex-shrink: 0;
     box-sizing: border-box;
     overflow: hidden;
-
     background: linear-gradient(180deg, #ffffff 0%, #ffe8cd 100%);
     border-top: 1px solid #E4E4E4;
 }
@@ -15,23 +13,23 @@
     max-width: 1440px;
     height: 100%;
     margin: 0 auto;
-    padding: 20px 20px;
-
+    padding: 12px 20px;     /* 20px → 12px */
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    flex-wrap: wrap; /* 화면이 좁아지면 브랜드명이 아래로 내려감 */
+    flex-wrap: wrap;
 }
 
 .footer-copyright {
     margin: 0;
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 12px;        /* 13 → 12 */
+    line-height: 1.5;       /* 1.6 → 1.5 */
     color: #737791;
 }
 
-.footer-brand img{
-    height: 55px;
-    width: 100px;
+.footer-brand img {
+    height: 38px;           /* 55 → 38 */
+    width: auto;            /* 100px 고정 해제 */
+    display: block;
 }

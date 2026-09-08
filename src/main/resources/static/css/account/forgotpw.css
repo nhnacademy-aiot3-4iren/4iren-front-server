@@ -14,21 +14,16 @@ body {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
-
-    /* 배경: 좌측 오렌지 -> 우측 화이트 그라데이션 */
     background: linear-gradient(90deg, #FFCB94 0%, #f3bda6 55%, #F9DED0 78%, #FFFFFF 100%);
-
     display: flex;
     flex-direction: column;
-    justify-content: center;   /* 세로 중앙정렬 */
-    align-items: center;       /* 가로 중앙정렬 */
 }
 
 .forgot-wrapper {
-    width: 1512px;      /* 로그인 페이지와 동일한 고정 무대 */
-    height: 100vh;
-    min-height: 700px;
+    width: 100%;
+    min-height: 100vh;
     position: relative;
+    overflow: hidden;
     flex-shrink: 0;
 }
 
@@ -40,8 +35,9 @@ body {
     position: absolute;
     top: 32px;
     left: 32px;
-    width: 130px;
+    width: 40px;
     z-index: 20;
+    opacity: 65%;
 }
 
 .brand-logo img {
@@ -56,12 +52,12 @@ body {
 
 .forgot-girl {
     position: absolute;
-    left: -1%;
-    bottom: -1%;
+    left: 3%;
+    bottom: -15%;
     z-index: 0;
-    width: 530px;
-    max-width: 90vw;
-    height: 700px;
+    width: min(34vw, 700px);
+    height: auto;
+    object-fit: contain;
 }
 
 /* ==========================================

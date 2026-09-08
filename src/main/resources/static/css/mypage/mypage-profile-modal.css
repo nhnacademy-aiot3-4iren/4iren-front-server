@@ -13,13 +13,14 @@
 .promo-stack {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 30px;
+    width: 190px;        /* 추가: 폭을 스택에서 관리 */
+    flex-shrink: 0;
 }
 
-/* 결제 배너 카드 */
 .card {
-    width: 190px;
-    height: 254px;
+    width: 100%;         /* 190px → 100% */
+    flex: 0 0 254px;     /* height: 254px 대체, 고정 유지 */
     background: #ffffff;
     padding: 15px;
     border-radius: 10px;
@@ -118,8 +119,9 @@
 /* 3D 틸트 카드 */
 .tilt-container {
     position: relative;
-    width: 190px;
-    height: 350px;
+    width: 95%;         /* 190px → 100% */
+    flex: 1 1 350px;     /* height: 350px → 나머지 공간 차지 */
+    min-height: 350px;
     transition: 200ms;
     cursor: pointer;
 }

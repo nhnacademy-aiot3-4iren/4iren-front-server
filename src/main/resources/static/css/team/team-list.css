@@ -20,9 +20,9 @@ body {
 
 
 /* 메인 본문 */
-.main-content {
-    padding: 40px;
-    flex-grow: 1;
+.content {
+    padding: 32px 4.0px;
+    flex: 1;
     position: relative;
 }
 
@@ -31,7 +31,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 60%;
+    min-height: 400px;
     color: #888;
     font-size: 18px;
 }
