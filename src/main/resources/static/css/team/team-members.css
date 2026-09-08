@@ -1,53 +1,121 @@
 /* ================================================================
    team-members.css
    ================================================================ */
+.content {
+    flex: 1;
+    padding: 32px 40px;
+}
 
+/* ---------------- 페이지 전체 (카드들을 세로로 쌓음) ---------------- */
+.members-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ---------------- 페이지 헤더 (제목 + 팀 이름 칩) ---------------- */
+.members-page-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 4px;
+}
+
+.members-page-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #1a1a1a;
+}
+
+.team-chip {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 100px;
+    background: #FFF3E8;
+    color: #C97A2E;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ---------------- 카드 공통 ---------------- */
 .members-page .members-card {
     background: #fff;
+    border: 1px solid #F0F0F0;
     border-radius: 20px;
-    padding: 32px 36px;
+    padding: 28px 32px;
     width: 100%;
 }
 
-.members-card-header {
+/* ---------------- 초대 코드 카드 (설명 + 버튼 가로 배치) ---------------- */
+.members-card .setting-row {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
+    gap: 24px;
 }
 
-.members-card-header h2 {
-    margin: 0 0 4px;
-    font-size: 20px;
+.setting-row-text strong {
+    display: block;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 6px;
 }
 
-.members-card-header .sub-text {
-    font-size: 13px;
-    color: #999;
+.setting-row-text p {
+    margin: 0;
+    font-size: 13.5px;
+    color: #777;
+    line-height: 1.6;
 }
 
-.panel-subtitle {
-    font-size: 15px;
+/* '활성 팀에서만 발급할 수 있습니다' 앞 회색 점 */
+.policy-note {
+    margin-top: 8px !important;
+    padding-left: 14px;
+    position: relative;
     font-weight: 600;
-    color: #333;
-    margin: 0 0 12px;
+    color: #555 !important;
+}
+
+.policy-note::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ccc;
+}
+
+/* ---------------- 카드 안 소제목 ---------------- */
+.panel-subtitle {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 6px;
 }
 
 .invitation-code-policy {
-    margin: -4px 0 12px;
+    margin: 0 0 20px;
     color: #999;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .invitation-code-table {
     margin-bottom: 4px;
 }
 
+/* ---------------- 상태 뱃지 ---------------- */
 .invitation-status-badge {
     display: inline-block;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 100px;
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 700;
 }
 
@@ -56,7 +124,7 @@
 .invitation-status-badge.status-deactivated,
 .invitation-status-badge.status-unknown { background: #FFF0ED; color: #C45A49; }
 
-/* ---------------- 팀원 테이블 ---------------- */
+/* ---------------- 테이블 ---------------- */
 .members-table {
     width: 100%;
     border-collapse: collapse;
@@ -65,22 +133,48 @@
 
 .members-table thead th {
     text-align: left;
-    padding: 10px 8px;
-    border-bottom: 2px solid #eee;
-    color: #999;
+    padding: 12px 16px;
+    background: #FAFAFA;
+    border-bottom: 1px solid #F0F0F0;
+    color: #888;
     font-weight: 600;
+    font-size: 12.5px;
+}
+
+.members-table thead th:first-child {
+    border-radius: 10px 0 0 10px;
+}
+
+.members-table thead th:last-child {
+    border-radius: 0 10px 10px 0;
 }
 
 .members-table tbody td {
-    padding: 12px 8px;
-    border-bottom: 1px solid #f5f5f5;
+    padding: 16px;
+    border-bottom: 1px solid #F5F5F5;
     color: #333;
+}
+
+/* 첫 번째 열(발급일 / User ID)만 조금 진하게 */
+.members-table tbody td:first-child {
+    font-weight: 600;
+}
+
+.members-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* '관리' 열은 오른쪽 정렬 */
+.members-table .col-action,
+.members-table tbody td:last-child {
+    text-align: right;
 }
 
 .members-table .empty-row td {
     text-align: center;
     color: #999;
     padding: 32px 0;
+    font-weight: 400;
 }
 
 /* ---------------- 역할 뱃지 ---------------- */
@@ -97,12 +191,12 @@
 .role-badge.role-admin { background: #E8F1FC; color: #4A90D9; }
 .role-badge.role-normal { background: #F2F2F2; color: #888; }
 
-/* ---------------- 관리(내보내기) 버튼 ---------------- */
+/* ---------------- 관리(내보내기 / 비활성화) 버튼 ---------------- */
 .btn-outline-sm {
     background: #fff;
     border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 5px 12px;
+    border-radius: 8px;
+    padding: 7px 14px;
     font-size: 12px;
     color: #555;
     cursor: pointer;
@@ -118,23 +212,52 @@
     opacity: 0.55;
 }
 
+/* ---------------- 코드 생성 버튼 ---------------- */
 .btn-primary {
-    background: #FF9800;
+    background: #E8862B;
     border: none;
-    border-radius: 8px;
-    padding: 9px 18px;
-    font-size: 13px;
-    font-weight: 600;
+    border-radius: 10px;
+    padding: 12px 26px;
+    font-size: 14px;
+    font-weight: 700;
     color: #fff;
     cursor: pointer;
     white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(232, 134, 43, 0.25);
+    transition: background 0.15s ease;
 }
 
 .btn-primary:hover {
-    background: #F08700;
+    background: #D4761F;
 }
 
-/* ---------------- 페이지네이션 (buildings.html 톤 재사용) ---------------- */
+/* ---------------- 발급된 코드 8칸 ---------------- */
+.members-card .code-squares {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.members-card .code-square {
+    width: 44px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FAFAFA;
+    border: 1px solid #EEE;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #333;
+}
+
+#copyInviteCodeBtn {
+    margin-top: 12px;
+}
+
+/* ---------------- 페이지네이션 ---------------- */
 .building-pagination {
     display: flex;
     justify-content: center;
@@ -144,12 +267,30 @@
     font-size: 13px;
 }
 
-.building-pagination a {
+.building-pagination button {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
     color: #555;
-    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
 }
 
-.building-pagination a.disabled {
+.building-pagination button.disabled {
     color: #ccc;
     pointer-events: none;
+}
+
+/* ---------------- 반응형 ---------------- */
+@media (max-width: 720px) {
+    .members-card .setting-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .members-page .members-card {
+        padding: 22px 20px;
+    }
 }

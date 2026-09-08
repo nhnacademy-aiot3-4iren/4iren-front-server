@@ -1,5 +1,4 @@
-
-
+/*login.css*/
 /* ==========================================
    0. 초기화
 ========================================== */
@@ -27,13 +26,15 @@ body {
 }
 
 .login-wrapper {
-    min-height: 100vh;     /* 화면 꽉 채우고, footer는 그 아래로 밀려남 */
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     width: 100%;
+    overflow: hidden;      /* 추가: 캐릭터가 넘쳐도 스크롤바 안 생기게 */
 }
+
 
 /* ==========================================
    1. 좌측 상단 로고
@@ -42,8 +43,9 @@ body {
     position: absolute;
     top: 32px;
     left: 32px;
-    width: 130px;
+    width: 40px;
     z-index: 20;
+    opacity: 65%;
 }
 
 .brand-logo img {
@@ -52,21 +54,51 @@ body {
 }
 
 /* ==========================================
-   phone girl
+   phone girl (login / signup 공통)
 ========================================== */
-.floating-charc {
+/* login.css */
+.phone-charc-group {
     position: absolute;
     left: 2%;
-    bottom: 8%;
-    width: 701px;
-    height: 640px;
-    z-index: 1;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 46vw;
+    aspect-ratio: 801 / 740;
+    z-index: 9;
+    pointer-events: none;
 }
 
-.alaram {
+.study-charc {
+    pointer-events: none;
+}
+
+.phone-charc-float {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    animation: floatUpDown 3s ease-in-out infinite;
+}
+
+.phone-charc-group .floating-charc {
     position: absolute;
-    left: 6%;
-    bottom: 58%;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.phone-charc-group .alaram {
+    position: absolute;
+    left: 8%;
+    bottom: 62%;
+    width: 20%;
+    height: auto;
+    z-index: 12;
+}
+
+@keyframes floatUpDown {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-20px); }
 }
 
 
@@ -91,7 +123,7 @@ body {
     width: 495px;
     max-width: 90vw;
     border-radius: 32px;
-    padding: 48px 46px 40px;
+    padding: 48px 46px 44px;
 
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
 
@@ -123,7 +155,7 @@ body {
 
 }
 .no-account {
-    color: #999;
+    color: #777777;
 }
 
 .signup-link {
@@ -222,6 +254,20 @@ body {
     color: #d67a20
 }
 
+/* ==========================================
+   로그인 실패 메시지
+========================================== */
+.login-error {
+    margin: -12px 0 18px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background-color: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #DC2626;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+}
 
 /* ==========================================
    8. Sign in 버튼
@@ -243,85 +289,9 @@ body {
     background-color: #d67a20;
 }
 
-/* ==========================================
-   9. OR 구분선
-========================================== */
-.divider {
-    display: flex;
-    align-items: center;
-    margin: 30px 0 22px;
-    color: #BBB;
-    font-size: 12px;
-}
-.divider::before,
-.divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #EEE;
-}
-.divider span {
-    padding: 0 14px;
-}
-
-/* ==========================================
-   10. 소셜 로그인
-========================================== */
-.social-login {
-    display: flex;
-    gap: 10px;
-}
-
-.google-btn {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background-color: #FADFCB;
-    border: none;
-    border-radius: 10px;
-    padding: 13px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #EF8924;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.google-btn:hover {
-    background-color: #F6D2B4;
-}
-.google-icon {
-    width: 18px;
-    height: 18px;
-}
-
-.social-icon-btn {
-    width: 52px;
-    border: none;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-.social-icon-btn:hover {
-    opacity: 0.85;
-}
-.facebook-btn {
-    background-color: #1877F2;
-}
-.apple-btn {
-    background-color: #111111;
-}
-
-/* ==========================================
-   11. 반응형 (모바일)
-========================================== */
 @media (max-width: 900px) {
-    .floating-charc,
-    .study-charc,
-    .weather-widget {
+    .phone-charc-group,      /* .floating-charc, .weather-widget 대체 */
+    .study-charc {
         display: none;
     }
     .login-card {
