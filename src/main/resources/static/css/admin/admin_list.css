@@ -1,43 +1,348 @@
-    
-        /* 커스텀 스타일 */
-        .admin-wrap {
-            background: #fff;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+/* ================================================================
+   admin_list.css
+   최고관리자(OWNER) 전용 관리자 계정 대시보드
+   ================================================================ */
+
+.content {
+        flex: 1;
+        padding: 32px 40px;
+}
+
+/* ---------------- 페이지 전체 ---------------- */
+.admin-page {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+}
+
+/* ---------------- 페이지 헤더 ---------------- */
+.admin-page-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 4px;
+}
+
+.admin-page-header h2 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 800;
+        color: #1a1a1a;
+}
+
+.admin-count-chip {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 100px;
+        background: #FFF3E8;
+        color: #C97A2E;
+        font-size: 13px;
+        font-weight: 700;
+}
+
+/* ---------------- 알림 메시지 ---------------- */
+.alert {
+        padding: 14px 18px;
+        border-radius: 12px;
+        font-size: 13.5px;
+        font-weight: 600;
+        line-height: 1.5;
+}
+
+.alert-success {
+        background-color: #F0FDF4;
+        border: 1px solid #BBF7D0;
+        color: #16A34A;
+}
+
+.alert-danger {
+        background-color: #FEF2F2;
+        border: 1px solid #FECACA;
+        color: #DC2626;
+}
+
+/* ---------------- 카드 공통 ---------------- */
+.admin-card {
+        background: #fff;
+        border: 1px solid #F0F0F0;
+        border-radius: 20px;
+        padding: 28px 32px;
+        width: 100%;
+}
+
+.card-head {
+        margin-bottom: 22px;
+}
+
+.card-head-text strong {
+        display: block;
+        font-size: 17px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 6px;
+}
+
+.card-head-text p {
+        margin: 0;
+        font-size: 13.5px;
+        color: #777;
+        line-height: 1.6;
+}
+
+.panel-subtitle {
+        font-size: 17px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 6px;
+}
+
+.panel-desc {
+        margin: 0 0 20px;
+        color: #999;
+        font-size: 13px;
+}
+
+/* ---------------- 생성 폼 ---------------- */
+.form-row {
+        display: flex;
+        gap: 14px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+}
+
+.form-group {
+        flex: 1;
+        min-width: 180px;
+        display: flex;
+        flex-direction: column;
+}
+
+.form-group-btn {
+        flex: 0 0 auto;
+        min-width: 0;
+}
+
+.form-group label {
+        margin-bottom: 8px;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #737791;
+}
+
+.form-group input {
+        padding: 12px 14px;
+        border: 1px solid #E5E7EB;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-group input::placeholder {
+        color: #BBB;
+}
+
+.form-group input:focus {
+        border-color: #E8862B;
+        box-shadow: 0 0 0 3px rgba(232, 134, 43, 0.12);
+}
+
+/* ---------------- 버튼 ---------------- */
+.btn {
+        padding: 9px 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: 600;
+        font-size: 12.5px;
+        color: #fff;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-primary {
+        background-color: #E8862B;
+        padding: 13px 28px;
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(232, 134, 43, 0.25);
+}
+
+.btn-primary:hover {
+        background-color: #D4761F;
+}
+
+.btn-outline {
+        background: #fff;
+        border: 1px solid #E0E0E0;
+        color: #555;
+}
+
+.btn-outline:hover {
+        background: #F7F7F7;
+        border-color: #CCC;
+}
+
+.btn-warning {
+        background: #FFF8E6;
+        border: 1px solid #FCE4A6;
+        color: #B37A00;
+}
+
+.btn-warning:hover {
+        background: #FEF0CC;
+}
+
+.btn-danger {
+        background: #FFF5F5;
+        border: 1px solid #FECACA;
+        color: #DC2626;
+}
+
+.btn-danger:hover {
+        background: #FEECEC;
+}
+
+.btn-success {
+        background: #F0FDF4;
+        border: 1px solid #BBF7D0;
+        color: #16A34A;
+}
+
+.btn-success:hover {
+        background: #E3F9EA;
+}
+
+/* ---------------- 테이블 ---------------- */
+.table-wrap {
+        overflow-x: auto;
+}
+
+.admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+}
+
+.admin-table thead th {
+        text-align: left;
+        padding: 12px 16px;
+        background: #FAFAFA;
+        border-bottom: 1px solid #F0F0F0;
+        color: #888;
+        font-weight: 600;
+        font-size: 12.5px;
+        white-space: nowrap;
+}
+
+.admin-table thead th:first-child {
+        border-radius: 10px 0 0 10px;
+}
+
+.admin-table thead th:last-child {
+        border-radius: 0 10px 10px 0;
+}
+
+.admin-table tbody td {
+        padding: 16px;
+        border-bottom: 1px solid #F5F5F5;
+        color: #333;
+        vertical-align: middle;
+}
+
+.admin-table tbody tr:last-child td {
+        border-bottom: none;
+}
+
+/* No 열은 좁게 */
+.admin-table .col-no {
+        width: 60px;
+        color: #999;
+}
+
+/* 가입일시는 줄바꿈 방지 */
+.admin-table .col-date {
+        white-space: nowrap;
+        color: #777;
+}
+
+/* 관리 열은 오른쪽 정렬 */
+.admin-table .col-action {
+        text-align: right;
+        white-space: nowrap;
+}
+
+.admin-table .empty-row td {
+        text-align: center;
+        color: #999;
+        padding: 48px 0;
+}
+
+/* 아이디 링크 */
+.admin-login-id {
+        font-weight: 700;
+        color: #E8862B;
+        text-decoration: none;
+}
+
+.admin-login-id:hover {
+        text-decoration: underline;
+}
+
+/* ---------------- 상태 뱃지 ---------------- */
+.status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 100px;
+        font-size: 11.5px;
+        font-weight: 700;
+}
+
+.status-active {
+        background-color: #EAF7EE;
+        color: #2E8B57;
+}
+
+.status-withdrawn {
+        background-color: #F2F2F2;
+        color: #777;
+}
+
+/* ---------------- 관리 액션 버튼 묶음 ---------------- */
+.action-cell {
+        display: flex;
+        gap: 6px;
+        justify-content: flex-end;
+        align-items: center;
+}
+
+.action-cell form {
+        margin: 0;
+}
+
+/* ---------------- 반응형 ---------------- */
+@media (max-width: 900px) {
+        .content {
+                padding: 24px 20px;
         }
-        .alert { padding: 12px; margin-bottom: 20px; border-radius: 6px; font-weight: bold; }
-        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        
-        /* 폼 요소 */
-        .create-form { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #e9ecef; }
-        .form-row { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
-        .form-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; }
-        .form-group label { margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #495057; }
-        .form-group input { padding: 10px 12px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; }
-        
-        .btn { padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; color: white; transition: background 0.2s; text-decoration: none; display: inline-block; }
-        .btn-primary { background-color: #0d6efd; }
-        .btn-primary:hover { background-color: #0b5ed7; }
-        .btn-danger { background-color: #dc3545; }
-        .btn-danger:hover { background-color: #c82333; }
-        .btn-warning { background-color: #ffc107; color: #000; }
-        .btn-warning:hover { background-color: #e0a800; }
-        .btn-success { background-color: #198754; }
-        .btn-success:hover { background-color: #157347; }
-        
-        /* 테이블 요소 */
-        .table-wrap { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border-bottom: 1px solid #dee2e6; padding: 15px 12px; text-align: center; vertical-align: middle; }
-        th { background-color: #f8f9fa; font-weight: 600; color: #495057; font-size: 15px; }
-        td { font-size: 14px; color: #212529; }
-        
-        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .status-active { background-color: #d1e7dd; color: #0f5132; }
-        .status-withdrawn { background-color: #f8d7da; color: #842029; }
-        
-        .action-cell { display: flex; gap: 8px; justify-content: center; align-items: center; }
-        .action-cell form { margin: 0; }
-    
+
+        .admin-card {
+                padding: 22px 20px;
+        }
+
+        .form-group-btn {
+                flex: 1;
+        }
+
+        .form-group-btn .btn-primary {
+                width: 100%;
+        }
+}
