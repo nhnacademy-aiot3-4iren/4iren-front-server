@@ -24,40 +24,55 @@
 
 <main class="forgot-wrapper">
 
-<!-- 좌측 상단 로고 -->
-<div class="brand-logo">
-    <img src="/photo/icon/4iren-icon.png" alt="Re I New Logo">
-</div>
+    <!-- ==========================================
+         배경 장식 도형 (오른쪽 빈 공간)
+         - 전부 pointer-events:none / z-index 0 이라 클릭을 막지 않음
+    =========================================== -->
+    <div class="deco-glow deco-glow-1"></div>
+    <div class="deco-glow deco-glow-2"></div>
 
-<!--물음표 이미지-->
-<img src="/photo/login/character-desk.png" alt="forgot-girl" class="forgot-girl">
+    <div class="deco-orb deco-orb-1"></div>
+    <div class="deco-orb deco-orb-2"></div>
+    <div class="deco-orb deco-orb-3"></div>
+    <div class="deco-orb deco-orb-4"></div>
+    <div class="deco-pill"></div>
 
-<!--입력 박스 (흰)-->
-<div class="forgot-box">
-
-    <div class="Main-text">
-        <h1>Forgot Your Password?</h1>
+    <!-- 좌측 상단 로고 -->
+    <div class="brand-logo">
+        <img src="/photo/icon/4iren-icon.png" alt="4iren Logo">
     </div>
-    <!--비번 입력칸-->
-    <form action="/account/forgot" method="POST">
 
-        <div class="enter-id">
-            <label for="id">ID를 입력해 주세요.</label>
-            <input type="text" id="id" name="loginId" placeholder="ID" required>
+    <!--물음표 이미지-->
+    <img src="/photo/login/character-desk.png" alt="forgot-girl" class="forgot-girl">
+
+    <!--입력 박스 (흰)-->
+    <div class="forgot-box">
+
+        <div class="Main-text">
+            <h1>Forgot Your Password?</h1>
         </div>
 
-        <div class="enter-id">
-            <label for="email">e-mail 주소를 입력해 주세요.</label>
-            <input type="email" id="email" name="email" placeholder="e-mail" required>
-        </div>
+        <!--비번 입력칸-->
+        <form action="/account/forgot" method="POST">
 
-        <p style="color: #ff4d4f; font-size: 0.9em; margin-top: 10px; margin-bottom: 10px; text-align: center;" th:if="${errorMessage}" th:text="${errorMessage}"></p>
-        <p style="color: #52c41a; font-size: 0.9em; margin-top: 10px; margin-bottom: 10px; text-align: center;" th:if="${successMessage}" th:text="${successMessage}"></p>
+            <div class="enter-id">
+                <label for="id">ID를 입력해 주세요.</label>
+                <input type="text" id="id" name="loginId" placeholder="ID" required>
+            </div>
 
-        <button type="submit" class="verify-btn">Verify</button>
-        <a href="/login" class="back-to-login">로그인 화면으로 돌아가기</a>
-    </form>
-</div>
+            <div class="enter-id">
+                <label for="email">e-mail 주소를 입력해 주세요.</label>
+                <input type="email" id="email" name="email" placeholder="e-mail" required>
+            </div>
+
+            <p class="forgot-error" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+            <p class="forgot-success" th:if="${successMessage}" th:text="${successMessage}"></p>
+
+            <button type="submit" class="verify-btn">Verify</button>
+            <a href="/login" class="back-to-login">로그인 화면으로 돌아가기</a>
+        </form>
+    </div>
+
 </main>
 
 <div th:replace="~{layout/footer :: footer}"></div>
