@@ -323,7 +323,11 @@ select:focus-visible {
     font-weight: 500;
 }
 
-.content { padding: 34px 40px 60px; max-width: 1180px; }
+.content {
+    padding: 34px 40px 60px;
+    max-width: 1400px;
+    margin: 0 auto;      /* 가운데 정렬 */
+}
 
 .page-head {
     display: flex;
