@@ -9,11 +9,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -39,7 +39,7 @@ public class AuthController {
     public String login(
             @Valid @ModelAttribute LoginRequest requestDto,
             HttpServletResponse response,
-            RedirectAttributes redirectAttributes
+            Model model
     ) {
         try {
             // AuthService를 통해 로그인 및 HttpOnly 쿠키 생성
@@ -55,12 +55,12 @@ public class AuthController {
         } catch (feign.FeignException e) {
             String errorMessage = com.nhnacademy.front.account.config.FeignErrorParser.getMessage(e, "로그인에 실패했습니다.");
             log.warn("Login failed", e);
-            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
-            return "redirect:/login";
+            model.addAttribute("errorMessage", errorMessage);
+            return "account/login";
         } catch (Exception e) {
             log.warn("Login failed", e);
-            redirectAttributes.addFlashAttribute("errorMessage", "서버 오류가 발생했습니다.");
-            return "redirect:/login";
+            model.addAttribute("errorMessage", "서버 오류가 발생했습니다.");
+            return "account/login";
         }
     }
 
