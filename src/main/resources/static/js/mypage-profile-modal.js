@@ -121,6 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (res.ok) {
                         alert('회원 탈퇴가 완료되었습니다.');
                         window.location.href = '/login';
+                    } else if (res.status === 409) {
+                        alert('이용 중인 구독이 있어 탈퇴할 수 없습니다. 결제 관리 페이지에서 먼저 구독을 해지해주세요.');
+                        window.location.href = '/payment';
                     } else {
                         const data = await res.json().catch(() => ({}));
                         alert(data.message || '탈퇴 처리에 실패했습니다.');
