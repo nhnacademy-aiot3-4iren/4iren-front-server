@@ -12,16 +12,18 @@
     const maxWidgetCount = 4;
     const maxRoomMetricCount = 4;
     const widgetPeriods = {
-        '24H': { label: '최근 24시간' },
-        '7D': { label: '최근 7일' },
-        '30D': { label: '최근 30일' }
+        '1H': {label: '최근 1시간'},
+        '6H': {label: '최근 6시간'},
+        '24H': {label: '최근 24시간'},
+        '7D': {label: '최근 7일'},
+        '30D': {label: '최근 30일'}
     };
     const widgetTones = ['blue', 'green', 'amber', 'red'];
     const widgetToneStyles = {
-        blue: { line: '#356da8' },
-        green: { line: '#2f8a5b' },
-        amber: { line: '#bb7a18' },
-        red: { line: '#c95050' }
+        blue: {line: '#356da8'},
+        green: {line: '#2f8a5b'},
+        amber: {line: '#bb7a18'},
+        red: {line: '#c95050'}
     };
     const legacyWidgetState = readStoredWidgets();
 
@@ -126,30 +128,30 @@
         });
 
         elements.refreshButton?.addEventListener('click', () => {
-            loadDashboard({ showLoading: true });
+            loadDashboard({showLoading: true});
             refreshWidgets();
         });
-        elements.retryButton?.addEventListener('click', () => loadDashboard({ showLoading: true }));
+        elements.retryButton?.addEventListener('click', () => loadDashboard({showLoading: true}));
 
         elements.searchInput?.addEventListener('input', () => {
             window.clearTimeout(state.searchTimer);
             state.searchTimer = window.setTimeout(() => {
                 state.query = elements.searchInput.value.trim();
                 state.page = 0;
-                loadDashboard({ showLoading: true });
+                loadDashboard({showLoading: true});
             }, 350);
         });
 
         elements.previousPage?.addEventListener('click', () => {
             if (state.page > 0) {
                 state.page -= 1;
-                loadDashboard({ showLoading: true });
+                loadDashboard({showLoading: true});
             }
         });
 
         elements.nextPage?.addEventListener('click', () => {
             state.page += 1;
-            loadDashboard({ showLoading: true });
+            loadDashboard({showLoading: true});
         });
 
         elements.openModalButtons.forEach(button => button.addEventListener('click', openSubscribeModal));
@@ -216,7 +218,7 @@
 
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && state.loaded) {
-                loadDashboard({ showLoading: false });
+                loadDashboard({showLoading: false});
                 refreshWidgets();
             }
         });
@@ -224,7 +226,7 @@
         window.addEventListener('beforeunload', cleanup);
     }
 
-    async function loadDashboard({ showLoading = false } = {}) {
+    async function loadDashboard({showLoading = false} = {}) {
         closeDashboardStream();
         state.dashboardMetricsAbortController?.abort();
         state.dashboardMetricsAbortController = null;
@@ -246,7 +248,7 @@
 
         try {
             const response = await fetch(`/api/front/teams/${teamId}/dashboard?${params}`, {
-                headers: { Accept: 'application/json' },
+                headers: {Accept: 'application/json'},
                 signal: controller.signal
             });
             const dashboard = await readJsonResponse(response);
@@ -319,9 +321,9 @@
                     </div>
                 </div>
                 ${selectedMetrics.map(metricDefinition => renderMetric(
-                    metricDefinition.displayName,
-                    findMetric(room.metrics, metricDefinition.metricCode)
-                )).join('')}
+            metricDefinition.displayName,
+            findMetric(room.metrics, metricDefinition.metricCode)
+        )).join('')}
                 <svg class="room-chevron" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
             </${tagName}>`;
     }
@@ -501,7 +503,7 @@
         state.selectedRoomMetricCodes = selectedCodes.slice(0, maxRoomMetricCount);
         persistRoomMetricCodes();
         closeRoomMetricModal();
-        loadDashboard({ showLoading: true });
+        loadDashboard({showLoading: true});
         showToast('공간 현황의 표시 지표를 변경했습니다.');
     }
 
@@ -692,7 +694,7 @@
             );
             state.currentRooms = state.currentRooms.map(room => {
                 const metrics = metricsByRoomId.get(Number(room.roomId));
-                return metrics == null ? room : { ...room, metrics };
+                return metrics == null ? room : {...room, metrics};
             });
             renderRooms(state.currentRooms);
 
@@ -774,7 +776,7 @@
             });
             const candidates = await requestJson(
                 `/api/front/teams/${teamId}/dashboard/subscription-candidates?${params}`,
-                { signal: controller.signal }
+                {signal: controller.signal}
             );
             if (state.roomSearchAbortController !== controller) {
                 return;
@@ -839,13 +841,13 @@
         button.disabled = true;
         button.textContent = '추가 중';
         try {
-            await requestJson(`/api/front/teams/${teamId}/rooms/${roomId}/subscription`, { method: 'PUT' });
+            await requestJson(`/api/front/teams/${teamId}/rooms/${roomId}/subscription`, {method: 'PUT'});
             button.textContent = '추가됨';
             showToast('모니터링 공간에 추가했습니다.');
             state.widgetRooms = [];
             state.widgetOptionsLoaded = false;
             state.page = 0;
-            await loadDashboard({ showLoading: false });
+            await loadDashboard({showLoading: false});
             await loadSubscriptionCandidates(state.roomSearchCurrentPage);
         } catch (error) {
             console.error('공간 구독 실패:', error);
@@ -859,59 +861,61 @@
         try {
             const storedValue = window.localStorage.getItem(widgetStorageKey);
             if (storedValue == null) {
-                return { widgets: [], initialized: false };
+                return {widgets: [], initialized: false};
             }
 
             const parsed = JSON.parse(storedValue);
             if (!Array.isArray(parsed)) {
-                return { widgets: [], initialized: true };
+                return {widgets: [], initialized: true};
             }
 
             const widgets = parsed
                 .map(sanitizeStoredWidget)
                 .filter(Boolean)
                 .slice(0, maxWidgetCount);
-            return { widgets, initialized: true };
+            return {widgets, initialized: true};
         } catch (error) {
             console.warn('저장된 차트를 불러오지 못했습니다:', error);
-            return { widgets: [], initialized: false };
+            return {widgets: [], initialized: false};
         }
     }
 
     function sanitizeStoredWidget(widget) {
         const roomId = Number(widget?.roomId);
+        const clientChartId = widget?.clientChartId ?? widget?.id;
+        const timeRange = widget?.timeRange ?? widget?.period;
         if (!Number.isFinite(roomId) || roomId <= 0 || !widget?.metricCode) {
             return null;
         }
 
         return {
-            id: String(widget.id || createWidgetId()),
+            id: String(clientChartId || createWidgetId()),
             roomId,
             roomName: String(widget.roomName || `공간 ${roomId}`),
             buildingName: String(widget.buildingName || '건물 정보 없음'),
             metricCode: String(widget.metricCode),
             displayName: String(widget.displayName || widget.metricCode),
             symbol: String(widget.symbol || ''),
-            period: widgetPeriods[widget.period] ? widget.period : '24H'
+            period: widgetPeriods[timeRange] ? timeRange : '24H'
         };
     }
 
     async function persistWidgets() {
-        const widgets = await requestJson(`/api/front/teams/${teamId}/dashboard/widgets`, {
+        const charts = await requestJson(`/api/front/teams/${teamId}/dashboard/charts`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                widgets: state.widgets.map(widget => ({
-                    id: widget.id,
+                charts: state.widgets.map(widget => ({
+                    clientChartId: widget.id,
                     roomId: widget.roomId,
                     metricCode: widget.metricCode,
                     displayName: widget.displayName,
                     symbol: widget.symbol,
-                    period: widget.period
+                    timeRange: widget.period
                 }))
             })
         });
-        state.widgets = (widgets || [])
+        state.widgets = (charts || [])
             .map(sanitizeStoredWidget)
             .filter(Boolean)
             .slice(0, maxWidgetCount);
@@ -920,8 +924,8 @@
 
     async function initializeWidgets() {
         try {
-            const widgets = await requestJson(`/api/front/teams/${teamId}/dashboard/widgets`);
-            state.widgets = (widgets || [])
+            const charts = await requestJson(`/api/front/teams/${teamId}/dashboard/charts`);
+            state.widgets = (charts || [])
                 .map(sanitizeStoredWidget)
                 .filter(Boolean)
                 .slice(0, maxWidgetCount);
@@ -1118,7 +1122,7 @@
             return;
         }
 
-        const previousWidgets = state.widgets.map(widget => ({ ...widget }));
+        const previousWidgets = state.widgets.map(widget => ({...widget}));
         const [movedWidget] = state.widgets.splice(oldIndex, 1);
         state.widgets.splice(newIndex, 0, movedWidget);
         syncWidgetOrderPresentation();
@@ -1164,8 +1168,8 @@
                 chart.setOption({
                     series: [{
                         id: 'metric-series',
-                        lineStyle: { color: tone.line, width: 2.5 },
-                        itemStyle: { color: tone.line },
+                        lineStyle: {color: tone.line, width: 2.5},
+                        itemStyle: {color: tone.line},
                         markPoint: {
                             itemStyle: {
                                 color: '#ffffff',
@@ -1174,7 +1178,7 @@
                             }
                         }
                     }]
-                }, { lazyUpdate: true });
+                }, {lazyUpdate: true});
             }
         });
         resizeWidgetCharts();
@@ -1190,10 +1194,10 @@
         loadWidgetSeriesBatch();
     }
 
-    async function loadWidgetSeriesBatch(widgetId = null) {
-        const targetWidgets = widgetId == null
+    async function loadWidgetSeriesBatch(clientChartId = null) {
+        const targetWidgets = clientChartId == null
             ? state.widgets
-            : state.widgets.filter(widget => String(widget.id) === String(widgetId));
+            : state.widgets.filter(widget => String(widget.id) === String(clientChartId));
         if (targetWidgets.length === 0) {
             return;
         }
@@ -1204,24 +1208,24 @@
 
         try {
             const params = new URLSearchParams();
-            if (widgetId != null) {
-                params.set('widgetId', String(widgetId));
+            if (clientChartId != null) {
+                params.set('clientChartId', String(clientChartId));
             }
             const queryString = params.size > 0 ? `?${params}` : '';
             const response = await fetch(
-                `/api/front/teams/${teamId}/dashboard/widgets/series${queryString}`,
-                { headers: { Accept: 'application/json' }, signal: controller.signal }
+                `/api/front/teams/${teamId}/dashboard/charts/series${queryString}`,
+                {headers: {Accept: 'application/json'}, signal: controller.signal}
             );
             const batch = await readJsonResponse(response);
             if (state.widgetSeriesAbortController !== controller) {
                 return;
             }
 
-            const seriesByWidgetId = new Map(
-                (batch?.widgets || []).map(series => [String(series.id), series])
+            const seriesByClientChartId = new Map(
+                (batch?.charts || []).map(series => [String(series.clientChartId), series])
             );
             targetWidgets.forEach(widget => {
-                const series = seriesByWidgetId.get(String(widget.id));
+                const series = seriesByClientChartId.get(String(widget.id));
                 if (!series) {
                     renderWidgetError(widget, '차트 데이터를 찾을 수 없습니다.');
                 } else if (series.errorCode) {
@@ -1261,7 +1265,7 @@
 
         const points = (series?.points || [])
             .filter(point => point?.averageValue != null)
-            .map(point => ({ at: new Date(point.bucketEndAt), value: Number(point.averageValue) }))
+            .map(point => ({at: new Date(point.bucketEndAt), value: Number(point.averageValue)}))
             .filter(point => !Number.isNaN(point.at.getTime()) && Number.isFinite(point.value))
             .sort((left, right) => left.at - right.at);
         const displayName = series?.displayName || widget.displayName;
@@ -1319,7 +1323,7 @@
         if (isNewChart) {
             disposeWidgetChart(widget.id);
             container.innerHTML = '';
-            chart = window.echarts.init(container, null, { renderer: 'canvas' });
+            chart = window.echarts.init(container, null, {renderer: 'canvas'});
             state.chartInstances.set(key, chart);
         }
         container.setAttribute(
@@ -1329,7 +1333,7 @@
 
         chart.setOption(
             buildChartOption(widget, points, displayName, symbol, isNewChart),
-            { notMerge: isNewChart, lazyUpdate: !isNewChart }
+            {notMerge: isNewChart, lazyUpdate: !isNewChart}
         );
     }
 
@@ -1363,13 +1367,13 @@
                 confine: true,
                 axisPointer: {
                     type: 'line',
-                    lineStyle: { color: '#9ba8b7', type: 'dashed' }
+                    lineStyle: {color: '#9ba8b7', type: 'dashed'}
                 },
                 backgroundColor: '#ffffff',
                 borderColor: '#dfe5ec',
                 borderWidth: 1,
                 padding: [9, 11],
-                textStyle: { color: '#435064', fontSize: 12 },
+                textStyle: {color: '#435064', fontSize: 12},
                 formatter(parameters) {
                     const parameter = (Array.isArray(parameters) ? parameters : [parameters])
                         .find(candidate => candidate.seriesType === 'line');
@@ -1383,29 +1387,29 @@
             xAxis: {
                 type: 'time',
                 boundaryGap: false,
-                axisLine: { lineStyle: { color: '#dfe5ec' } },
-                axisTick: { show: false },
+                axisLine: {lineStyle: {color: '#dfe5ec'}},
+                axisTick: {show: false},
                 axisLabel: {
                     color: '#8a95a4',
                     fontSize: 10,
                     hideOverlap: true,
                     formatter: value => formatWidgetTime(new Date(value), widget.period)
                 },
-                splitLine: { show: false }
+                splitLine: {show: false}
             },
             yAxis: {
                 type: 'value',
                 scale: true,
                 splitNumber: 3,
-                axisLine: { show: false },
-                axisTick: { show: false },
+                axisLine: {show: false},
+                axisTick: {show: false},
                 axisLabel: {
                     color: '#8a95a4',
                     fontSize: 10,
                     formatter: formatAxisValue
                 },
                 splitLine: {
-                    lineStyle: { color: '#e9edf2', type: 'dashed' }
+                    lineStyle: {color: '#e9edf2', type: 'dashed'}
                 }
             },
             series: [{
@@ -1417,21 +1421,21 @@
                 showSymbol: points.length === 1,
                 symbol: 'circle',
                 symbolSize: 7,
-                lineStyle: { color: tone.line, width: 2.5 },
-                itemStyle: { color: tone.line },
+                lineStyle: {color: tone.line, width: 2.5},
+                itemStyle: {color: tone.line},
                 markPoint: {
                     silent: true,
                     symbol: 'circle',
                     symbolSize: 9,
-                    label: { show: false },
+                    label: {show: false},
                     itemStyle: {
                         color: '#ffffff',
                         borderColor: tone.line,
                         borderWidth: 2.5
                     },
-                    data: [{ coord: [latestPoint.at.getTime(), latestPoint.value] }]
+                    data: [{coord: [latestPoint.at.getTime(), latestPoint.value]}]
                 },
-                emphasis: { focus: 'series' }
+                emphasis: {focus: 'series'}
             }]
         };
     }
@@ -1468,7 +1472,7 @@
 
     function formatMetricValue(value) {
         const maximumFractionDigits = Math.abs(value) >= 100 ? 0 : 1;
-        return Number(value).toLocaleString('ko-KR', { maximumFractionDigits });
+        return Number(value).toLocaleString('ko-KR', {maximumFractionDigits});
     }
 
     function formatSignedMetricValue(value) {
@@ -1481,18 +1485,18 @@
 
     function formatAxisValue(value) {
         const maximumFractionDigits = Math.abs(value) >= 100 ? 0 : 1;
-        return Number(value).toLocaleString('ko-KR', { maximumFractionDigits });
+        return Number(value).toLocaleString('ko-KR', {maximumFractionDigits});
     }
 
     function formatWidgetTime(date, periodKey) {
-        if (periodKey === '24H') {
+        if (periodKey === '1H' || periodKey === '6H' || periodKey === '24H') {
             return new Intl.DateTimeFormat('ko-KR', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hourCycle: 'h23'
             }).format(date);
         }
-        return new Intl.DateTimeFormat('ko-KR', { month: 'numeric', day: 'numeric' }).format(date);
+        return new Intl.DateTimeFormat('ko-KR', {month: 'numeric', day: 'numeric'}).format(date);
     }
 
     function formatWidgetTooltipTime(date) {
@@ -1542,7 +1546,7 @@
         elements.widgetRoomSelect.disabled = true;
         elements.widgetRoomSelect.innerHTML = '<option value="">공간을 불러오는 중입니다</option>';
         try {
-            const options = await requestJson(`/api/front/teams/${teamId}/dashboard/widget-options`);
+            const options = await requestJson(`/api/front/teams/${teamId}/dashboard/charts/options`);
             state.widgetRooms = (options.rooms || []).filter(room => Number(room.roomId) > 0);
             state.widgetOptionsLoaded = true;
             renderWidgetRoomOptions();
@@ -1620,7 +1624,7 @@
             return;
         }
 
-        const previousWidgets = state.widgets.map(widget => ({ ...widget }));
+        const previousWidgets = state.widgets.map(widget => ({...widget}));
         state.widgets.push({
             id: createWidgetId(),
             roomId,
@@ -1692,7 +1696,7 @@
         }
 
         if (button.dataset.widgetAction === 'remove') {
-            const previousWidgets = state.widgets.map(candidate => ({ ...candidate }));
+            const previousWidgets = state.widgets.map(candidate => ({...candidate}));
             state.widgets = state.widgets.filter(candidate => candidate.id !== widget.id);
             renderWidgets();
             try {
@@ -1714,7 +1718,7 @@
 
     async function requestJson(url, options = {}) {
         const response = await fetch(url, {
-            headers: { Accept: 'application/json', ...(options.headers || {}) },
+            headers: {Accept: 'application/json', ...(options.headers || {})},
             ...options
         });
         return readJsonResponse(response);
@@ -1799,5 +1803,5 @@
     bindEvents();
     renderWidgets();
     initializeWidgets();
-    loadDashboard({ showLoading: true });
+    loadDashboard({showLoading: true});
 })();
