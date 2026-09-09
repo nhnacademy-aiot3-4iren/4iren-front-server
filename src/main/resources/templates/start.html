@@ -7,6 +7,7 @@
     <!-- 폰트 적용 -->
     <link rel="stylesheet" href="/css/start.css">
     <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/LLM.css}">
 </head>
 <body>
 
@@ -19,11 +20,6 @@
             <nav>
                 <a href="/payment/plans" class="active">Plans</a>
                 <a href="/rooms/subscriptions">Classroom</a>
-                <div class="chatai">
-                    <a href="/llm" class="button">
-                    Chat AI
-                    </a>
-                </div>
                 <a href="/dashboard">Dashboard</a>
                 <a href="/mypage">My Page</a>
             </nav>
@@ -210,5 +206,7 @@
 <script src="/js/move-img.js"></script>
 <!---->
 <script src="/js/falling-pill.js"></script>
+
+<div th:replace="~{llm :: chatWidget}"></div>
 </body>
 </html>

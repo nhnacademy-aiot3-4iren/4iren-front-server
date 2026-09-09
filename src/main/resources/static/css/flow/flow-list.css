@@ -304,6 +304,47 @@ select:focus-visible {
 .app.is-collapsed .fs-foot { padding: 13px 0; }
 .app.is-collapsed .fs-back { justify-content: center; }
 
+
+/* ================================================================
+   최근 조회한 강의실
+   ================================================================ */
+.fs-recent {
+    padding: 0 12px 12px;
+    border-top: 1px solid var(--fl-line);
+    /* 트리 메뉴가 짧을 때도 하단(마이페이지 위)에 붙게 만들고 싶다면 아래 속성 활성화 */
+    /* margin-top: auto; */
+}
+.fs-recent-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fl-ink-3);
+    padding: 16px 11px 8px;
+    letter-spacing: -.01em;
+}
+.fs-recent-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.fs-recent-list li a {
+    display: block;
+    padding: 8px 11px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: var(--fl-ink-2);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: background .15s ease, color .15s ease;
+}
+.fs-recent-list li a:hover {
+    background: var(--fl-fill);
+    color: var(--fl-ink);
+}
+/* 사이드바가 접혔을 때는 숨김 처리 */
+.app.is-collapsed .fs-recent { display: none; }
+
 /* ================================================================
    본문
    ================================================================ */
