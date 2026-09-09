@@ -8,10 +8,7 @@ import com.nhnacademy.front.notification.dto.AlertHistorySearchCondition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,5 +113,16 @@ public class AlertHistoryController {
      */
     private String emptyToNull(String value) {
         return (value == null || value.isBlank()) ? null : value;
+    }
+
+    /**
+     * 헤더 알림 드롭다운이 쓰는 최근 알림 목록(JSON).
+     * 기존 목록 조회와 같은 Feign client 를 쓰고, 조건 없이 최신 5건만 가져온다.
+     */
+    @GetMapping("/recent")
+    @ResponseBody
+    public PageResponse<AlertHistoryResponse> getRecentAlertHistories() {
+        return notiAlertHistoryClient.getAllAlertHistory(
+                null, null, null, null, null, 0, 5, "sendAt,DESC");
     }
 }

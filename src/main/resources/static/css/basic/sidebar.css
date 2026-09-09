@@ -102,7 +102,7 @@
     justify-content: center;
     align-items: center;
     min-height: 44px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .sidebar-logo a {
@@ -112,9 +112,9 @@
 }
 
 .logo-full {
-    width: 130px;
+    width: 100px;
     height: auto;
-    margin-left: -15px;
+    margin-left: -12px;
 }
 
 .logo-icon {
@@ -140,6 +140,7 @@
     margin-bottom: 20px;
     border-bottom: 1px solid rgba(102, 90, 80, 0.10);
     transition: padding var(--sidebar-anim);
+    text-align: center;
 }
 
 .sidebar .user-role {
@@ -149,6 +150,7 @@
 }
 
 /* header.css 에도 같은 클래스명이 있고 나중에 로드되므로 .sidebar 로 감싸서 분리 */
+.user-role[data-role="owner"] { color: #E8862B; }
 .sidebar .user-role[data-role="admin"]  { color: #4A90D9; }
 .sidebar .user-role[data-role="normal"] { color: #999999; }
 

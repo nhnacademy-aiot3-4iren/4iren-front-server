@@ -199,10 +199,7 @@
             if (!keyword) {
                 building.hidden = false;
                 list.querySelectorAll('li').forEach(li => { li.hidden = false; });
-                const hasCurrent = list.querySelector('a.is-current') !== null;
-                building.classList.toggle('is-open', hasCurrent);
-                btn.setAttribute('aria-expanded', String(hasCurrent));
-                list.hidden = !hasCurrent;
+                // 검색어가 없으면 사용자가 펼쳐둔 상태를 그대로 유지
                 return;
             }
 
