@@ -6,12 +6,12 @@
   <title>4iren - Team</title>
 
   <!-- 기존 본문 CSS -->
-  <link rel="stylesheet" th:href="@{/css/team/team-list.css}">
   <link rel="stylesheet" href="/fonts/font.css">
   <link rel="stylesheet" th:href="@{/css/basic/footer.css}">
   <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
   <link rel="stylesheet" th:href="@{/css/basic/header.css}">
   <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+  <link rel="stylesheet" th:href="@{/css/team/team-list.css}">
 </head>
 <body>
 
@@ -29,10 +29,32 @@
 
     <!-- ============ 본문 내용 ============ -->
     <div class="content">
-      <h2>My Teams</h2>
 
+      <div class="team-page-header">
+        <h2>My Teams</h2>
+        <p>소속된 팀을 확인하고 새 팀을 만들거나 초대 코드로 참여할 수 있습니다.</p>
+      </div>
+
+      <!-- 팀이 없을 때 보여주는 안내 (JS가 display 를 제어) -->
       <div class="empty-state" id="emptyState">
-        <p>팀이 존재하지 않습니다...</p>
+        <span class="empty-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9.5" cy="7" r="3.5"/>
+            <path d="M19 8v6"/>
+            <path d="M22 11h-6"/>
+          </svg>
+        </span>
+        <h3>아직 소속된 팀이 없습니다</h3>
+        <p>
+          팀을 만들면 건물과 강의실을 등록하고 센서 데이터를 관리할 수 있어요.<br>
+          이미 팀이 있다면 초대 코드로 참여해 보세요.
+        </p>
+        <div class="empty-actions">
+          <button type="button" class="btn-ghost" id="emptyJoinBtn">초대 코드로 가입</button>
+          <button type="button" class="btn-primary" id="emptyCreateBtn">+ Team 생성</button>
+        </div>
       </div>
 
       <!-- 새로 생성된 팀 카드가 들어갈 하얀색 바탕 박스 (처음엔 숨김) -->
@@ -45,91 +67,148 @@
         <button class="open-modal-btn" id="openBtn" type="button" th:attr="data-role=${role}">+ Team 생성</button>
       </div>
 
-      <!-- ========================================== -->
-      <!-- 모달 팝업 영역 -->
-      <!-- ========================================== -->
-      <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-folder-wrapper">
-          <div class="modal-tab">Team 생성</div>
-          <div class="modal-content">
-            <div class="form-group">
-              <label>Team Name</label>
-              <input type="text" id="teamNameInput" placeholder="ex ) 조선대 NHN 아카데미">
-            </div>
-            <div class="form-group">
-              <label>Team Description</label>
-              <textarea id="teamDescInput" placeholder="팀에 관련된 간단한 내용을 적어주세요.."></textarea>
-            </div>
-            <div class="btn-wrap">
-              <button class="submit-btn" id="closeBtn">Create</button>
-            </div>
-          </div>
-        </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 모달: Team 생성                              -->
+<!-- id(modalOverlay / teamNameInput /          -->
+<!-- teamDescInput / closeBtn)는 myteams.js가    -->
+<!-- 그대로 참조하므로 변경하지 않음                -->
+<!-- ========================================== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="tc-modal">
+
+    <!-- 좌측 브랜드 패널 -->
+    <aside class="tc-side">
+      <div class="tc-side-top">
+        <span class="tc-badge">STEP 01</span>
+        <h2 class="tc-side-title">새로운 팀을<br>만들어 볼까요?</h2>
+        <p class="tc-side-desc">
+          팀 이름과 소개만 입력하면 바로 시작할 수 있어요.
+          생성 후 멤버 초대와 정보 수정이 가능합니다.
+        </p>
       </div>
-      <!-- ========================================== -->
+      <ul class="tc-features">
+        <li>멤버 초대 및 권한 관리</li>
+        <li>건물 · 강의실 등록</li>
+        <li>팀 전용 Flow · Classroom</li>
+      </ul>
+    </aside>
 
-      <!-- ========================================== -->
-      <!--  팀 초대 코드 생성 팝업 -->
-      <!-- ========================================== -->
-      <div class="modal-overlay" id="inviteCodeModal">
-        <div class="invite-modal-content">
-        <!-- js로 팀이름 바뀍[         -->
-          <h3 class="invite-title">&lt; <span id="inviteTeamName">팀 이름</span> &gt; 의 Team Code</h3>
+    <!-- 우측 입력 폼 -->
+    <section class="tc-form">
+      <header class="tc-header">
+        <h3>Team 생성</h3>
+        <p>필수 정보 2가지만 입력해 주세요.</p>
+      </header>
 
-          <p class="invite-warning">
-            초대코드는 지금 화면을 벗어나면 다시 확인할 수 없습니다.<br>
-            안전한 곳에 즉시 복사해 두세요. <span class="text-red">(재확인 불가)</span>
-          </p>
+      <div class="tc-fields">
+        <label class="tc-field">
+          <span class="tc-label">Team Name<i>*</i></span>
+          <input type="text" id="teamNameInput" maxlength="50"
+                 placeholder="ex ) 조선대 NHN 아카데미" autocomplete="off">
+        </label>
 
-          <!-- 팀코드 표시  & 복사 영역-->
-          <div class="code-box-container">
-            <div class="code-box-header">
-              <span class="code-label">Team Code</span>
-              <button class="copy-btn" id="copyCodeBtn">복사</button>
-            </div>
-            <!-- 8개칸 -->
-            <div class="code-squares" id="codeSquaresContainer">
-              <div class="code-square"></div>
-              <div class="code-square"></div>
-              <div class="code-square"></div>
-              <div class="code-square"></div>
-              <div class="code-square"></div>
-              <div class="code-square"></div>
-              <div class="code-square"></div>
-              <div class="code-square"></div>
-            </div>
-          </div>
-
-          <!-- 확인 닫기 버튼 -->
-          <div class="invite-action-btns">
-            <button class="btn-blue" id="inviteConfirmBtn">확인</button>
-            <button class="btn-gray" id="inviteCloseBtn">창 닫기</button>
-          </div>
-        </div>
+        <label class="tc-field">
+          <span class="tc-label tc-label-row">
+            Team Description
+            <em class="tc-count" id="teamDescCount">0 / 200</em>
+          </span>
+          <textarea id="teamDescInput" rows="5" maxlength="200"
+                    placeholder="팀에 관련된 간단한 내용을 적어주세요.."></textarea>
+        </label>
       </div>
-      <!-- ========================================== -->
 
-      <!-- ========================================== -->
-      <!--  팀 초대 코드 가입 팝업 -->
-      <!-- ========================================== -->
-      <div class="modal-overlay" id="joinTeamModal">
-        <div class="join-modal-content">
-          <h3 class="invite-title">Team Join</h3>
-          <p class="invite-warning">전달받은 8자리 초대 코드를 입력해주세요.</p>
+      <button type="button" class="tc-submit" id="closeBtn">Create</button>
+    </section>
 
-          <div class="join-code-input-wrap">
-            <label for="joinCodeInput">Team Code</label>
-            <input type="text" id="joinCodeInput" maxlength="8" placeholder="8자리 코드">
-          </div>
+  </div>
+</div>
 
-          <div class="invite-action-btns">
-            <button class="btn-blue" id="joinTeamSubmitBtn" type="button">가입</button>
-            <button class="btn-gray" id="joinTeamCloseBtn" type="button">창 닫기</button>
-          </div>
-        </div>
+<!-- ========================================== -->
+<!-- 모달: 팀 초대 코드 발급                        -->
+<!-- ========================================== -->
+<div class="modal-overlay" id="inviteCodeModal">
+  <div class="tc-panel">
+
+    <div class="tc-panel-head">
+      <span class="tc-panel-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+             stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="10" width="18" height="11" rx="2.5"/>
+          <path d="M7.5 10V7a4.5 4.5 0 0 1 9 0v3"/>
+        </svg>
+      </span>
+      <h3 class="tc-panel-title">
+        <span id="inviteTeamName">팀 이름</span>의 Team Code
+      </h3>
+      <p class="tc-panel-desc">
+        이 코드를 전달하면 팀에 참여할 수 있습니다.
+      </p>
+    </div>
+
+    <p class="tc-warn">
+      <strong>지금 화면을 벗어나면 다시 확인할 수 없습니다.</strong>
+      안전한 곳에 즉시 복사해 두세요.
+    </p>
+
+    <!-- 팀코드 표시 & 복사 영역 -->
+    <div class="code-box-container">
+      <div class="code-box-header">
+        <span class="code-label">Team Code</span>
+        <button type="button" class="copy-btn" id="copyCodeBtn">복사</button>
       </div>
-      <!-- ========================================== -->
+      <div class="code-squares" id="codeSquaresContainer">
+        <div class="code-square"></div>
+        <div class="code-square"></div>
+        <div class="code-square"></div>
+        <div class="code-square"></div>
+        <div class="code-square"></div>
+        <div class="code-square"></div>
+        <div class="code-square"></div>
+        <div class="code-square"></div>
+      </div>
+    </div>
 
+    <div class="tc-panel-actions">
+      <button type="button" class="btn-ghost" id="inviteCloseBtn">창 닫기</button>
+      <button type="button" class="btn-primary" id="inviteConfirmBtn">확인</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 모달: 초대 코드로 가입                         -->
+<!-- ========================================== -->
+<div class="modal-overlay" id="joinTeamModal">
+  <div class="tc-panel tc-panel-sm">
+
+    <div class="tc-panel-head">
+      <span class="tc-panel-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+          <path d="M10 17l5-5-5-5"/>
+          <path d="M15 12H3"/>
+        </svg>
+      </span>
+      <h3 class="tc-panel-title">Team Join</h3>
+      <p class="tc-panel-desc">전달받은 8자리 초대 코드를 입력해 주세요.</p>
+    </div>
+
+    <div class="join-code-input-wrap">
+      <label for="joinCodeInput">Team Code</label>
+      <input type="text" id="joinCodeInput" maxlength="8"
+             placeholder="8자리 코드" autocomplete="off">
+    </div>
+
+    <div class="tc-panel-actions">
+      <button type="button" class="btn-ghost" id="joinTeamCloseBtn">창 닫기</button>
+      <button type="button" class="btn-primary" id="joinTeamSubmitBtn">가입</button>
     </div>
 
   </div>
@@ -139,5 +218,35 @@
 <div th:replace="~{layout/footer :: footer}"></div>
 
 <script src="/js/myteams.js"></script>
+
+<script>
+  /* ================================================================
+     화면 보조 스크립트
+     - myteams.js 는 건드리지 않고, 이 페이지에서만 필요한 동작만 처리
+     ================================================================ */
+  (function () {
+    /* 설명란 글자 수 표시 */
+    const desc = document.getElementById('teamDescInput');
+    const count = document.getElementById('teamDescCount');
+    if (desc && count) {
+      const update = () => {
+        count.textContent = desc.value.length + ' / 200';
+      };
+      desc.addEventListener('input', update);
+      update();
+    }
+
+    /* 빈 상태 버튼 → 기존 플로팅 버튼과 같은 동작 */
+    const forward = (fromId, toId) => {
+      const from = document.getElementById(fromId);
+      const to = document.getElementById(toId);
+      if (from && to) {
+        from.addEventListener('click', () => to.click());
+      }
+    };
+    forward('emptyCreateBtn', 'openBtn');
+    forward('emptyJoinBtn', 'openJoinTeamBtn');
+  })();
+</script>
 </body>
 </html>

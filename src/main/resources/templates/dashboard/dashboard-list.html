@@ -11,6 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/basic/header.css}">
     <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard-list.css}">
+    <link rel="stylesheet" th:href="@{/css/LLM.css}">
 </head>
 <body class="dashboard-page">
 <div class="layout">
@@ -270,5 +271,7 @@
 <script th:src="@{/webjars/echarts/6.0.0/dist/echarts.min.js}"></script>
 <script th:src="@{/webjars/sortablejs/1.15.7/Sortable.min.js}"></script>
 <script th:src="@{/js/dashboard-list.js}"></script>
+
+<div th:replace="~{llm :: chatWidget}"></div>
 </body>
 </html>

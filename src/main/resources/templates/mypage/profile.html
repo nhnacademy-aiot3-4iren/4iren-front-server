@@ -12,6 +12,7 @@
   <link rel="stylesheet" th:href="@{/css/basic/sidebar.css}">
   <link rel="stylesheet" th:href="@{/css/basic/header.css}">
   <link rel="stylesheet" th:href="@{/css/basic/main-content-area.css}">
+  <link rel="stylesheet" th:href="@{/css/LLM.css}">
 
 </head>
 
@@ -175,5 +176,7 @@
 
 <script src="/js/eye.js"></script>
 <script th:src="@{/js/mypage-profile-modal.js}"></script>
+
+<div th:replace="~{llm :: chatWidget}"></div>
 </body>
 </html>

@@ -1,53 +1,138 @@
-/* 기본 초기화 */
+/* ================================================================
+   team-list.css
+   My Teams page (list + create / invite / join modals)
+   ================================================================ */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-/* body 배경색은 basic/sidebar.css에서 전체 페이지 공통으로 잡음
-   (반투명 사이드바 패널이 페이지마다 다른 색으로 비치는 문제 방지) */
+
+/* body background is set in basic/sidebar.css so the translucent
+   sidebar panel does not pick up a different color per page */
 body {
     margin: 0;
-    font-family: sans-serif;
 }
 
-/* 전체 레이아웃 */
 .layout {
     display: flex;
     min-height: 100vh;
 }
 
-
-/* 메인 본문 */
+/* ---------------- main content ---------------- */
 .content {
-    padding: 32px 4.0px;
+    padding: 32px 40px;
     flex: 1;
     position: relative;
 }
 
-/* '팀이 존재하지 않습니다'*/
+/* ---------------- page header ---------------- */
+.team-page-header {
+    padding: 0 4px;
+    margin-bottom: 24px;
+}
+
+.team-page-header h2 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 800;
+    color: #1a1a1a;
+}
+
+.team-page-header p {
+    margin: 0;
+    font-size: 13.5px;
+    color: #888;
+}
+
+/* ---------------- empty state ---------------- */
 .empty-state {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    min-height: 400px;
-    color: #888;
-    font-size: 18px;
+    justify-content: center;
+    text-align: center;
+    min-height: 420px;
+    padding: 48px 24px;
+    background: #fff;
+    border: 1px solid #F0F0F0;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-/* 플로팅 버튼 */
-.open-modal-btn {
-    padding: 15px 30px;
-    background-color: #ff9d42;
-    color: #FFF;
-    border: none;
-    border-radius: 12px;
+.empty-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    background: #FFF3E8;
+    color: #E8862B;
+}
+
+.empty-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.empty-state h3 {
+    margin: 0 0 10px;
+    font-size: 19px;
+    font-weight: 800;
+    color: #1a1a1a;
+}
+
+.empty-state p {
+    margin: 0 0 26px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #999;
+}
+
+.empty-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* ---------------- shared buttons ---------------- */
+.btn-primary,
+.btn-ghost {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
     cursor: pointer;
-    font-weight: 400;
-    font-size: 16px;
+    transition: background 0.15s, border-color 0.15s;
 }
 
+.btn-primary {
+    border: none;
+    background: #E8862B;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(232, 134, 43, 0.25);
+}
+
+.btn-primary:hover {
+    background: #D4761F;
+}
+
+.btn-ghost {
+    border: 1px solid #E5E7EB;
+    background: #fff;
+    color: #555;
+}
+
+.btn-ghost:hover {
+    background: #FAFAFA;
+    border-color: #D5D7DB;
+}
+
+/* ---------------- floating actions ---------------- */
 .team-floating-actions {
     position: absolute;
     bottom: 50px;
@@ -56,225 +141,552 @@ body {
     gap: 12px;
 }
 
-.join-team-btn {
-    padding: 15px 24px;
-    background-color: #4a7dff;
-    color: #ffffff;
+.open-modal-btn {
+    padding: 15px 30px;
+    background-color: #E8862B;
+    color: #FFF;
     border: none;
     border-radius: 12px;
     cursor: pointer;
+    font-family: inherit;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 15px;
+    box-shadow: 0 6px 18px rgba(232, 134, 43, 0.28);
+    transition: background 0.15s;
 }
 
+.open-modal-btn:hover {
+    background-color: #D4761F;
+}
 
-/* =========================================================
-  popup 관련 스타일
-   ========================================================= */
+.join-team-btn {
+    padding: 15px 24px;
+    background-color: #fff;
+    color: #555;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 15px;
+    box-shadow: 0 4px 14px rgba(20, 23, 28, 0.06);
+    transition: background 0.15s, border-color 0.15s;
+}
 
-/* popup */
+.join-team-btn:hover {
+    background-color: #FAFAFA;
+    border-color: #D5D7DB;
+}
+
+/* ================================================================
+   modal overlay (shared by all three modals)
+   ================================================================ */
+
 .modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    /*#FFF 70% blur */
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(5px); /* 사파리/크롬 등 블러 지원 */
-    -webkit-backdrop-filter: blur(5px);
-
+    position: fixed;
+    inset: 0;
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 100;
+    justify-content: center;
+    padding: 20px;
 
-    /* 기본적으로 숨김 */
+    background: rgba(24, 27, 32, 0.5);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+
+    z-index: 1000;
+
+    /* hidden by default; myteams.js adds .active */
     visibility: hidden;
     opacity: 0;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
-/* active 클래스가 붙으면 보이게*/
 .modal-overlay.active {
     visibility: visible;
     opacity: 1;
 }
 
-/* 팝업 래퍼*/
-.modal-folder-wrapper {
+/* ================================================================
+   create team modal (two column)
+   ================================================================ */
+
+.tc-modal {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    width: 760px;
+    max-width: 100%;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 32px 70px -14px rgba(20, 23, 28, .42),
+    0 2px 6px rgba(20, 23, 28, .1);
+}
+
+/* left brand panel */
+.tc-side {
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    width: 550px; /* 사진과 비슷한 비율의 너비 */
-    max-width: 90%;
+    justify-content: space-between;
+    padding: 34px 28px;
+    overflow: hidden;
+    background: linear-gradient(155deg, #fba03f 0%, #f0761a 55%, #dd5f0c 100%);
 }
 
-/* 상단 'Team 생성'*/
-.modal-tab {
-    background-color: #f38b2a;
-    color: #ffffff;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 12px 12px 0 0;
-    letter-spacing: 0.5px;
+.tc-side::before,
+.tc-side::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, .2);
 }
 
-/* 모달 본문 (주황색 테두리 박스) */
-.modal-content {
-    background-color: #ffffff;
-    border: 2px solid #f38b2a;
-    border-radius: 0 12px 12px 12px;
-    padding: 40px 30px;
-    width: 100%;
-    box-sizing: border-box;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-}
+.tc-side::before { width: 280px; height: 280px; top: -110px; right: -120px; }
+.tc-side::after  { width: 200px; height: 200px; bottom: -90px; left: -70px; }
 
-/* 입력폼 그룹 */
-.form-group {
+.tc-side-top {
+    position: relative;
     display: flex;
-    margin-bottom: 25px;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
 }
 
-/* 왼쪽 라벨 */
-.form-group label {
-    width: 160px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    margin-top: 12px;
+.tc-badge {
+    width: fit-content;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .2);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
 }
 
-/* 우측 입력창 */
-.form-group input,
-.form-group textarea {
-    flex: 1; /* 남은 여백 꽉 채우기 */
-    border: 1px solid #f38b2a;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 14px;
-    font-family: inherit;
-    outline: none;
+.tc-side-title {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -.02em;
+    color: #fff;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-    box-shadow: 0 0 0 2px rgba(243, 139, 42, 0.2);
+.tc-side-desc {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, .86);
 }
 
-.form-group textarea {
-    height: 100px;
-    resize: none; /* 크기 조절 방지 */
-}
-
-/* placeholder 색상 조금 더 연하게 */
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #a0a0a0;
-}
-
-/* Create 버튼을 감싸는 div (중앙 정렬용) */
-.btn-wrap {
+.tc-features {
+    position: relative;
+    margin: 0;
+    padding: 24px 0 0;
+    list-style: none;
     display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    flex-direction: column;
+    gap: 9px;
+    border-top: 1px solid rgba(255, 255, 255, .24);
 }
 
-/* Create 버튼 디자인 */
-.submit-btn {
-    background-color: #f38b2a;
-    color: #ffffff;
-    border: none;
-    border-radius: 20px;
-    padding: 10px 40px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
+.tc-features li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, .92);
 }
 
-.submit-btn:hover {
-    background-color: #d97a22;
+.tc-features li::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #fff;
+    flex-shrink: 0;
 }
 
-/* =========================================================
-   생성된 팀 목록 디자인
-   ========================================================= */
-/* 커다란 하얀색 둥근 배경 박스 */
-.team-list-container {
-    background-color: #ffffff;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    min-height: 400px;
-    margin-top: 20px;
+/* right form panel */
+.tc-form {
+    display: flex;
+    flex-direction: column;
+    padding: 36px 36px 32px;
+}
 
-    /* 리스트들이 세로로 쌓이도록 */
+.tc-header {
+    padding-bottom: 22px;
+    border-bottom: 1px solid #f0f1f3;
+}
+
+.tc-header h3 {
+    margin: 0 0 5px;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -.015em;
+    color: #1d2026;
+}
+
+.tc-header p {
+    margin: 0;
+    font-size: 12.5px;
+    color: #9aa0a8;
+}
+
+.tc-fields {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    padding-top: 24px;
 }
 
-/* 개별 팀 카드 디자인 */
-.team-card {
+.tc-field {
     display: flex;
-    justify-content: space-between; /* 왼쪽 정보와 오른쪽 버튼 양끝 배치 */
-    align-items: center;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06); /* 카드에도 살짝 그림자 */
+    flex-direction: column;
+    gap: 9px;
 }
 
-/* 팀 카드 왼쪽 (텍스트 및 정보) */
-.team-info {
+.tc-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #3d424a;
+}
+
+.tc-label i {
+    color: #f0891f;
+    font-style: normal;
+    margin-left: 4px;
+}
+
+.tc-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tc-count {
+    font-size: 11.5px;
+    font-weight: 400;
+    font-style: normal;
+    color: #b3b7bd;
+}
+
+.tc-field input,
+.tc-field textarea {
+    font-family: inherit;
+    font-size: 14px;
+    color: #1d2026;
+    border: 1.5px solid #e4e7eb;
+    border-radius: 12px;
+    background: #fafbfc;
+    outline: none;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+}
+
+.tc-field input { height: 46px; padding: 0 15px; }
+
+.tc-field textarea {
+    padding: 13px 15px;
+    line-height: 1.65;
+    resize: none;
+}
+
+.tc-field input::placeholder,
+.tc-field textarea::placeholder { color: #b3b7bd; }
+
+.tc-field input:focus,
+.tc-field textarea:focus {
+    border-color: #f0891f;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(240, 137, 31, .13);
+}
+
+.tc-submit {
+    margin-top: 28px;
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fa9c34, #ec7413);
+    color: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .01em;
+    cursor: pointer;
+    box-shadow: 0 10px 22px -6px rgba(236, 116, 19, .55);
+    transition: filter .15s, transform .1s;
+}
+
+.tc-submit:hover  { filter: brightness(1.05); }
+.tc-submit:active { transform: translateY(1px); }
+
+/* ================================================================
+   invite / join modal (single column panel)
+   ================================================================ */
+
+.tc-panel {
+    width: 480px;
+    max-width: 100%;
+    background: #fff;
+    border-radius: 20px;
+    padding: 34px 34px 28px;
+    box-shadow: 0 32px 70px -14px rgba(20, 23, 28, .42),
+    0 2px 6px rgba(20, 23, 28, .1);
+}
+
+.tc-panel-sm {
+    width: 420px;
+}
+
+.tc-panel-head {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.tc-panel-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 16px;
+    border-radius: 16px;
+    background: #FFF3E8;
+    color: #E8862B;
+}
+
+.tc-panel-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.tc-panel-title {
+    margin: 0 0 8px;
+    font-size: 19px;
+    font-weight: 800;
+    color: #1d2026;
+    letter-spacing: -.015em;
+}
+
+.tc-panel-desc {
+    margin: 0;
+    font-size: 13px;
+    color: #9aa0a8;
+    line-height: 1.6;
+}
+
+/* warning strip in the invite modal */
+.tc-warn {
+    margin: 0 0 22px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    background: #FFF5F5;
+    border: 1px solid #FECACA;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #B4534E;
+    text-align: center;
+}
+
+.tc-warn strong {
+    display: block;
+    color: #DC2626;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+/* code box */
+.code-box-container {
+    background-color: #F7F8F9;
+    border: 1px solid #EDEFF1;
+    border-radius: 16px;
+    padding: 18px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 26px;
+}
+
+.code-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.code-label {
+    font-weight: 700;
+    font-size: 13px;
+    color: #3d424a;
+}
+
+.copy-btn {
+    background-color: #fff;
+    color: #555;
+    border: 1px solid #E0E3E6;
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.copy-btn:hover {
+    background-color: #F2F3F5;
+    border-color: #CFD3D7;
+}
+
+/* 8 code squares */
+.code-squares {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.code-square {
+    flex: 1;
+    aspect-ratio: 9 / 10;
+    background-color: #ffffff;
+    border: 1px solid #E4E7EB;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 21px;
+    font-weight: 800;
+    color: #1d2026;
+    text-transform: uppercase;
+}
+
+/* join code input */
+.join-code-input-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 26px;
+}
+
+.join-code-input-wrap label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #3d424a;
+}
+
+.join-code-input-wrap input {
+    border: 1.5px solid #e4e7eb;
+    border-radius: 12px;
+    background: #fafbfc;
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    text-align: center;
+    color: #1d2026;
+    outline: none;
+    text-transform: uppercase;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+}
+
+.join-code-input-wrap input::placeholder {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: normal;
+    color: #b3b7bd;
+}
+
+.join-code-input-wrap input:focus {
+    border-color: #f0891f;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(240, 137, 31, .13);
+}
+
+/* panel footer buttons */
+.tc-panel-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.tc-panel-actions button {
     flex: 1;
 }
 
-/* 팀 이름과 설명이 있는 윗부분 (주황색 밑줄) */
+/* ================================================================
+   team list
+   ================================================================ */
+
+.team-list-container {
+    background-color: #ffffff;
+    border: 1px solid #F0F0F0;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    min-height: 400px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.team-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 24px;
+    background-color: #ffffff;
+    border: 1px solid #F0F0F0;
+    border-radius: 16px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.team-card:hover {
+    border-color: #FBE3CC;
+    box-shadow: 0 6px 20px rgba(232, 134, 43, 0.08);
+}
+
+.team-info {
+    flex: 1;
+    min-width: 0;
+}
+
 .team-header-row {
     display: flex;
     max-width: 800px;
     align-items: baseline;
-    gap: 15px;
-    border-bottom: 2px solid #f38b2a;
+    gap: 12px;
+    border-bottom: 1px solid #F2F2F2;
     padding-bottom: 12px;
     margin-bottom: 12px;
 }
 
 .team-card-name {
-    font-size: 22px;
-    font-weight: bold;
-    color: #333;
+    font-size: 19px;
+    font-weight: 800;
+    color: #1a1a1a;
 }
 
 .team-card-desc {
-    font-size: 14px;
-    color: #888;
+    font-size: 13px;
+    color: #999;
 }
 
-/* 건물/강의실 정보 */
 .team-meta-row {
     display: flex;
-    gap: 30px;
+    gap: 24px;
     font-size: 13px;
-    color: #555;
+    color: #666;
     align-items: center;
 }
 
-/* 팀 카드 내부 아이콘 크기 조절 */
 .meta-icon {
     width: 16px;
     height: 16px;
-    margin-right: 4px;
     vertical-align: middle;
-    margin-bottom: 2px;
+    flex-shrink: 0;
 }
-
 
 .team-meta-row span {
     display: flex;
@@ -282,228 +694,56 @@ body {
     gap: 6px;
 }
 
-/* 팀 카드 오른쪽 (버튼들) */
 .team-actions {
     display: flex;
-    gap: 12px;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
-/* 초대 코드 생성 버튼 */
 .btn-outline-orange {
-    background-color: transparent;
-    color: #f38b2a;
-    border: 1px solid #f38b2a;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: bold;
+    background-color: #fff;
+    color: #E8862B;
+    border: 1px solid #FBD5B0;
+    padding: 9px 16px;
+    border-radius: 100px;
+    font-family: inherit;
+    font-weight: 700;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12.5px;
+    transition: background-color 0.15s;
 }
 
-/* 팀 상세 정보 버튼 */
+.btn-outline-orange:hover {
+    background-color: #FFF8F1;
+}
+
 .btn-solid-blue {
-    background-color: #4a7dff;
-    color: #ffffff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: bold;
+    background-color: #fff;
+    color: #555;
+    border: 1px solid #E5E7EB;
+    padding: 9px 16px;
+    border-radius: 100px;
+    font-family: inherit;
+    font-weight: 700;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12.5px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.btn-solid-blue:hover {
+    background-color: #FAFAFA;
+    border-color: #D5D7DB;
 }
 
 .door-icon-img {
-    width: 20px;
-    height: 20px;
-    margin-right: 2px;
-    margin-bottom: 7px;
-    transform: translateY(1px);
+    width: 17px;
+    height: 17px;
 }
 
-
-
-
-
-
-/* =========================================================
-   팀 초대 코드 팝업 부분 스타일
-   ========================================================= */
-.invite-modal-content {
-    background-color: #ffffff;
-    border-radius: 24px; /* 둥근 모서리 */
-    padding: 40px;
-    width: 480px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.join-modal-content {
-    background-color: #ffffff;
-    border-radius: 24px;
-    padding: 40px;
-    width: 420px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-}
-
-.join-modal-content .invite-title,
-.join-modal-content .invite-warning {
-    text-align: center;
-}
-
-.join-code-input-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 28px;
-}
-
-.join-code-input-wrap label {
-    color: #333;
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.join-code-input-wrap input {
-    border: 1px solid #f38b2a;
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: 4px;
-    text-align: center;
-    outline: none;
-    text-transform: uppercase;
-}
-
-.join-code-input-wrap input:focus {
-    box-shadow: 0 0 0 2px rgba(243, 139, 42, 0.2);
-}
-
-.invite-title {
-    font-size: 20px;
-    font-weight: 900;
-    color: #333;
-    margin: 0 0 15px 0;
-}
-
-.invite-warning {
-    font-size: 14px;
-    color: #333;
-    text-align: center;
-    line-height: 1.5;
-    margin: 0 0 30px 0;
-    font-weight: 500;
-}
-
-.text-red {
-    color: #ff4d4f;
-}
-
-/* 회색 코드 박스 영역 */
-.code-box-container {
-    background-color: #e8e8e8; /* 연한 회색 */
-    border-radius: 16px;
-    padding: 20px 25px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 30px;
-}
-
-.code-box-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.code-label {
-    font-weight: 800;
-    font-size: 16px;
-    color: #333;
-}
-
-.copy-btn {
-    background-color: #d1d1d1; /* 더 진한 회색 버튼 */
-    color: #333;
-    border: none;
-    border-radius: 20px;
-    padding: 6px 18px;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.copy-btn:hover {
-    background-color: #b5b5b5;
-}
-
-/* 8개 빈칸 */
-.code-squares {
-    display: flex;
-    justify-content: space-between;
-    gap: 2px;
-}
-
-.code-square {
-    width: 45px;
-    height: 50px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    font-weight: 900;
-    color: #333;
-}
-
-/* 하단 버튼 */
-.invite-action-btns {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.btn-blue, .btn-gray {
-    width: 100%;
-    border: none;
-    border-radius: 25px;
-    padding: 14px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-blue {
-    background-color: #0088FF; /* 파란색 확인 버튼 */
-    color: #ffffff;
-}
-
-.btn-blue:hover {
-    background-color: #0051ff;
-}
-
-.btn-gray {
-    background-color: #e8e8e8; /* 회색 창 닫기 버튼 */
-    color: #FF383C;
-}
-
-.btn-gray:hover {
-    background-color: #d1d1d1;
-}
-
-/* ---------------- 역할 뱃지 ---------------- */
+/* ---------------- role badge ---------------- */
 .role-badge {
     display: inline-block;
     font-size: 11px;
@@ -514,6 +754,51 @@ body {
     flex-shrink: 0;
 }
 
-.role-badge-owner  { background: #FFF3E8; color: #FF9800; }
+.role-badge-owner  { background: #FFF3E8; color: #E8862B; }
 .role-badge-admin  { background: #E8F1FC; color: #4A90D9; }
 .role-badge-normal { background: #F2F2F2; color: #888; }
+
+/* ================================================================
+   responsive
+   ================================================================ */
+
+@media (max-width: 900px) {
+    .content {
+        padding: 24px 20px;
+    }
+
+    .team-floating-actions {
+        position: static;
+        margin-top: 20px;
+        justify-content: flex-end;
+    }
+
+    .team-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 720px) {
+    .tc-modal {
+        grid-template-columns: 1fr;
+    }
+
+    .tc-side {
+        display: none;
+    }
+
+    .tc-form {
+        padding: 28px 24px 24px;
+    }
+
+    .tc-panel {
+        padding: 28px 22px 22px;
+    }
+
+    .empty-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 280px;
+    }
+}
