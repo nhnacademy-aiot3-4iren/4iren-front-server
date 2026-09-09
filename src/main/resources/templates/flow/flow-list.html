@@ -102,6 +102,16 @@
             </p>
         </nav>
 
+        <!-- ========================================== -->
+        <!-- 최근 조회한 강의실 영역 -->
+        <!-- ========================================== -->
+        <div class="fs-recent" id="recentRoomsContainer" hidden>
+            <div class="fs-recent-header">최근 조회</div>
+            <ul class="fs-recent-list" id="recentRoomsList">
+                <!-- JS에서 동적으로 채우기-->
+            </ul>
+        </div>
+
         <div class="fs-foot">
             <a th:href="@{/mypage}" class="fs-back" title="마이페이지로">
                 <span class="fs-back-icon" aria-hidden="true">

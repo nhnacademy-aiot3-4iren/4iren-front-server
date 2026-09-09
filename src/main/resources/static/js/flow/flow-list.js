@@ -963,4 +963,5 @@
         if (panel && !panel.hidden) renderSchedules(row, cached);
         setScheduleCount(row, cached.length);
     }
+
 })();
