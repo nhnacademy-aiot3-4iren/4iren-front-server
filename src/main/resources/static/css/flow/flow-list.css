@@ -1,25 +1,28 @@
 /* ================================================================
    flow-list.css
-   플로우 목록 페이지 (사이드바 포함)
+   Flow list page (sidebar + centered content)
    ================================================================ */
 
 :root {
-    --fl-bg: #f6f7f9;
+    --fl-bg: #F7F6F4;
     --fl-paper: #fff;
-    --fl-ink: #111827;
+    --fl-ink: #1d2026;
     --fl-ink-2: #4b5563;
     --fl-ink-3: #9ca3af;
     --fl-line: #eceef1;
     --fl-line-2: #e5e7eb;
     --fl-fill: #f3f4f6;
-    --fl-accent: #e37300;
-    --fl-accent-hover: #cd6801;
-    --fl-accent-soft: #e6f2f1;
+    --fl-accent: #E8862B;
+    --fl-accent-hover: #D4761F;
+    --fl-accent-soft: #FFF3E8;
     --fl-danger: #b02a2a;
     --fl-danger-soft: #fbeaea;
 
-    --fl-sidebar-w: 314px;
-    --fl-sidebar-w-collapsed: 96px;
+    --fl-sidebar-w: 300px;
+    --fl-sidebar-w-collapsed: 88px;
+
+    /* content column width */
+    --fl-content-w: 1080px;
 }
 
 * { box-sizing: border-box; }
@@ -28,7 +31,7 @@ body {
     margin: 0;
     background: var(--fl-bg);
     color: var(--fl-ink);
-    font-family: "Pretendard", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: 'Poppins', 'Pretendard', system-ui, -apple-system, "Segoe UI", sans-serif;
     font-size: 14px;
     line-height: 1.55;
 }
@@ -45,7 +48,7 @@ body {
 .app { display: flex; min-height: 100vh; }
 
 /* ================================================================
-   버튼 / 입력
+   buttons / inputs
    ================================================================ */
 
 button,
@@ -59,12 +62,13 @@ button,
     border: 1px solid var(--fl-line-2);
     background: var(--fl-paper);
     color: var(--fl-ink);
-    border-radius: 9px;
+    border-radius: 10px;
     text-decoration: none;
     display: inline-block;
     line-height: 1.4;
     white-space: nowrap;
 }
+
 .btn:hover,
 .btn-sm:hover { background: var(--fl-fill); }
 
@@ -72,8 +76,10 @@ button,
     background: var(--fl-accent);
     border-color: var(--fl-accent);
     color: #fff;
-    font-weight: 500;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(232, 134, 43, .22);
 }
+
 .btn-solid:hover { background: var(--fl-accent-hover); }
 
 .btn-sm { font-size: 12.5px; padding: 6px 13px; }
@@ -89,10 +95,11 @@ input[type="time"] {
     font-size: 13.5px;
     padding: 9px 13px;
     border: 1px solid var(--fl-line-2);
-    border-radius: 9px;
+    border-radius: 10px;
     background: var(--fl-paper);
     color: var(--fl-ink);
 }
+
 input::placeholder { color: var(--fl-ink-3); }
 
 button:focus-visible,
@@ -104,7 +111,7 @@ select:focus-visible {
 }
 
 /* ================================================================
-   사이드바
+   sidebar
    ================================================================ */
 
 .sidebar {
@@ -119,6 +126,7 @@ select:focus-visible {
     border-right: 1px solid var(--fl-line);
     transition: width .22s ease, flex-basis .22s ease;
 }
+
 .app.is-collapsed .sidebar {
     width: var(--fl-sidebar-w-collapsed);
     flex-basis: var(--fl-sidebar-w-collapsed);
@@ -126,7 +134,7 @@ select:focus-visible {
 
 .side-toggle {
     position: absolute;
-    top: 34px;
+    top: 30px;
     right: -15px;
     width: 30px;
     height: 30px;
@@ -141,16 +149,21 @@ select:focus-visible {
     box-shadow: 0 1px 3px rgba(16, 24, 40, .08);
     z-index: 5;
 }
+
 .side-toggle:hover { border-color: #c3c8d0; }
 .side-toggle svg { transition: transform .22s ease; }
 .app.is-collapsed .side-toggle svg { transform: rotate(180deg); }
 
 .app.is-collapsed .fs-label,
 .app.is-collapsed .fs-tree,
-.app.is-collapsed .fs-search input { display: none; }
+.app.is-collapsed .fs-recent,
+.app.is-collapsed .fs-user-avatar,
+.app.is-collapsed .fs-search input,
+.app.is-collapsed .fs-search-glass { display: none; }
 
-/* 로고 */
-.fs-head { padding: 26px 20px 16px; }
+/* ---------------- logo ---------------- */
+.fs-head { padding: 22px 20px 16px; }
+
 .fs-logo {
     display: flex;
     align-items: center;
@@ -165,31 +178,52 @@ select:focus-visible {
     border-radius: 9px;
     background: var(--fl-accent);
     flex-shrink: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
 }
 
-.fs-logo-mark svg {
-    width: 21px;
-    height: 21px;
-    display: block;
+.fs-logo-mark svg { width: 22px; height: 22px; display: block; }
+
+.fs-logo-text {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -.02em;
 }
 
-.fs-logo-text { font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
-.app.is-collapsed .fs-head { padding: 26px 0 16px; }
+.app.is-collapsed .fs-head { padding: 22px 0 16px; }
 .app.is-collapsed .fs-logo { justify-content: center; }
 
-/* 검색 */
-.fs-search { padding: 0 16px 14px; }
+/* ---------------- search ---------------- */
+.fs-search {
+    position: relative;
+    padding: 0 16px 16px;
+}
+
+.fs-search-glass {
+    position: absolute;
+    left: 28px;
+    top: 10px;
+    display: flex;
+    color: var(--fl-ink-3);
+    pointer-events: none;
+}
+
 .fs-search input {
     width: 100%;
-    background: var(--fl-fill);
+    padding-left: 36px;
+    background: #FAFAF9;
     border-color: var(--fl-line-2);
+    border-radius: 10px;
 }
-.fs-search input:focus { background: var(--fl-paper); border-color: var(--fl-accent); }
+
+.fs-search input:focus {
+    background: var(--fl-paper);
+    border-color: var(--fl-accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(232, 134, 43, .12);
+}
 
 .fs-search-icon {
     display: none;
@@ -197,12 +231,13 @@ select:focus-visible {
     height: 38px;
     margin: 0 auto;
     padding: 0;
-    border-radius: 9px;
+    border-radius: 10px;
     background: var(--fl-fill);
     color: var(--fl-ink-2);
     align-items: center;
     justify-content: center;
 }
+
 .app.is-collapsed .fs-search { padding: 0 0 14px; }
 .app.is-collapsed .fs-search-icon { display: flex; }
 
@@ -211,71 +246,121 @@ select:focus-visible {
     font-size: 12px;
     color: var(--fl-ink-3);
 }
+
 .fs-search-empty[hidden] { display: none; }
 
-/* 트리 */
-.fs-tree { flex: 1; min-height: 0; overflow-y: auto; padding: 0 12px 18px; }
-.fs-building { margin-bottom: 2px; }
+/* ---------------- tree ---------------- */
+.fs-tree {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 12px;
+}
+
+.fs-tree::-webkit-scrollbar { width: 6px; }
+.fs-tree::-webkit-scrollbar-thumb { background: #E4E0DB; border-radius: 3px; }
+
+.fs-building { margin-bottom: 4px; }
 .fs-building[hidden] { display: none; }
 
 .fs-building-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     width: 100%;
     border: 0;
     background: none;
-    padding: 9px 10px;
-    border-radius: 8px;
+    padding: 8px 10px;
+    border-radius: 9px;
     text-align: left;
-    font-size: 14px;
+    font-size: 12.5px;
+    font-weight: 700;
     color: var(--fl-ink-2);
 }
+
 .fs-building-btn:hover { background: var(--fl-fill); }
 
 .fs-caret {
     width: 0;
     height: 0;
     flex-shrink: 0;
-    margin-left: 3px;
+    margin-left: 2px;
     border-left: 5px solid currentColor;
     border-top: 4px solid transparent;
     border-bottom: 4px solid transparent;
     color: var(--fl-ink-3);
     transition: transform .16s ease;
 }
-.fs-building.is-open .fs-caret { transform: rotate(90deg); }
-.fs-building-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.fs-rooms { list-style: none; margin: 1px 0 7px; padding: 0 0 0 20px; }
+.fs-building.is-open .fs-caret { transform: rotate(90deg); }
+
+.fs-building-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fs-rooms {
+    list-style: none;
+    margin: 2px 0 8px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
 .fs-rooms[hidden] { display: none; }
 .fs-rooms li[hidden] { display: none; }
 
 .fs-rooms a {
-    display: block;
-    padding: 8px 11px;
-    border-radius: 8px;
-    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-size: 13.5px;
     color: var(--fl-ink-2);
     text-decoration: none;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    transition: background .13s, border-color .13s;
 }
-.fs-rooms a:hover { background: var(--fl-fill); color: var(--fl-ink); }
+
+/* small dot in front of each room */
+.fs-rooms a::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #D8D4CF;
+    flex-shrink: 0;
+    transition: background .13s;
+}
+
+.fs-rooms a:hover {
+    background: var(--fl-fill);
+    color: var(--fl-ink);
+}
+
 .fs-rooms a.is-current {
     background: var(--fl-accent-soft);
-    color: var(--fl-accent);
-    font-weight: 500;
+    border-color: #FBDCBC;
+    color: #B4671B;
+    font-weight: 700;
 }
+
+.fs-rooms a.is-current::before { background: var(--fl-accent); }
 
 .fs-rooms-empty span,
 .fs-rooms-error {
     display: block;
-    padding: 8px 11px;
+    padding: 8px 12px;
     font-size: 13px;
     color: var(--fl-ink-3);
 }
+
 .fs-rooms-error { color: var(--fl-danger); }
 .fs-rooms-error button { font-size: 12px; margin-left: 7px; padding: 3px 9px; }
 
@@ -283,82 +368,148 @@ select:focus-visible {
     font-size: 13px;
     color: var(--fl-ink-3);
     line-height: 1.7;
-    padding: 20px 11px;
+    padding: 20px 12px;
     margin: 0;
 }
 
-/* 하단 */
-.fs-foot { border-top: 1px solid var(--fl-line); padding: 13px 16px; }
-.fs-back {
+/* ---------------- recently viewed ---------------- */
+.fs-recent {
+    margin: 18px 16px 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--fl-line);
+}
+
+.fs-recent[hidden] { display: none; }
+
+.fs-recent-header {
     display: flex;
     align-items: center;
-    gap: 9px;
-    padding: 9px 11px;
-    border-radius: 8px;
-    font-size: 14px;
-    color: var(--fl-ink-2);
-    text-decoration: none;
-}
-.fs-back:hover { background: var(--fl-fill); color: var(--fl-ink); }
-.fs-back-icon { display: flex; color: var(--fl-ink-3); flex-shrink: 0; }
-.app.is-collapsed .fs-foot { padding: 13px 0; }
-.app.is-collapsed .fs-back { justify-content: center; }
-
-
-/* ================================================================
-   최근 조회한 강의실
-   ================================================================ */
-.fs-recent {
-    padding: 0 12px 12px;
-    border-top: 1px solid var(--fl-line);
-    /* 트리 메뉴가 짧을 때도 하단(마이페이지 위)에 붙게 만들고 싶다면 아래 속성 활성화 */
-    /* margin-top: auto; */
-}
-.fs-recent-header {
+    gap: 6px;
+    margin-bottom: 10px;
     font-size: 12px;
-    font-weight: 600;
-    color: var(--fl-ink-3);
-    padding: 16px 11px 8px;
-    letter-spacing: -.01em;
+    font-weight: 700;
+    color: var(--fl-ink-2);
 }
+
+.fs-recent-header svg { color: var(--fl-ink-3); flex-shrink: 0; }
+
 .fs-recent-list {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
-.fs-recent-list li a {
-    display: block;
-    padding: 8px 11px;
-    border-radius: 8px;
-    font-size: 13.5px;
+
+.fs-recent-list a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: #FAFAF9;
+    font-size: 12.5px;
     color: var(--fl-ink-2);
     text-decoration: none;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    transition: background .15s ease, color .15s ease;
+    transition: background .13s;
 }
-.fs-recent-list li a:hover {
-    background: var(--fl-fill);
+
+.fs-recent-list a:hover { background: var(--fl-fill); color: var(--fl-ink); }
+
+/* ---------------- footer ---------------- */
+.fs-foot {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-top: 1px solid var(--fl-line);
+}
+
+.fs-user-avatar {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--fl-accent-soft);
+    color: #B4671B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.fs-user-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+}
+
+.fs-user-name {
+    font-size: 12.5px;
+    font-weight: 700;
     color: var(--fl-ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-/* 사이드바가 접혔을 때는 숨김 처리 */
-.app.is-collapsed .fs-recent { display: none; }
+
+.fs-user-role {
+    font-size: 10.5px;
+    color: var(--fl-ink-3);
+    letter-spacing: .02em;
+}
+
+.fs-back {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--fl-accent);
+    text-decoration: none;
+    transition: background .13s;
+}
+
+.fs-back:hover { background: var(--fl-accent-soft); }
+.fs-back-icon { display: flex; flex-shrink: 0; }
+
+.app.is-collapsed .fs-foot { padding: 14px 0; justify-content: center; }
+.app.is-collapsed .fs-user-col { display: none; }
+.app.is-collapsed .fs-back { padding: 8px; }
 
 /* ================================================================
-   본문
+   main
    ================================================================ */
 
 .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
+/* ---------------- topbar ---------------- */
 .topbar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 40px;
     border-bottom: 1px solid var(--fl-line);
     background: var(--fl-bg);
 }
+
+.topbar-inner {
+    width: 100%;
+    max-width: var(--fl-content-w);
+    margin: 0 auto;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .crumb {
     display: flex;
     align-items: center;
@@ -366,21 +517,25 @@ select:focus-visible {
     font-size: 13px;
     color: var(--fl-ink-3);
 }
-.crumb strong { color: var(--fl-ink); font-weight: 600; }
+
+.crumb strong { color: var(--fl-ink); font-weight: 700; }
 .topbar-right { margin-left: auto; }
+
 .tag-admin {
     font-size: 12px;
     padding: 4px 11px;
     border-radius: 7px;
     background: var(--fl-accent-soft);
-    color: var(--fl-accent);
-    font-weight: 500;
+    color: #B4671B;
+    font-weight: 600;
 }
 
+/* ---------------- centered content column ---------------- */
 .content {
-    padding: 34px 40px 60px;
-    max-width: 1400px;
-    margin: 0 auto;      /* 가운데 정렬 */
+    width: 100%;
+    max-width: var(--fl-content-w);
+    margin: 0 auto;
+    padding: 40px 32px 80px;
 }
 
 .page-head {
@@ -391,17 +546,25 @@ select:focus-visible {
     flex-wrap: wrap;
     margin-bottom: 24px;
 }
+
 .page-head h1 {
-    font-size: 30px;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 800;
     margin: 0 0 6px;
     letter-spacing: -.02em;
 }
+
 .page-sub { font-size: 13.5px; color: var(--fl-ink-2); margin: 0; }
 .actions { display: flex; gap: 9px; }
 
-/* 툴바 */
-.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+/* ---------------- toolbar ---------------- */
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
 
 .seg {
     display: flex;
@@ -411,6 +574,7 @@ select:focus-visible {
     border: 1px solid var(--fl-line-2);
     border-radius: 11px;
 }
+
 .seg button {
     border: 0;
     background: none;
@@ -419,15 +583,17 @@ select:focus-visible {
     padding: 6px 16px;
     color: var(--fl-ink-3);
 }
+
 .seg button[aria-pressed="true"] {
-    background: var(--fl-fill);
-    color: var(--fl-ink);
-    font-weight: 600;
+    background: var(--fl-accent-soft);
+    color: #B4671B;
+    font-weight: 700;
 }
+
 .toolbar input[type="search"] { width: 250px; }
 
 /* ================================================================
-   목록
+   flow list
    ================================================================ */
 
 .flow-list {
@@ -436,9 +602,11 @@ select:focus-visible {
     padding: 0;
     background: var(--fl-paper);
     border: 1px solid var(--fl-line);
-    border-radius: 16px;
+    border-radius: 18px;
     overflow: hidden;
+    box-shadow: 0 4px 20px rgba(20, 16, 12, .03);
 }
+
 .flow-row { border-bottom: 1px solid var(--fl-line); }
 .flow-row:last-child { border-bottom: 0; }
 .flow-row[hidden] { display: none; }
@@ -455,20 +623,24 @@ select:focus-visible {
     line-height: 1;
     font-size: 10px;
 }
+
 .caret::before { content: "\25B6"; }
 .caret[aria-expanded="true"]::before { content: "\25BC"; }
 .caret:hover { background: var(--fl-fill); }
 
 .row-main { flex: 1; min-width: 0; }
 .title-line { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+
 .flow-name {
-    font-size: 16.5px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     color: var(--fl-ink);
     text-decoration: none;
     letter-spacing: -.01em;
 }
+
 .flow-name:hover { text-decoration: underline; }
+
 .flow-desc {
     font-size: 13.5px;
     color: var(--fl-ink-2);
@@ -476,8 +648,9 @@ select:focus-visible {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 620px;
+    max-width: 560px;
 }
+
 .is-off .flow-name,
 .is-off .flow-desc { color: var(--fl-ink-3); }
 
@@ -489,12 +662,14 @@ select:focus-visible {
     color: var(--fl-ink-3);
     white-space: nowrap;
 }
+
 .badge.is-on {
     background: var(--fl-accent-soft);
     border-color: transparent;
-    color: var(--fl-accent);
-    font-weight: 500;
+    color: #B4671B;
+    font-weight: 600;
 }
+
 .badge-always { border-style: dashed; color: var(--fl-ink-2); }
 .badge-always[hidden] { display: none; }
 
@@ -516,6 +691,7 @@ select:focus-visible {
     flex-shrink: 0;
     margin-top: 1px;
 }
+
 .switch i {
     position: absolute;
     top: 2px;
@@ -527,11 +703,13 @@ select:focus-visible {
     box-shadow: 0 1px 2px rgba(16, 24, 40, .2);
     transition: left .16s ease;
 }
+
 .switch[aria-checked="true"] { background: var(--fl-accent); border-color: var(--fl-accent); }
 .switch[aria-checked="true"] i { left: 21px; }
 .switch[aria-busy="true"] { opacity: .5; pointer-events: none; }
 
 .menu-wrap { position: relative; }
+
 .kebab {
     border: 0;
     background: none;
@@ -541,7 +719,9 @@ select:focus-visible {
     font-size: 16px;
     margin-top: 1px;
 }
+
 .kebab:hover { background: var(--fl-fill); }
+
 .menu {
     position: absolute;
     right: 0;
@@ -554,7 +734,9 @@ select:focus-visible {
     padding: 5px;
     box-shadow: 0 8px 24px rgba(16, 24, 40, .12);
 }
+
 .menu[hidden] { display: none; }
+
 .menu a,
 .menu button {
     display: block;
@@ -567,12 +749,13 @@ select:focus-visible {
     border-radius: 7px;
     color: var(--fl-ink);
 }
+
 .menu a:hover,
 .menu button:hover { background: var(--fl-fill); }
 .menu .is-danger { color: var(--fl-danger); }
 .menu hr { border: 0; border-top: 1px solid var(--fl-line); margin: 5px 0; }
 
-/* 펼침 패널 */
+/* ---------------- expanded panel ---------------- */
 .row-panel { padding: 0 22px 20px 50px; }
 .row-panel[hidden] { display: none; }
 
@@ -582,6 +765,7 @@ select:focus-visible {
     border-radius: 13px;
     padding: 16px 18px;
 }
+
 .panel-head {
     display: flex;
     align-items: center;
@@ -590,11 +774,12 @@ select:focus-visible {
     margin-bottom: 13px;
     flex-wrap: wrap;
     font-size: 13.5px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--fl-ink-2);
 }
 
 .schedule-chips { display: flex; gap: 9px; flex-wrap: wrap; min-height: 34px; }
+
 .chip {
     font-size: 13px;
     padding: 7px 15px;
@@ -603,7 +788,9 @@ select:focus-visible {
     background: var(--fl-paper);
     font-variant-numeric: tabular-nums;
 }
+
 .chip-none { font-size: 13.5px; color: var(--fl-ink-2); margin: 0; padding: 6px 0; }
+
 .chip-error {
     font-size: 13.5px;
     color: var(--fl-danger);
@@ -621,10 +808,12 @@ select:focus-visible {
     background-size: 200% 100%;
     animation: fl-shimmer 1.2s infinite;
 }
+
 @keyframes fl-shimmer {
-    0% { background-position: 200% 0; }
+    0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
+
 @media (prefers-reduced-motion: reduce) {
     .skeleton { animation: none; }
     .switch i, .fs-caret, .side-toggle svg, .sidebar { transition: none; }
@@ -643,22 +832,28 @@ select:focus-visible {
     color: var(--fl-ink-3);
 }
 
-/* 빈 상태 */
+/* ================================================================
+   empty states
+   ================================================================ */
+
 .empty-state {
     background: var(--fl-paper);
     border: 1px solid var(--fl-line);
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 72px 24px;
     text-align: center;
+    box-shadow: 0 4px 20px rgba(20, 16, 12, .03);
 }
+
 .empty-mark {
     width: 56px;
     height: 56px;
-    border-radius: 15px;
+    border-radius: 16px;
     background: var(--fl-accent-soft);
     margin: 0 auto 22px;
 }
-.empty-state h2 { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+
+.empty-state h2 { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
 .empty-state p { font-size: 13.5px; color: var(--fl-ink-2); margin: 0 0 24px; }
 .empty-state .actions { justify-content: center; }
 
@@ -669,38 +864,57 @@ select:focus-visible {
     padding: 44px 0;
     margin: 0;
 }
+
 .list-empty[hidden] { display: none; }
 
-/* 강의실 미선택 안내 */
+/* room not chosen yet */
 .pick-room {
     background: var(--fl-paper);
     border: 1px solid var(--fl-line);
-    border-radius: 16px;
-    padding: 84px 24px;
+    border-radius: 18px;
+    padding: 76px 24px;
     text-align: center;
+    box-shadow: 0 4px 20px rgba(20, 16, 12, .03);
 }
-.pick-room h2 { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+
+.pick-room-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+    border-radius: 18px;
+    background: var(--fl-accent-soft);
+    color: var(--fl-accent);
+}
+
+.pick-room-mark svg { width: 28px; height: 28px; }
+
+.pick-room h2 { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
 .pick-room p { font-size: 13.5px; color: var(--fl-ink-2); margin: 0; }
 
 /* ================================================================
-   모달
+   dialogs
    ================================================================ */
 
 .dlg {
     border: 0;
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 0;
     width: min(600px, 94vw);
     color: var(--fl-ink);
     font: inherit;
     box-shadow: 0 24px 60px rgba(16, 24, 40, .2);
 }
+
 .dlg-sm { width: min(440px, 94vw); }
 .dlg::backdrop { background: rgba(17, 24, 39, .45); }
 
 .dlg-head { padding: 22px 24px 16px; border-bottom: 1px solid var(--fl-line); position: relative; }
-.dlg-head h2 { font-size: 18px; font-weight: 600; margin: 0 0 5px; }
+.dlg-head h2 { font-size: 18px; font-weight: 700; margin: 0 0 5px; }
 .dlg-head p { font-size: 13.5px; color: var(--fl-ink-2); margin: 0; }
+
 .dlg-close {
     position: absolute;
     top: 18px;
@@ -712,15 +926,18 @@ select:focus-visible {
     color: var(--fl-ink-3);
     border-radius: 7px;
 }
+
 .dlg-close:hover { background: var(--fl-fill); }
 
 .dlg-body { padding: 20px 24px; max-height: 58vh; overflow: auto; }
+
 .dlg-foot {
     padding: 16px 24px 20px;
     display: flex;
     justify-content: flex-end;
     gap: 9px;
     border-top: 1px solid var(--fl-line);
+    align-items: center;
 }
 
 .tpl-card {
@@ -731,12 +948,15 @@ select:focus-visible {
     cursor: pointer;
     background: var(--fl-paper);
 }
+
 .tpl-card:hover { background: var(--fl-fill); }
+
 .tpl-card[aria-selected="true"] {
     border-color: var(--fl-accent);
     background: var(--fl-accent-soft);
 }
-.tpl-card h3 { font-size: 15px; font-weight: 600; margin: 0; }
+
+.tpl-card h3 { font-size: 15px; font-weight: 700; margin: 0; }
 .tpl-card p { margin: 5px 0 10px; font-size: 13px; color: var(--fl-ink-2); }
 .tpl-types { display: flex; gap: 7px; flex-wrap: wrap; }
 .tpl-types .chip { font-size: 12px; padding: 4px 11px; }
@@ -749,6 +969,7 @@ select:focus-visible {
     margin: 0;
     border-radius: 0 8px 8px 0;
 }
+
 .dlg-loading,
 .dlg-error {
     font-size: 13.5px;
@@ -757,9 +978,10 @@ select:focus-visible {
     padding: 34px 0;
     margin: 0;
 }
+
 .dlg-error { color: var(--fl-danger); }
 
-/* 토스트 */
+/* ---------------- toast ---------------- */
 .toast {
     position: fixed;
     left: 50%;
@@ -773,21 +995,12 @@ select:focus-visible {
     z-index: 200;
     box-shadow: 0 10px 28px rgba(16, 24, 40, .24);
 }
+
 .toast[hidden] { display: none; }
 .toast.is-error { background: var(--fl-danger); }
 
 /* ================================================================
-   반응형
-   ================================================================ */
-
-@media (max-width: 1024px) {
-    .topbar { padding: 14px 24px; }
-    .content { padding: 26px 24px 50px; }
-    .row-panel { padding-left: 22px; }
-}
-
-/* ================================================================
-   스케줄 관리 모달
+   schedule dialog
    ================================================================ */
 
 .dlg-lg { width: min(680px, 95vw); }
@@ -799,12 +1012,14 @@ select:focus-visible {
     background: var(--fl-bg);
     margin-bottom: 20px;
 }
-.sc-add h3 { font-size: 14px; font-weight: 600; margin: 0 0 14px; }
+
+.sc-add h3 { font-size: 14px; font-weight: 700; margin: 0 0 14px; }
 
 .sc-field { display: flex; flex-direction: column; gap: 6px; }
 .sc-label { font-size: 12.5px; color: var(--fl-ink-2); }
 
 .sc-days { display: flex; gap: 6px; flex-wrap: wrap; }
+
 .sc-days button {
     width: 42px;
     padding: 8px 0;
@@ -812,11 +1027,12 @@ select:focus-visible {
     border-radius: 9px;
     text-align: center;
 }
+
 .sc-days button[aria-pressed="true"] {
     background: var(--fl-accent);
     border-color: var(--fl-accent);
     color: #fff;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .sc-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-top: 14px; }
@@ -836,10 +1052,11 @@ select:focus-visible {
     margin: 0 0 22px;
     background: var(--fl-paper);
 }
-.sc-status strong { color: var(--fl-ink); font-weight: 600; }
+
+.sc-status strong { color: var(--fl-ink); font-weight: 700; }
 .sc-status.is-always { border-style: dashed; }
 
-.sc-section { font-size: 14px; font-weight: 600; margin: 0 0 11px; }
+.sc-section { font-size: 14px; font-weight: 700; margin: 0 0 11px; }
 
 .sc-days-list {
     border: 1px solid var(--fl-line-2);
@@ -847,6 +1064,7 @@ select:focus-visible {
     overflow: hidden;
     background: var(--fl-paper);
 }
+
 .sc-day {
     display: flex;
     align-items: flex-start;
@@ -854,6 +1072,7 @@ select:focus-visible {
     padding: 12px 15px;
     border-bottom: 1px solid var(--fl-line);
 }
+
 .sc-day:last-child { border-bottom: 0; }
 .sc-day.is-empty { background: #fafbfc; }
 .sc-day-name { width: 26px; flex-shrink: 0; font-size: 13.5px; padding-top: 6px; }
@@ -871,7 +1090,9 @@ select:focus-visible {
     font-size: 13px;
     font-variant-numeric: tabular-nums;
 }
+
 .sc-slot.is-new { border-style: dashed; border-color: var(--fl-accent); color: var(--fl-accent); }
+
 .sc-slot-del {
     border: 0;
     background: none;
@@ -881,6 +1102,7 @@ select:focus-visible {
     border-radius: 6px;
     line-height: 1;
 }
+
 .sc-slot-del:hover { background: var(--fl-fill); color: var(--fl-danger); }
 .sc-none { font-size: 13px; color: var(--fl-ink-3); padding-top: 7px; }
 
@@ -891,9 +1113,11 @@ select:focus-visible {
     padding: 14px 16px;
     background: var(--fl-paper);
 }
+
 .sc-tl-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
 .sc-tl-row:last-of-type { margin-bottom: 0; }
 .sc-tl-name { width: 20px; font-size: 12px; color: var(--fl-ink-2); }
+
 .sc-tl-track {
     flex: 1;
     height: 16px;
@@ -902,14 +1126,17 @@ select:focus-visible {
     position: relative;
     overflow: hidden;
 }
+
 .sc-tl-block {
     position: absolute;
     top: 0;
     bottom: 0;
-    background: #9fc4c1;
+    background: #F0B980;
     border-radius: 4px;
 }
+
 .sc-tl-block.is-new { background: var(--fl-accent); }
+
 .sc-tl-ticks {
     display: flex;
     justify-content: space-between;
@@ -928,6 +1155,7 @@ select:focus-visible {
     margin: 16px 0 0;
     border-radius: 0 8px 8px 0;
 }
+
 .sc-pending[hidden] { display: none; }
 
 .sc-rules {
@@ -938,7 +1166,16 @@ select:focus-visible {
     font-size: 12.5px;
     color: var(--fl-ink-3);
 }
-.sc-rules strong { color: var(--fl-ink-2); font-weight: 600; margin-bottom: 3px; }
 
+.sc-rules strong { color: var(--fl-ink-2); font-weight: 700; margin-bottom: 3px; }
 .sc-foot-hint { margin-right: auto; font-size: 12.5px; color: var(--fl-ink-3); }
-.dlg-foot { align-items: center; }
+
+/* ================================================================
+   responsive
+   ================================================================ */
+
+@media (max-width: 1024px) {
+    .topbar-inner { padding: 14px 24px; }
+    .content { padding: 28px 24px 60px; }
+    .row-panel { padding-left: 22px; }
+}
