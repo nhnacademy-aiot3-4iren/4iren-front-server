@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>플로우</title>
+    <link rel="stylesheet" href="/fonts/font.css">
     <link rel="stylesheet" th:href="@{/css/flow/flow-list.css}">
 </head>
 <body>
@@ -32,23 +33,31 @@
             </svg>
         </button>
 
+        <!-- 로고 -->
         <div class="fs-head">
             <a th:href="@{/flow}" class="fs-logo">
-        <span class="fs-logo-mark" aria-hidden="true">
-            <svg viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="39.6555" y="19.8278" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 19.8278)" stroke="currentColor" stroke-width="2.46447"/>
-                <rect x="39.6555" y="37.4524" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 37.4524)" stroke="currentColor" stroke-width="2.46447"/>
-                <rect x="6.60938" y="15.4215" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(-90 6.60938 15.4215)" stroke="currentColor" stroke-width="2.46447"/>
-                <path d="M11.0156 17.6246V38.6882C11.0156 40.1827 11.0156 40.93 11.4799 41.3943C11.9442 41.8586 12.6915 41.8586 14.1861 41.8586H30.8434" stroke="currentColor" stroke-width="2.46447"/>
-                <path d="M11.0156 15.4215V21.0634C11.0156 22.558 11.0156 23.3053 11.4799 23.7696C11.9442 24.2339 12.6915 24.2339 14.1861 24.2339H30.8434" stroke="currentColor" stroke-width="2.46447"/>
-            </svg>
-        </span>
+                <span class="fs-logo-mark" aria-hidden="true">
+                    <svg viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="39.6555" y="19.8278" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 19.8278)" stroke="currentColor" stroke-width="2.46447"/>
+                        <rect x="39.6555" y="37.4524" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(90 39.6555 37.4524)" stroke="currentColor" stroke-width="2.46447"/>
+                        <rect x="6.60938" y="15.4215" width="8.81235" height="8.81235" rx="4.40617" transform="rotate(-90 6.60938 15.4215)" stroke="currentColor" stroke-width="2.46447"/>
+                        <path d="M11.0156 17.6246V38.6882C11.0156 40.1827 11.0156 40.93 11.4799 41.3943C11.9442 41.8586 12.6915 41.8586 14.1861 41.8586H30.8434" stroke="currentColor" stroke-width="2.46447"/>
+                        <path d="M11.0156 15.4215V21.0634C11.0156 22.558 11.0156 23.3053 11.4799 23.7696C11.9442 24.2339 12.6915 24.2339 14.1861 24.2339H30.8434" stroke="currentColor" stroke-width="2.46447"/>
+                    </svg>
+                </span>
                 <span class="fs-logo-text fs-label">Flow</span>
             </a>
         </div>
 
+        <!-- 검색 -->
         <div class="fs-search">
             <label for="roomSearch" class="sr-only">강의실 검색</label>
+            <span class="fs-search-glass" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+                </svg>
+            </span>
             <input type="search" id="roomSearch" placeholder="강의실 검색" autocomplete="off">
             <button type="button" class="fs-search-icon" id="roomSearchIcon"
                     aria-label="강의실 검색 열기" tabindex="-1">
@@ -60,6 +69,7 @@
             <p class="fs-search-empty fs-label" id="roomSearchEmpty" hidden>검색 결과가 없습니다</p>
         </div>
 
+        <!-- 건물 · 강의실 트리 -->
         <nav class="fs-tree" aria-label="건물 및 강의실">
 
             <div class="fs-building"
@@ -106,21 +116,35 @@
         <!-- 최근 조회한 강의실 영역 -->
         <!-- ========================================== -->
         <div class="fs-recent" id="recentRoomsContainer" hidden>
-            <div class="fs-recent-header">최근 조회</div>
+            <div class="fs-recent-header">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+                </svg>
+                <span>최근 조회</span>
+            </div>
             <ul class="fs-recent-list" id="recentRoomsList">
                 <!-- JS에서 동적으로 채우기-->
             </ul>
         </div>
 
+        <!-- 하단: 사용자 정보 + 마이페이지 -->
         <div class="fs-foot">
+            <span class="fs-user-avatar" aria-hidden="true"
+                  th:text="${loginId != null ? #strings.toUpperCase(#strings.substring(loginId, 0, 1)) : '?'}">U</span>
+            <span class="fs-user-col fs-label">
+                <span class="fs-user-name" th:text="${loginId != null ? loginId : 'Guest'}">유저</span>
+                <span class="fs-user-role" th:text="${role != null ? role : ''}">ROLE</span>
+            </span>
             <a th:href="@{/mypage}" class="fs-back" title="마이페이지로">
                 <span class="fs-back-icon" aria-hidden="true">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2.4"
+                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>
                     </svg>
                 </span>
-                <span class="fs-label">마이페이지로</span>
+                <span class="fs-label">마이페이지</span>
             </a>
         </div>
     </aside>
@@ -129,22 +153,33 @@
     <main class="main">
 
         <div class="topbar">
-            <nav class="crumb" aria-label="현재 위치" th:if="${room != null}">
-                <span th:text="${room.buildingName()}">건물</span>
-                <span aria-hidden="true">/</span>
-                <strong th:text="${room.roomName()}">강의실</strong>
-            </nav>
-            <nav class="crumb" aria-label="현재 위치" th:if="${room == null}">
-                <strong>플로우</strong>
-            </nav>
-            <div class="topbar-right">
-                <span class="tag-admin">관리자 전용</span>
+            <div class="topbar-inner">
+                <nav class="crumb" aria-label="현재 위치" th:if="${room != null}">
+                    <span th:text="${room.buildingName()}">건물</span>
+                    <span aria-hidden="true">/</span>
+                    <strong th:text="${room.roomName()}">강의실</strong>
+                </nav>
+                <nav class="crumb" aria-label="현재 위치" th:if="${room == null}">
+                    <strong>플로우</strong>
+                </nav>
+                <div class="topbar-right">
+                    <span class="tag-admin">관리자 전용</span>
+                </div>
             </div>
         </div>
 
         <!-- 강의실을 아직 고르지 않은 경우 -->
         <div class="content" th:if="${room == null}">
             <div class="pick-room">
+                <span class="pick-room-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 21h18"/>
+                        <path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/>
+                        <path d="M15 21V11h3a2 2 0 0 1 2 2v8"/>
+                        <path d="M9 7h2"/><path d="M9 11h2"/><path d="M9 15h2"/>
+                    </svg>
+                </span>
                 <h2>강의실을 선택해 주세요</h2>
                 <p>왼쪽에서 건물을 펼쳐 강의실을 고르면 해당 강의실의 플로우를 볼 수 있습니다.</p>
             </div>
