@@ -18,13 +18,6 @@
         </a>
     </div>
 
-    <div class="user-info-block">
-        <span class="user-role"
-              th:text="${role}"
-              th:attr="data-role=${#strings.toLowerCase(role)}"></span>
-        <p class="user-name" th:text="${userName}"></p>
-    </div>
-
     <nav class="sidebar-nav">
 
         <a href="/mypage"
@@ -76,21 +69,26 @@
             <a href="/team" class="submenu-item" data-page="team-list">
                 <span>Show All Teams</span>
             </a>
-            <!--
-                모델로 내려와야 완성됨. GlobalControllerAdvice에 role/userName처럼
-                currentTeamId도 추가하거나, 사용자가 팀을 하나만 갖고 있다는 전제로
-                그 팀의 id를 조회해서 넣어주는 방식이 필요.
-                지금은 teamId 없이 /team-info로 접속하면 TeamController가 /team으로
-                리다이렉트하게 되어있어 최소한 에러는 안 남.
-            -->
-            <a th:href="@{/team-info/{teamId}(teamId=${currentTeamId})}" class="submenu-item" data-page="team-info">
+            <!-- 팀이 없으면(currentTeamId == null) /team-info/ 로 나가서 에러가 나므로,
+     팀 목록(/team)으로 보내 팀 생성/가입을 먼저 하도록 유도 -->
+            <a th:if="${currentTeamId != null}"
+               th:href="@{/team-info/{teamId}(teamId=${currentTeamId})}"
+               class="submenu-item" data-page="team-info">
                 <span>Team Info</span>
             </a>
+            <a th:if="${currentTeamId == null}"
+               th:href="@{/team}"
+               class="submenu-item" data-page="team-info">
+                <span>Team Info</span>
+            </a>
+
             <!-- Members: 초대 코드 생성, 팀원 관리. owner/admin만 접근 가능해야 함 -->
-            <a th:href="@{/team-members/{teamId}(teamId=${currentTeamId})}" class="submenu-item" data-page="team-members"
-               th:if="${role == 'ADMIN' or role == 'OWNER'}">
+            <a th:href="@{/team-members/{teamId}(teamId=${currentTeamId})}"
+               class="submenu-item" data-page="team-members"
+               th:if="${currentTeamId != null and (role == 'ADMIN' or role == 'OWNER')}">
                 <span>Members</span>
             </a>
+
         </div>
 
         <!-- Flow: 룰 엔진 관리 화면이라 admin/owner 전용. 일반 유저는 항목 자체가 안 보임.
