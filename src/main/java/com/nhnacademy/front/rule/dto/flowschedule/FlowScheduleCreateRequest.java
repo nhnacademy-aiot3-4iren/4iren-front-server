@@ -1,6 +1,5 @@
 package com.nhnacademy.front.rule.dto.flowschedule;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
