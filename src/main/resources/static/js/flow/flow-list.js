@@ -904,25 +904,26 @@
             clearScheduleMsg();
 
             const base = `${API}/rooms/${ROOM_ID}/flows/${scFlowId}/schedules`;
-            let done = 0;
-            const total = scRemoved.length + scAdded.length;
+            let removed = 0;
 
             try {
                 // 삭제를 먼저 처리해야 겹침 검증에 걸리지 않는다
                 for (const id of scRemoved) {
                     await request(`${base}/${id}`, { method: 'DELETE' });
-                    done += 1;
+                    removed += 1;
                 }
-                for (const item of scAdded) {
+                // 추가는 리스트로 한 번에 보낸다
+                if (scAdded.length) {
                     await request(base, {
                         method: 'POST',
                         body: JSON.stringify({
-                            dayOfWeek: item.dayOfWeek,
-                            startTime: item.startTime,
-                            endTime: item.endTime
+                            flowScheduleRequestList: scAdded.map(item => ({
+                                dayOfWeek: item.dayOfWeek,
+                                startTime: item.startTime,
+                                endTime: item.endTime
+                            }))
                         })
                     });
-                    done += 1;
                 }
                 await refreshSchedules();
                 toast('스케줄을 저장했습니다.');
@@ -930,7 +931,10 @@
                 // 일부만 반영됐을 수 있으므로 서버 상태를 다시 읽어 화면을 맞춘다
                 await refreshSchedules();
                 scheduleMsg(
-                    `${done}/${total}건까지 처리한 뒤 실패했습니다. ${err.message}`, true);
+                    scRemoved.length
+                        ? `삭제 ${removed}/${scRemoved.length}건까지 처리한 뒤 실패했습니다. ${err.message}`
+                        : `저장하지 못했습니다. ${err.message}`,
+                    true);
             } finally {
                 scheduleSave.disabled = false;
             }
