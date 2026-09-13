@@ -1,15 +1,25 @@
 package com.nhnacademy.front.rule.dto.flowschedule;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.DayOfWeek;
+import java.util.List;
+
 public record FlowScheduleCreateRequest(
-        @NotNull
-        String dayOfWeek,
-
-        @NotNull
-        String startTime,
-
-        @NotNull
-        String endTime
+        @NotEmpty
+        List<@Valid FlowScheduleRequest> flowScheduleRequestList
 ) {
+        public record FlowScheduleRequest(
+
+                @NotNull
+                DayOfWeek dayOfWeek,
+
+                @NotNull
+                String startTime,
+
+                @NotNull
+                String endTime
+        ){}
 }
