@@ -62,7 +62,7 @@
         <!-- JS를 통해 여기에 팀 카드 HTML이 들어옵니다 -->
       </div>
 
-      <div class="team-floating-actions">
+      <div class="team-floating-actions"  id="teamFloatingActions">
         <button class="join-team-btn" id="openJoinTeamBtn" type="button">초대 코드로 가입</button>
         <button class="open-modal-btn" id="openBtn" type="button" th:attr="data-role=${role}">+ Team 생성</button>
       </div>
@@ -247,6 +247,22 @@
     forward('emptyCreateBtn', 'openBtn');
     forward('emptyJoinBtn', 'openJoinTeamBtn');
   })();
+
+
+  /* 빈 상태일 때는 플로팅 버튼 숨김 (버튼 중복 방지) */
+  const emptyState = document.getElementById('emptyState');
+  const floating = document.getElementById('teamFloatingActions');
+  if (emptyState && floating) {
+    const sync = () => {
+      const visible = getComputedStyle(emptyState).display !== 'none';
+      floating.style.display = visible ? 'none' : '';
+    };
+    sync();
+    new MutationObserver(sync).observe(emptyState, {
+      attributes: true,
+      attributeFilter: ['style', 'class']
+    });
+  }
 </script>
 </body>
 </html>
