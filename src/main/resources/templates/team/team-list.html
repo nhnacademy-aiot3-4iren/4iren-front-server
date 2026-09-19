@@ -62,7 +62,8 @@
         <!-- JS를 통해 여기에 팀 카드 HTML이 들어옵니다 -->
       </div>
 
-      <div class="team-floating-actions"  id="teamFloatingActions">
+      <!-- 아래 스크립트가 이 요소를 잡아서 숨김 처리 -->
+      <div class="team-floating-actions" id="teamFloatingActions">
         <button class="join-team-btn" id="openJoinTeamBtn" type="button">초대 코드로 가입</button>
         <button class="open-modal-btn" id="openBtn" type="button" th:attr="data-role=${role}">+ Team 생성</button>
       </div>
@@ -222,7 +223,6 @@
 <script>
   /* ================================================================
      화면 보조 스크립트
-     - myteams.js 는 건드리지 않고, 이 페이지에서만 필요한 동작만 처리
      ================================================================ */
   (function () {
     /* 설명란 글자 수 표시 */
@@ -246,23 +246,31 @@
     };
     forward('emptyCreateBtn', 'openBtn');
     forward('emptyJoinBtn', 'openJoinTeamBtn');
+
+    /* ↓↓↓ 여기부터 버튼 중복 표시 해결 ↓↓↓ */
+
+    const $empty = document.getElementById('emptyState');
+    const $floating = document.getElementById('teamFloatingActions');
+
+    if ($empty && $floating) {
+      const syncFloating = () => {
+        const emptyVisible = getComputedStyle($empty).display !== 'none';
+        $floating.style.display = emptyVisible ? 'none' : '';
+      };
+
+      /* 최초 1회 실행 */
+      syncFloating();
+
+      /* myteams.js 가 나중에 비동기로 emptyState 의 display 를 바꾸므로
+        MutationObserver 로 감시해야 팀 생성 직후에도 정상 반영됨 */
+      new MutationObserver(syncFloating).observe($empty, {
+        attributes: true,
+        attributeFilter: ['style', 'class']
+      });
+    }
+
+    /* ↑↑↑ 여기까지 추가된 부분 ↑↑↑ */
   })();
-
-
-  /* 빈 상태일 때는 플로팅 버튼 숨김 (버튼 중복 방지) */
-  const emptyState = document.getElementById('emptyState');
-  const floating = document.getElementById('teamFloatingActions');
-  if (emptyState && floating) {
-    const sync = () => {
-      const visible = getComputedStyle(emptyState).display !== 'none';
-      floating.style.display = visible ? 'none' : '';
-    };
-    sync();
-    new MutationObserver(sync).observe(emptyState, {
-      attributes: true,
-      attributeFilter: ['style', 'class']
-    });
-  }
 </script>
 </body>
 </html>
