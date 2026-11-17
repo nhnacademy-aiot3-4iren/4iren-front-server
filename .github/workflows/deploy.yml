@@ -96,8 +96,6 @@ jobs:
             exit 1
           fi
 
-          echo "NGINX 라우팅 테이블 갱신 (1번 서버 연결)..."
-          docker exec team4-nginx nginx -s reload
 
           echo "2번 서버 업데이트 시작..."
           docker compose up -d --no-deps ${{ env.IMAGE_NAME }}-2
@@ -121,6 +119,4 @@ jobs:
             exit 1
           fi
 
-          echo "NGINX 라우팅 테이블 갱신 (2번 서버 연결)..."
-          docker exec team4-nginx nginx -s reload
           echo "무중단 배포가 완료되었습니다!"

@@ -6,7 +6,7 @@ on:
     # pr 생성, pr 업데이트(코드 변경), 리뷰어 지정 시 발생
     types: [opened, synchronize, review_requested]
     # develop이나 main에 pr을 하려고 할때
-    branches: [ "main", "develop" ]
+    branches: [ "develop" ]
 
 permissions:
   pull-requests: write
